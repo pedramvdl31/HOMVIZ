@@ -1,0 +1,135 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="popover.css" />
+        <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+        <style>
+            * {
+                box-sizing:border-box;
+                margin:0;
+                padding:0;
+            }
+            html {
+                font-size: 15px;
+                overflow:hidden;
+                line-height:1;
+                font-family:'Roboto';
+            }
+
+            a {
+                text-decoration: none;
+                color:#999
+            }
+
+            a:hover {
+                color:#555
+            }
+
+            .container {
+                background-color:#3F51B5;
+                width:100%;
+                height:100vh;
+            }
+
+            .header-title {
+                font-size:5rem;
+                margin-bottom:10rem;
+                color: #fff;  /* fallback for old browsers */
+            }
+
+            .inner {
+                display:flex;
+                flex-direction:row;
+                border:5px dashed #eaeaea;
+                padding: 5rem;
+            }
+
+            .button {
+                padding: 1.5rem 3rem;
+                margin: 0.5rem;
+                border-radius:3px;
+                line-height:1;
+                background-color:#5549ff;
+                color:#fff;
+                font-size:0.9rem;
+                border:none;
+                outline:none;
+                text-decoration: none;
+                font-weight:bold;
+            }
+
+            .button:hover {
+                background-color:#3628ff;
+                color:#fff
+            }
+
+            .button:active {
+                background-color:#1909ff
+            }
+        </style>
+    <title>Popover &amp; Modal Plugin Demos</title>
+</head>
+    <body>
+        <div class="container">
+            <h1 class="header-title">Popover & Modal Plugin Demos</h1>
+            <div class="jquery-script-ads" style="margin:30px auto;"><script type="text/javascript"><!--
+google_ad_client = "ca-pub-2783044520727903";
+/* jQuery_demo */
+google_ad_slot = "2780937993";
+google_ad_width = 728;
+google_ad_height = 90;
+//-->
+</script>
+<script type="text/javascript"
+src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script></div>
+            <div class="inner">
+                <a class="po__trigger--left button" href="javascript:;" data-layer-id="layer1">LAYER - ALIGN LEFT</a>
+                <div id="layer1" class="po__layer list">
+                    <a href="javascript:;">Item 1</a>
+                    <a href="javascript:;">Item 2</a>
+                    <a href="javascript:;">Item 3</a>
+                    <a href="javascript:;">Item 4</a>
+                </div>
+
+                <a class="po__trigger--center button" href="javascript:;" data-layer-id="layer2">LAYER - ALIGN CENTER</a>
+                <div id="layer2" class="po__layer list">
+                    <a href="javascript:;">Item 1</a>
+                    <a href="javascript:;">Item 2</a>
+                    <a href="javascript:;">Item 3</a>
+                    <a href="javascript:;">Item 4</a>
+                </div>
+
+                <a class="po__trigger--right button" href="javascript:;" data-layer-id="layer3">LAYER - ALIGN RIGHT</a>
+                <div id="layer3" class="po__layer list">
+                    <a href="javascript:;">Item 1</a>
+                    <a href="javascript:;">Item 2</a>
+                    <a href="javascript:;">Item 3</a>
+                    <a href="javascript:;">Item 4</a>
+                </div>
+
+
+                <a class="po__trigger--modal button" href="javascript:;" data-layer-id="modal">MODAL</a>
+                <div id="modal" class="po__layer modal">
+                    <a href="javascript:;">Item 1</a>
+                    <a href="javascript:;">Item 2</a>
+                    <a href="javascript:;">Item 3</a>
+                    <a href="javascript:;">Item 4</a>
+                </div>
+            </div>
+        </div>
+
+        <script src="popover.js"></script>
+        <script>
+            (function($) {
+                $('.po__trigger--left').po({ alignment: 'left' });
+                $('.po__trigger--right').po({ alignment: 'right' });
+                $('.po__trigger--center').po({ alignment: 'center' });
+                $('.po__trigger--modal').po({ modal: true });
+            })(jQuery)
+        </script>
+    </body>
+</html>

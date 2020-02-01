@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Smart Wizard - a JavaScript jQuery Step Wizard plugin</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Include Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <!-- Include SmartWizard CSS -->
+    <link href="../dist/css/smart_wizard.css" rel="stylesheet" type="text/css" />
+
+    <!-- Optional SmartWizard theme -->
+    <link href="../dist/css/smart_wizard_theme_circles.css" rel="stylesheet" type="text/css" />
+    <link href="../dist/css/smart_wizard_theme_arrows.css" rel="stylesheet" type="text/css" />
+    <link href="../dist/css/smart_wizard_theme_dots.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <div class="container">
+
+        <!-- SmartWizard html -->
+        <div id="smartwizard">
+            <ul>
+                <li><a href="#step-1">Step 1<br /><small>This is tab's description</small></a></li>
+                <li><a href="#step-2" data-content-url="./ajaxtest.php">Step 2<br /><small>This is tab's description</small></a></li>
+                <li><a href="#step-3">Step 3<br /><small>This is tab's description</small></a></li>
+                <li><a href="#step-4" data-content-url="./ajaxtest.php">Step 4<br /><small>This is tab's description</small></a></li>
+            </ul>
+
+            <div>
+                <div id="step-1" class="">
+                    <h2>Step 1 Content, Non ajax content</h2>
+                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+                </div>
+                <div id="step-2" class="">
+                    <h2>Step 2 Content, Non ajax content</h2>
+                    <div>Hello This is a div</div>
+                </div>
+                <div id="step-3" class="">
+                    <h2>Step 3 Content, Non ajax content</h2>
+                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+                </div>
+                <div id="step-4" class="">
+                    <h2>Step 4 Content, Non ajax content</h2>
+                    <div class="card">
+                        <div class="card-header">My Details</div>
+                        <div class="card-block p-0">
+                          <table class="table">
+                              <tbody>
+                                  <tr> <th>Name:</th> <td>Tim Smith</td> </tr>
+                                  <tr> <th>Email:</th> <td>example@example.com</td> </tr>
+                              </tbody>
+                          </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+    <!-- Include jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+    <!-- Include SmartWizard JavaScript source -->
+    <script type="text/javascript" src="../dist/js/jquery.smartWizard.min.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function(){
+
+            
+
+          $('#smartwizard').smartWizard({
+                selected: 0,  // Initial selected step, 0 = first step 
+                keyNavigation:true, // Enable/Disable keyboard navigation(left and right keys are used if enabled)
+                autoAdjustHeight:true, // Automatically adjust content height
+                cycleSteps: false, // Allows to cycle the navigation of steps
+                backButtonSupport: true, // Enable the back button support
+                useURLhash: true, // Enable selection of the step based on url hash
+                lang: {  // Language variables
+                    next: 'Next', 
+                    previous: 'Previous'
+                },
+                toolbarSettings: {
+                    toolbarPosition: 'bottom', // none, top, bottom, both
+                    toolbarButtonPosition: 'right', // left, right
+                    showNextButton: true, // show/hide a Next button
+                    showPreviousButton: true, // show/hide a Previous button
+                    toolbarExtraButtons: [
+                $('<button></button>').text('Finishxx')
+                              .addClass('btn btn-info hide')
+                              .on('click', function(){ 
+                            alert('Finsih button click');                            
+                              }),
+                $('<button></button>').text('Cancel')
+                              .addClass('btn btn-danger hide')
+                              .on('click', function(){ 
+                            alert('Cancel button click');                            
+                              })
+                          ]
+                }, 
+                anchorSettings: {
+                    anchorClickable: true, // Enable/Disable anchor navigation
+                    enableAllAnchors: false, // Activates all anchors clickable all times
+                    markDoneStep: true, // add done css
+                    enableAnchorOnDoneStep: true // Enable/Disable the done steps navigation
+                },            
+                contentURL: null, // content url, Enables Ajax content loading. can set as data data-content-url on anchor
+                disabledSteps: [],    // Array Steps disabled
+                errorSteps: [],    // Highlight step with errors
+                theme: 'dots',
+                transitionEffect: 'fade', // Effect on navigation, none/slide/fade
+                transitionSpeed: '400'
+          });
+
+
+
+
+        });
+    </script>
+</body>
+</html>

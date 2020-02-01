@@ -1,0 +1,76 @@
+
+.po__layer {
+    opacity: 0;
+    visibility: hidden;
+    background-color: #fff;
+    border: 1px solid #dadada;
+    box-shadow:0 0 20px rgba(0,0,0, 0.05);
+    color: #000;
+    z-index: 9999;
+    position: absolute;
+    max-height:90vh;
+    overflow-y:auto;
+    transition: opacity .25s ease-out;
+}
+
+.po__layer.is-active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.po__modal {
+    position:fixed;
+    height:100vh;
+    background:rgba(0,0,0, 0.3);
+    top:0; bottom:0; left:0; right:0;
+    opacity:0;
+    z-index:-1;
+    text-align:center;
+}
+
+.po__modal.is-active {transition:opacity 0.5s ease-out; opacity:1; z-index:99999999}
+.po__modal.is-active .po__layer {top:50%; left:50%; box-shadow:none; border:none; opacity:1; visibility: visible}
+
+.po__layer.modal {
+    width:80%;
+    max-width:350px;
+    max-height:500px;
+    padding:30px;
+}
+
+.po__layer.list {
+    padding:0.7em;
+    box-shadow: 0 5px 12px rgba(0,0,0,.08);
+    border:1px solid rgba(0,0,0, 0.15);
+    border-radius:6px;
+}
+
+.po__layer.list > a {
+    display: block;
+    padding: 0 0.8em;
+    min-width:120px;
+    line-height: 25px;
+    font-size: .9em;
+    border-radius:0.1em;
+    letter-spacing: -0.05em;
+}
+
+.po__layer.list--small > a {
+    height: 30px;
+    line-height: 28px;
+}
+
+.po__layer.list > a:hover {
+    background: #2D9EE0;
+    color:#fff;
+}
+
+.po__layer.list > a:active {
+    background:#1f8fcf
+}
+
+@media screen and (max-width: 479px) {
+    .po__modal {
+        font-size:12px;
+    }
+}

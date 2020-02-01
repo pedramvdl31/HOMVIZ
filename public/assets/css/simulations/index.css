@@ -1,0 +1,247 @@
+.hotel-search {
+-webkit-box-align: center;
+-ms-flex-align: center;
+align-items: center;
+background: #fff;
+display: -webkit-box;
+display: -ms-flexbox;
+display: flex;
+left: 0;
+position: absolute;
+top: 0;
+width: 440px;
+z-index: 1;
+}
+#map {
+width: 100%;
+height: 500px;
+}
+thead tr{
+	background-color: gray;
+    color: white;
+}
+#listing {
+position: absolute;
+width: 200px;
+height: 470px;
+overflow: auto;
+left: 442px;
+top: 0px;
+cursor: pointer;
+overflow-x: hidden;
+}
+#findhotels {
+font-size: 14px;
+}
+#locationField {
+-webkit-box-flex: 1 1 190px;
+-ms-flex: 1 1 190px;
+flex: 1 1 190px;
+margin: 0 8px;
+}
+#controls {
+-webkit-box-flex: 1 1 140px;
+-ms-flex: 1 1 140px;
+flex: 1 1 140px;
+}
+#autocomplete {
+width: 100%;
+}
+#country {
+width: 100%;
+}
+.placeIcon {
+width: 20px;
+height: 34px;
+margin: 4px;
+}
+.hotelIcon {
+width: 24px;
+height: 24px;
+}
+#resultsTable {
+border-collapse: collapse;
+width: 240px;
+}
+#rating {
+font-size: 13px;
+font-family: Arial Unicode MS;
+}
+.iw_table_row {
+height: 18px;
+}
+.iw_attribute_name {
+font-weight: bold;
+text-align: right;
+}
+.iw_table_icon {
+text-align: right;
+}
+.inputx {
+position: absolute;
+font-size: 50px;
+opacity: 0;
+right: 0;
+top: 0;
+}
+.hide{
+display: none;
+}
+.show{
+display: block;
+}
+.table-bordered td, .table-bordered th {
+border: 4px solid #585858;
+}
+.inputx {
+position: absolute;
+font-size: 50px;
+opacity: 0;
+right: 0;
+top: 0;
+}
+.hide{
+display: none;
+}
+.show{
+display: block;
+}
+.table-bordered td, .table-bordered th {
+border: 4px solid #585858;
+}
+.a-tag{
+color: #0056b3 !important;
+cursor: pointer;
+}
+
+.btn-toolbar.sw-toolbar.sw-toolbar-bottom.justify-content-end{
+	padding-right: 0 !important;
+}
+
+.fade:not(.show) {
+    opacity: 1 !important;
+}
+/* FULL POPOVER CSS FOR ALL POPOVERS */
+.popover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1060;
+  display: none;
+  max-width: 276px;
+  padding: 1px;
+  text-align: left;
+  white-space: normal;
+  background-color: #fff;
+  -webkit-background-clip: padding-box;
+          background-clip: padding-box;
+  border: 1px solid #ccc;
+  border: 1px solid rgba(0, 0, 0, .2);
+  border-radius: 6px;
+  -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, .2);
+          box-shadow: 0 5px 10px rgba(0, 0, 0, .2);
+}
+.popover.top {
+  margin-top: -10px;
+}
+.popover.right {
+  margin-left: 10px;
+}
+.popover.bottom {
+  margin-top: 10px;
+}
+.popover.left {
+  margin-left: -10px;
+}
+.popover-title {
+  padding: 8px 14px;
+  margin: 0;
+  font-size: 14px;
+  font-weight: normal;
+  line-height: 18px;
+  background-color: #f7f7f7;
+  border-bottom: 1px solid #ebebeb;
+  border-radius: 5px 5px 0 0;
+}
+.popover-content {
+  padding: 9px 14px;
+}
+.popover > .arrow,
+.popover > .arrow:after {
+  position: absolute;
+  display: block;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+}
+.popover > .arrow {
+  border-width: 11px;
+}
+.popover > .arrow:after {
+  content: "";
+  border-width: 10px;
+}
+.popover.top > .arrow {
+  bottom: -11px;
+  left: 50%;
+  margin-left: -11px;
+  border-top-color: #999;
+  border-top-color: rgba(0, 0, 0, .25);
+  border-bottom-width: 0;
+}
+.popover.top > .arrow:after {
+  bottom: 1px;
+  margin-left: -10px;
+  content: " ";
+  border-top-color: #fff;
+  border-bottom-width: 0;
+}
+.popover.right > .arrow {
+  top: 50%;
+  left: -11px;
+  margin-top: -11px;
+  border-right-color: #999;
+  border-right-color: rgba(0, 0, 0, .25);
+  border-left-width: 0;
+}
+.popover.right > .arrow:after {
+  bottom: -10px;
+  left: 1px;
+  content: " ";
+  border-right-color: #fff;
+  border-left-width: 0;
+}
+.popover.bottom > .arrow {
+  top: -11px;
+  left: 50%;
+  margin-left: -11px;
+  border-top-width: 0;
+  border-bottom-color: #999;
+  border-bottom-color: rgba(0, 0, 0, .25);
+}
+.popover.bottom > .arrow:after {
+  top: 1px;
+  margin-left: -10px;
+  content: " ";
+  border-top-width: 0;
+  border-bottom-color: #fff;
+}
+.popover.left > .arrow {
+  top: 50%;
+  right: -11px;
+  margin-top: -11px;
+  border-right-width: 0;
+  border-left-color: #999;
+  border-left-color: rgba(0, 0, 0, .25);
+}
+.popover.left > .arrow:after {
+  right: 1px;
+  bottom: -10px;
+  content: " ";
+  border-right-width: 0;
+  border-left-color: #fff;
+}
+.popover.bottom > .arrow {
+    display: none;
+}

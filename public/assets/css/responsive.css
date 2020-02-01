@@ -1,0 +1,43 @@
+
+@media (max-width: 1300px) {
+
+    .banner-bg,.discount-area, .friend-area {
+        background-position: top 0 center;
+    }
+}
+
+@media (max-width: 1200px) {
+
+}
+
+@media (max-width: 992px) {
+    #nasm{
+        margin-top: 0;
+        
+    }  
+    div#navbarTogglerDemo02 {
+        width: 100%;
+    }
+
+
+}
+
+@media (max-width:768px) {
+    .custom-navbar {
+        top: 0;
+        display: block
+    }
+}
+
+@media (max-width:767px) {
+    .custom-navbar {
+        top: 0;
+        display: block
+    }
+}
+
+@media (max-width:479px) {
+    .dropdown-item {
+        white-space: normal !important;
+    }
+}
