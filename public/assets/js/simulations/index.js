@@ -38,11 +38,223 @@ $(".custom-file-input").on("change", function() {
 window.populationType = []
 window.statelist = []
 window.resstate = []
+window.loc = 0
+window.population = 0
+window.stateres = 0
+
+function checkLoc(){
+
+  if (window.loc == 1) {
+
+    $('#loc-overview').text('Set').addClass('text-success').removeClass('text-danger')
+
+    $('#loc-div').removeClass('hide')
+
+  } else {
+
+    $('#loc-overview').text('Not Set').addClass('text-danger').removeClass('text-success')
+
+    $('#loc-div').addClass('hide')
+
+  }
+
+}
+
+function checkpopulation(){
+
+  window.population = 1
+
+  if (window.population == 1) {
+
+    $('#population-overview').text('Set').addClass('text-success').removeClass('text-danger')
+
+  } else {
+
+    $('#population-overview').text('Not Set').addClass('text-danger').removeClass('text-success')
+
+  }
+
+}
+
+function checkstateres(){
+
+  window.stateres = 1
+
+  if (window.stateres == 1) {
+
+    $('#stateres-overview').text('Set').addClass('text-success').removeClass('text-danger')
+
+  } else {
+
+    $('#stateres-overview').text('Not Set').addClass('text-danger').removeClass('text-success')
+
+  }
+
+}
+
+function processPopulation(){
+
+    if ($("#populationtext").val().length == 0){
+
+      
+
+    } else {
+
+      checkpopulation()
+
+      $('#_table').html("")
+
+      _val = $("#populationtext").val()
+      _exp = _val.split(',')
+
+      _table = '<small>This table represents the popolation count of each category.</small><div class="table-responsive">'+
+             '<table class="table table-bordered ">'+
+              '<thead>'+
+                '<tr>'+
+                '<th>Population Type</th><th>Population Count #</th>';
+
+      _hdntable = '<div class="table-responsive" style="display: none">'+
+         '<table id="statetable" class="table table-bordered ">'+
+            '<thead>'+
+            '<tr>'+
+            '<th>Population Type</th><th>Population Count #</th>';
 
 
+      _table +=   '</tr>'+
+        '</thead>'+
+          '<tbody>';
+
+      _hdntable +=  '</tr>'+
+          '</thead>'+
+            '<tbody>';
+
+
+      window.populationType = []
+
+      $.each( _exp, function( k1, value ) {
+
+        window.populationType.push(value)
+
+        ht =   '<tr>'+
+                '<td style="font-weight: 900">'+value+'</td>'+
+                '<td class="ttd"><input name="tablex" style="width:100px; height:100%;" value="0"></td></tr>';
+
+        _hdntable += ht
+        _table += ht
+
+      });
+
+
+      _table +=   '</tbody>'+
+        '</table>'+
+        '</div>';
+
+      _hdntable +=  '</tbody>'+
+            '</table>'+
+            '</div>';
+
+      $("#_table").append(_table)
+      $("#_table").append(_hdntable)
+
+    }
+}
+
+function processStateRes(){
+
+    if ($("#stateresourcetext").val().length == 0){
+      
+
+    } else {
+
+      checkstateres()
+
+      $('#stateresource_table').html("")
+
+      _val = $("#stateresourcetext").val()
+      _exp = _val.split(',')
+
+      _table = '<small>This table represents the propreties of Resources and States. Resources take Allowed Population, Capacity, and Initial Population Count as an Input. States take Allowed Populationn, and Initial Populationn Count as an input.</small>'+
+      '<br><small><strong>Allowed Population:</strong> The population type that is allowed to enter a resource. <strong>Capacity:</strong> Resource maximum capacity. <strong>Initial Population Count:</strong> The number of population in a resource at the begining of the simulation</small><div class="table-responsive">'+
+             '<table class="table table-bordered ">'+
+              '<thead>'+
+                '<tr>'+
+                '<th>Name</th><th>Resources / States</th><th>Type</th><th>Properties</th>';
+
+
+      _table +=   '</tr>'+
+        '</thead>'+
+          '<tbody>';
+
+
+      window.resstate = _exp
+
+      $.each( _exp, function( k1, value ) {
+
+        ht =   '<tr>'+
+                '<td style="font-weight: 900" val="'+value+'" class="stname">'+value+'</td>'+
+                '<td><label class="radio-inline"><input value="res" class="res-radio rsradio" type="radio" name="optradio-'+k1+'" rid="'+k1+'">&nbsp;Resource&nbsp;&nbsp;</label>'+
+                '<label class="radio-inline"><input  rid="'+k1+'" class="rsradio" type="radio" name="optradio-'+k1+'" value="state">&nbsp;State</label></td>'+
+                '<td><div class="form-group"><select class="form-control"><option id="Street">Street</option><option id="Shelter">Shelter</option>'+
+                '<option id="HiddenHomeless">Hidden Homeless</option><option id="NotHomeless">Not Homeless</option><option id="TransitionalHousing">Transitional Housing</option>'+
+                '<option id="Hospital">Hospital</option><option id="Rehabilitation">Rehabilitation</option></select></div></td>'+
+                '<td class="ttd" id="td-'+k1+'"><a class="init-population a-tag popover-all" id="ip-'+k1+'" data-placement="bottom" data-toggle="popover">Initial Population</a>,&nbsp;&nbsp;'+
+                '<a class="ap-population a-tag popover-all" id="ap-'+k1+'" data-placement="bottom" data-toggle="popover">Allowed Population</a>,&nbsp;&nbsp;'+
+                '<a class="t-pop a-tag popover-all" id="t-'+k1+'" data-placement="bottom" data-toggle="popover">Transition</a><span id="cs-'+k1+'">,&nbsp;&nbsp;'+
+                '<a class="cap-population a-tag popover-all" data-placement="bottom" data-toggle="popover" id="c-'+k1+'">Capacity</a></span>'+
+                '<span id="ms-'+k1+'">,&nbsp;&nbsp;<a class="maxstay a-tag popover-all" id="ipms-'+k1+'" data-placement="bottom" data-toggle="popover">Maximum Length of Stay</a></span>'+
+                '</td></tr>';
+
+        _table += ht
+
+      });
+
+      _table +=   '</tbody></table></div>';
+
+      $("#stateresource_table").append(_table)
+
+      $('.t-pop').popover({html:true,title: "Transition"}).click(function(e) {
+          $('.popover').not(this).hide();
+          $(this).data("bs.popover").inState.click = false;
+          $(this).popover('show');
+          e.preventDefault();
+      });
+
+      $(document).find(".res-radio").prop("checked", true);
+
+      $('.init-population').popover({html:true,title: "Initial Population"}).click(function(e) {
+          $('.popover').not(this).hide();
+          $(this).data("bs.popover").inState.click = false;
+          $(this).popover('show');
+          e.preventDefault();
+      });
+
+      $('.maxstay').popover({html:true,title: "Maximum Length of Stay"}).click(function(e) {
+          $('.popover').not(this).hide();
+          $(this).data("bs.popover").inState.click = false;
+          $(this).popover('show');
+          e.preventDefault();
+      });
+
+      $('.ap-population').popover({html:true,title: "Allowed Population"}).click(function(e) {
+          $('.popover').not(this).hide();
+          $(this).data("bs.popover").inState.click = false;
+          $(this).popover('show');
+          e.preventDefault();
+      });
+
+      $('.cap-population').popover({html:true,title: "Capacity"}).click(function(e) {
+          $('.popover').not(this).hide();
+          $(this).data("bs.popover").inState.click = false;
+          $(this).popover('show');
+          e.preventDefault();
+      });
+
+    }
+}
 
 $(document).ready(function(){
-  // $('#statetransition_table').html('<p>In order to set the state transition, 2 or more states are required. Currently there are '+window.statelist.length+' state.</p>')
+
+    $("#mcontent").css("display","block")
 
    var keyStop = {
      8: ":not(input:text, textarea, input:file, input:password)", // stop backspace = back
@@ -153,145 +365,39 @@ $(document).ready(function(){
 
   });
 
-  $("#populationbtn").click(function(){
 
-    $('#_table').html("")
+  // ********************
+  // POPULATION LISTENERS
+  $('#populationtext, #populationbtn').on('keyup click', function(e) {
 
-    _val = $("#populationtext").val()
-    _exp = _val.split(',')
+    if (e.type == 'click') {
 
-    _table = '<small>This table represents the popolation count of each category.</small><div class="table-responsive">'+
-           '<table class="table table-bordered ">'+
-            '<thead>'+
-              '<tr>'+
-              '<th>Population Type</th><th>Population Count #</th>';
+       processPopulation()
 
-    _hdntable = '<div class="table-responsive" style="display: none">'+
-       '<table id="statetable" class="table table-bordered ">'+
-          '<thead>'+
-          '<tr>'+
-          '<th>Population Type</th><th>Population Count #</th>';
+    } else if (e.type == 'keyup') {
 
+      if (event.keyCode === 13) {
+        processPopulation()
+      }
 
-    _table +=   '</tr>'+
-      '</thead>'+
-        '<tbody>';
+    }
 
-    _hdntable +=  '</tr>'+
-        '</thead>'+
-          '<tbody>';
+  });
+  // POPULATION LISTENERS END
 
+  $('#stateresourcetext, #stateresourcebtn').on('keyup click', function(e) {
 
-    window.populationType = []
+    if (e.type == 'click') {
 
-    $.each( _exp, function( k1, value ) {
+       processStateRes()
 
-      window.populationType.push(value)
+    } else if (e.type == 'keyup') {
 
-      ht =   '<tr>'+
-              '<td style="font-weight: 900">'+value+'</td>'+
-              '<td class="ttd"><input name="tablex" style="width:100px; height:100%;" value="0"></td></tr>';
+      if (event.keyCode === 13) {
+        processStateRes()
+      }
 
-      _hdntable += ht
-      _table += ht
-
-    });
-
-
-    _table +=   '</tbody>'+
-      '</table>'+
-      '</div>';
-
-    _hdntable +=  '</tbody>'+
-          '</table>'+
-          '</div>';
-
-    $("#_table").append(_table)
-    $("#_table").append(_hdntable)
-
-  })
-
-  $("#stateresourcebtn").click(function(){
-
-    $('#stateresource_table').html("")
-
-    _val = $("#stateresourcetext").val()
-    _exp = _val.split(',')
-
-    _table = '<small>This table represents the propreties of Resources and States. Resources take Allowed Population, Capacity, and Initial Population Count as an Input. States take Allowed Populationn, and Initial Populationn Count as an input.</small>'+
-    '<br><small><strong>Allowed Population:</strong> The population type that is allowed to enter a resource. <strong>Capacity:</strong> Resource maximum capacity. <strong>Initial Population Count:</strong> The number of population in a resource at the begining of the simulation</small><div class="table-responsive">'+
-           '<table class="table table-bordered ">'+
-            '<thead>'+
-              '<tr>'+
-              '<th>Name</th><th>Resources / States</th><th>Type</th><th>Properties</th>';
-
-
-    _table +=   '</tr>'+
-      '</thead>'+
-        '<tbody>';
-
-
-    window.resstate = _exp
-
-    $.each( _exp, function( k1, value ) {
-
-      ht =   '<tr>'+
-              '<td style="font-weight: 900" val="'+value+'" class="stname">'+value+'</td>'+
-              '<td><label class="radio-inline"><input value="res" class="res-radio rsradio" type="radio" name="optradio-'+k1+'" rid="'+k1+'">&nbsp;Resource&nbsp;&nbsp;</label>'+
-              '<label class="radio-inline"><input  rid="'+k1+'" class="rsradio" type="radio" name="optradio-'+k1+'" value="state">&nbsp;State</label></td>'+
-              '<td><div class="form-group"><select class="form-control"><option id="Street">Street</option><option id="Shelter">Shelter</option>'+
-              '<option id="HiddenHomeless">Hidden Homeless</option><option id="NotHomeless">Not Homeless</option><option id="TransitionalHousing">Transitional Housing</option>'+
-              '<option id="Hospital">Hospital</option><option id="Rehabilitation">Rehabilitation</option></select></div></td>'+
-              '<td class="ttd" id="td-'+k1+'"><a class="init-population a-tag popover-all" id="ip-'+k1+'" data-placement="bottom" data-toggle="popover">Initial Population</a>,&nbsp;&nbsp;'+
-              '<a class="maxstay a-tag popover-all" id="ipms-'+k1+'" data-placement="bottom" data-toggle="popover">Maximum Length of Stay</a>,&nbsp;&nbsp;'+
-              '<a class="ap-population a-tag popover-all" id="ap-'+k1+'" data-placement="bottom" data-toggle="popover">Allowed Population</a>,&nbsp;&nbsp;'+
-              '<a class="t-pop a-tag popover-all" id="t-'+k1+'" data-placement="bottom" data-toggle="popover">Transition</a><span id="cs-'+k1+'">,&nbsp;&nbsp;'+
-              '<a class="cap-population a-tag popover-all" data-placement="bottom" data-toggle="popover" id="c-'+k1+'">Capacity</a></span></td></tr>';
-
-      _table += ht
-
-    });
-
-    _table +=   '</tbody></table></div>';
-
-    $("#stateresource_table").append(_table)
-
-    $('.t-pop').popover({html:true,title: "Transition"}).click(function(e) {
-        $('.popover').not(this).hide();
-        $(this).data("bs.popover").inState.click = false;
-        $(this).popover('show');
-        e.preventDefault();
-    });
-
-    $(document).find(".res-radio").prop("checked", true);
-
-    $('.init-population').popover({html:true,title: "Initial Population"}).click(function(e) {
-        $('.popover').not(this).hide();
-        $(this).data("bs.popover").inState.click = false;
-        $(this).popover('show');
-        e.preventDefault();
-    });
-
-    $('.maxstay').popover({html:true,title: "Maximum Length of Stay"}).click(function(e) {
-        $('.popover').not(this).hide();
-        $(this).data("bs.popover").inState.click = false;
-        $(this).popover('show');
-        e.preventDefault();
-    });
-
-    $('.ap-population').popover({html:true,title: "Allowed Population"}).click(function(e) {
-        $('.popover').not(this).hide();
-        $(this).data("bs.popover").inState.click = false;
-        $(this).popover('show');
-        e.preventDefault();
-    });
-
-    $('.cap-population').popover({html:true,title: "Capacity"}).click(function(e) {
-        $('.popover').not(this).hide();
-        $(this).data("bs.popover").inState.click = false;
-        $(this).popover('show');
-        e.preventDefault();
-    });
+    }
 
   })
 
@@ -348,9 +454,16 @@ $(document).ready(function(){
 
       h = '<span id="cs-'+id+'">,&nbsp;&nbsp;'+
           '<a id="c-'+id+'" class="cap-population a-tag popover-all" data-placement="bottom" data-toggle="popover">Capacity</a></span>';
+      h += '<span id="ms-'+id+'">,&nbsp;&nbsp;<a class="maxstay a-tag popover-all" id="ipms-'+id+'" data-placement="bottom" data-toggle="popover">Maximum Length of Stay</a></span>'    
 
-      $(document).find('#td-'+id).append(h)
-          $('.cap-population').popover({html:true,title: "Capacity"}).click(function(e) {
+      $(document).find('#td-'+id).append(h);
+      $('.cap-population').popover({html:true,title: "Capacity"}).click(function(e) {
+        $('.popover').not(this).hide();
+        $(this).data("bs.popover").inState.click = false;
+        $(this).popover('show');
+        e.preventDefault();
+      });
+      $('.maxstay').popover({html:true,title: "Maximum Length of Stay"}).click(function(e) {
           $('.popover').not(this).hide();
           $(this).data("bs.popover").inState.click = false;
           $(this).popover('show');
@@ -371,6 +484,7 @@ $(document).ready(function(){
       }
 
       $(document).find('#cs-'+id).remove()
+      $(document).find('#ms-'+id).remove()
 
     }
 

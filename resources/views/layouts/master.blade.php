@@ -44,11 +44,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <!-- /.navbar -->
 
 
-
+    <div class="row">
+      @include('flash::message')
+    </div>
 
     <!-- Main content -->
 
-      @yield('content')
+     @yield('content')
 
   </div>
   <!-- /.content-wrapper -->

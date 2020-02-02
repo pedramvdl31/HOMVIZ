@@ -16,7 +16,6 @@ class CreateSimulationsTable extends Migration
         Schema::create('simulations', function (Blueprint $table) {
 
             $table->increments('id');
-            $table->unsignedInteger('project_id',false)->nullable();
             $table->string('name')->nullable();
             $table->string('numberofweeks')->nullable();
             $table->string('numberofsims')->nullable();
@@ -26,6 +25,7 @@ class CreateSimulationsTable extends Migration
             $table->text('states')->nullable();
             $table->text('table')->nullable();
             $table->string('datasheetURI')->nullable();
+            $table->unsignedInteger('user_id',false)->nullable();
             $table->timestamps();
             $table->softDeletes();
 

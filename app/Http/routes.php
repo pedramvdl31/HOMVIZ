@@ -21,17 +21,9 @@ Route::group(['middleware' => 'beforeFilter'], function () {
 	Route::group(['middleware' => ['auth']], function(){
 
 		Route::get('/', ['as'=>'index','uses'=>'HomeController@getHomepage']);
-		Route::get('/projects/add',  ['uses' => 'ProjectsController@getAdd']);
-		Route::post('/projects/add',  ['uses' => 'ProjectsController@postAdd']);
-		Route::get('/projects/edit/{id}',  ['uses' => 'ProjectsController@getEdit']);
-		Route::get('/projects/delete/{id}',  ['uses' => 'ProjectsController@getDelete']);
-		Route::post('/projects/edit',  ['uses' => 'ProjectsController@postEdit']);
-		Route::get('/simulations/index/{id}',  ['as'=>'simulation_index', 'uses' => 'SimulationsController@getIndex']);
-		Route::get('/simulations/add/{id}',  ['as'=>'simulation_add', 'uses' => 'SimulationsController@getAdd']);
-		Route::get('/simulations/delete/{simid}/{projectid}',  ['as'=>'simulation_delete', 'uses' => 'SimulationsController@getDelete']);
+		Route::get('/simulations/add',  ['as'=>'simulation_add', 'uses' => 'SimulationsController@getAdd']);
+		Route::get('/simulations/delete/{simid}',  ['as'=>'simulation_delete', 'uses' => 'SimulationsController@getDelete']);
 		Route::post('/simulations/add',  ['uses' => 'SimulationsController@postAdd']);
-		Route::get('/simulations/edit/{id}',  ['as'=>'simulation_edit', 'uses' => 'SimulationsController@getEdit']);
-		Route::post('/simulations/edit',  ['uses' => 'SimulationsController@postEdit']);
 		Route::get('/simulations/view/{id}',  ['as'=>'simulation_view', 'uses' => 'SimulationsController@getView']);
 
 	});
