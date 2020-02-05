@@ -1,26 +1,11 @@
 $(document).ready(function() {
-
     main.pageLoad();
     main.events();
     MakeMenuGray();
-
 });
-
 
 main = {
     pageLoad: function() {
-
-        // $.ajaxSetup({
-        //     headers: {
-        //         'X-CSRF-Token': $('meta[name=csrf-token]').attr('content')
-        //     }
-        // });
-
-        // progressively.init({
-        //     onLoadComplete: function() {
-        //     }
-        // });
-
 
     },
     events: function() {

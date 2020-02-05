@@ -36,8 +36,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
       <li class="nav-item">
-        <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#"><i
-            class="fas fa-th-large"></i></a>
+        <a href="/logout">Logout</a>
       </li>
     </ul>
   </nav>

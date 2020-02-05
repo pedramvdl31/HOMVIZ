@@ -5,14 +5,14 @@
 	<link rel="stylesheet" href="/SmartWizard-master/src/css/smart_wizard_theme_circles.css">
 	<link rel="stylesheet" href="/SmartWizard-master/src/css/smart_wizard_theme_arrows.css">
 	<link rel="stylesheet" href="/SmartWizard-master/src/css/smart_wizard_theme_dots.css">
-	<link rel="stylesheet" href="/assets/css/simulations/index.css?15">
+	<link rel="stylesheet" href="/assets/css/simulations/index.css?20">
 
 @stop
 @section('scripts')
 	<script src="/SmartWizard-master/src/js/jquery.smartWizard.js"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/xlsx.full.min.js"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/jszip.js"></script>
-	<script src="/assets/js/simulations/index.js?23"></script>
+	<script src="/assets/js/simulations/index.js?26"></script>
 
 @stop
 
@@ -47,7 +47,7 @@
 
 					    <div class="card card-primary card-outline">
 
-					        <div class="card card-solid mb-0" style="border: 5px solid #007bff;">
+					        <div class="card card-solid mb-0" style="border: 5px solid #3f9bff;">
 
 					            <div class="card-body p-0">
 
@@ -58,7 +58,6 @@
 							                <li><a href="#step-1">Step 1<br /><big>Location</big></a></li>
 							                <li><a href="#step-2">Step 2<br /><big>Population</big></a></li>
 							                <li><a href="#step-3">Step 3<br /><big>Resources and States</big></a></li>
-							                <!-- <li><a href="#step-5">Step 4<br /><big>State Transition</big></a></li> -->
 							                <li><a href="#step-4">Step 5<br /><big>Parameters</big></a></li>
 							            </ul>
 
@@ -70,7 +69,7 @@
 							                	<div class="row">
 
 
-									                <div class="col-md-4">
+									                <div class="col-md-12">
 														<div class="form-group">
 										                	<label for="inputName">Location (Address or latitute, longitude):</label>
 										                	<div id="locationField"></div>
@@ -78,7 +77,7 @@
 										              	</div>
 										            </div>
 
-										            <div class="col-md-8">
+										            <div class="col-md-12">
 
 													    <div id="map"></div>
 
@@ -196,11 +195,11 @@
 
 							                	<div class="row">
 
-									                <div class="col-md-4">
+									                <div class="col-md-12">
 														<div class="form-group">
-										                	<label for="inputName">Population type (for example: male, female, etc. comma separated):</label>
+										                	<label for="inputName">Population type for simulation (for example: male, female, etc. comma separated):</label>
 											                <div class="input-group mb-3">
-															  <input autocomplete="off" name="states" id="populationtext" type="text" class="form-control rounded-0">
+															  <input placeholder="Male, Female, Other, ..." autocomplete="off" name="states" id="populationtext" type="text" class="form-control rounded-0">
 															  <span class="input-group-append">
 															    <button id="populationbtn" type="button" class="btn btn-info btn-flat">Generate table</button>
 															  </span>
@@ -227,17 +226,24 @@
 
 							                	<div class="row">
 
-									                <div class="col-md-4">
+									                <div class="col-md-12">
 
 														<div class="form-group">
 
 										                	<label for="inputName">Resources and States (comma separated):</label>
-											                <div class="input-group mb-3">
-															  <input autocomplete="off" name="res" id="stateresourcetext" type="text" class="form-control rounded-0">
-															  <span class="input-group-append">
-															    <button id="stateresourcebtn" type="button" class="btn btn-info btn-flat">Generate table</button>
-															  </span>
-															</div>
+														  	<div class="form-inline">
+															  	<select class="form-control" id="stateresselect">
+															  		<option selected disabled id="title">Select One</option>
+															  		<option id="Street" type="res">Street</option>
+															  		<option id="Shelter" type="res">Shelter</option>
+												                	<option id="HiddenHomeless" type="state">Hidden Homeless</option>
+												                	<option id="NotHomeless" type="state">Not Homeless</option>
+												                	<option id="TransitionalHousing" type="res">Transitional Housing</option>
+												                	<option id="Hospital" type="res">Hospital</option>
+												                	<option id="Rehabilitation" type="state">Rehabilitation</option>
+												                </select>
+														    	<button id="stateresourcebtn" type="button" class="btn btn-info btn-flat" style="margin-left: 10px">Add</button>
+														    </div>
 
 										              	</div>
 										            </div>
@@ -248,7 +254,22 @@
 
 													<div class="col-lg-12">
 
-														<div id="stateresource_table"></div>
+														<div id="stateresource_table">
+
+															<div class="table-responsive row-scroll">
+																<table class="table table-bordered" id="staterestable">
+																	<thead>
+																		<tr>
+																			<th>Type</th><th>Name</th><th>Resources / States</th><th>Properties</th><th>Action</th>
+																		</tr>
+																	</thead>
+																	<tbody>
+																		<tr><td></td><td></td><td></td><td></td><td></td></tr>
+																	</tbody>
+																</table>
+															</div>
+
+														</div>
 
 													</div>
 
@@ -275,7 +296,7 @@
 										              	</div>
 
 										            	<button type="submit" class="btn bg-gradient-primary">Save</button>
-										            	<button type="submit" class="btn bg-gradient-primary" id="runsimulation">Save and run simulation</button>
+										    
 
 										            </div>
 
@@ -301,7 +322,7 @@
 					
 						<div class="card card-primary card-outline">
 
-					        <div class="card card-solid mb-0" style="border: 5px solid #6c757d;">
+					        <div class="card card-solid mb-0" style="border: 5px solid #abd3ff;min-height: 710px">
 
 								<div class="card-header">
 									<h3 class="card-title">
@@ -310,7 +331,8 @@
 								</div>
 
         						<div class="card-body">
-									
+
+
 									<p>Location: <span id="loc-overview" class="text-danger">Not set</span></p>
 									<div class="col-lg-12 hide" id="loc-div">
 										<div id="map2"></div>
@@ -318,8 +340,16 @@
 									</div>
 									<p>Population: <span id="population-overview" class="text-danger">Not set</span></p>
 									<p>Resources and States: <span id="stateres-overview" class="text-danger">Not set</span></p>
+									<p>Parameters: <span id="parameters-overview" class="text-danger">Not set</span></p>
+
 
 					            </div>
+
+				            	<div class="card-footer" style="text-align: right;">
+							
+									<button type="submit" class="btn bg-gradient-primary" id="runsimulation" disabled="">Run simulation</button>
+
+				              	</div>
 
 					        </div>
 

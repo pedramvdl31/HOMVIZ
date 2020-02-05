@@ -14,7 +14,7 @@ z-index: 1;
 }
 #map{
 width: 100%;
-height: 500px;
+height: 450px;
 }
 #map2 {
 width: 100%;
@@ -23,6 +23,10 @@ height: 100px;
 thead tr{
 	background-color: gray;
     color: white;
+}
+.row-scroll{
+  overflow: auto;
+  max-height: 450px;
 }
 #listing {
 position: absolute;
@@ -248,4 +252,47 @@ cursor: pointer;
 }
 .popover.bottom > .arrow {
     display: none;
+}
+
+#smartwizard {
+  min-height: 700px;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: start;
+  flex-direction: column;
+}
+.btn-toolbar{
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+.stateresource_table {
+  margin-bottom: 80px;
+}
+
+#bottom-btns{
+
+  position: absolute;
+  bottom: 0;
+  padding-bottom: 11px;
+
+}
+
+.sub td, .hassub td{
+}
+
+tr.sub td:last-child, tr.hassub td:last-child {
+  border-right: 4px solid #585858 !important;
+}
+
+tr.sub td:first-child, tr.hassub td:first-child{
+  border-left: 4px solid #585858 !important;
+}
+
+.hassub td:not(.pop),.nthsub td:not(.pop){
+  border-bottom: none;
+}
+
+.sub td:not(.pop){
+  border-top: none;
 }

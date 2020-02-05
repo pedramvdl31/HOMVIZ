@@ -41,6 +41,7 @@ window.resstate = []
 window.loc = 0
 window.population = 0
 window.stateres = 0
+window.tableFlag = 0
 
 function checkLoc(){
 
@@ -159,98 +160,6 @@ function processPopulation(){
     }
 }
 
-function processStateRes(){
-
-    if ($("#stateresourcetext").val().length == 0){
-      
-
-    } else {
-
-      checkstateres()
-
-      $('#stateresource_table').html("")
-
-      _val = $("#stateresourcetext").val()
-      _exp = _val.split(',')
-
-      _table = '<small>This table represents the propreties of Resources and States. Resources take Allowed Population, Capacity, and Initial Population Count as an Input. States take Allowed Populationn, and Initial Populationn Count as an input.</small>'+
-      '<br><small><strong>Allowed Population:</strong> The population type that is allowed to enter a resource. <strong>Capacity:</strong> Resource maximum capacity. <strong>Initial Population Count:</strong> The number of population in a resource at the begining of the simulation</small><div class="table-responsive">'+
-             '<table class="table table-bordered ">'+
-              '<thead>'+
-                '<tr>'+
-                '<th>Name</th><th>Resources / States</th><th>Type</th><th>Properties</th>';
-
-
-      _table +=   '</tr>'+
-        '</thead>'+
-          '<tbody>';
-
-
-      window.resstate = _exp
-
-      $.each( _exp, function( k1, value ) {
-
-        ht =   '<tr>'+
-                '<td style="font-weight: 900" val="'+value+'" class="stname">'+value+'</td>'+
-                '<td><label class="radio-inline"><input value="res" class="res-radio rsradio" type="radio" name="optradio-'+k1+'" rid="'+k1+'">&nbsp;Resource&nbsp;&nbsp;</label>'+
-                '<label class="radio-inline"><input  rid="'+k1+'" class="rsradio" type="radio" name="optradio-'+k1+'" value="state">&nbsp;State</label></td>'+
-                '<td><div class="form-group"><select class="form-control"><option id="Street">Street</option><option id="Shelter">Shelter</option>'+
-                '<option id="HiddenHomeless">Hidden Homeless</option><option id="NotHomeless">Not Homeless</option><option id="TransitionalHousing">Transitional Housing</option>'+
-                '<option id="Hospital">Hospital</option><option id="Rehabilitation">Rehabilitation</option></select></div></td>'+
-                '<td class="ttd" id="td-'+k1+'"><a class="init-population a-tag popover-all" id="ip-'+k1+'" data-placement="bottom" data-toggle="popover">Initial Population</a>,&nbsp;&nbsp;'+
-                '<a class="ap-population a-tag popover-all" id="ap-'+k1+'" data-placement="bottom" data-toggle="popover">Allowed Population</a>,&nbsp;&nbsp;'+
-                '<a class="t-pop a-tag popover-all" id="t-'+k1+'" data-placement="bottom" data-toggle="popover">Transition</a><span id="cs-'+k1+'">,&nbsp;&nbsp;'+
-                '<a class="cap-population a-tag popover-all" data-placement="bottom" data-toggle="popover" id="c-'+k1+'">Capacity</a></span>'+
-                '<span id="ms-'+k1+'">,&nbsp;&nbsp;<a class="maxstay a-tag popover-all" id="ipms-'+k1+'" data-placement="bottom" data-toggle="popover">Maximum Length of Stay</a></span>'+
-                '</td></tr>';
-
-        _table += ht
-
-      });
-
-      _table +=   '</tbody></table></div>';
-
-      $("#stateresource_table").append(_table)
-
-      $('.t-pop').popover({html:true,title: "Transition"}).click(function(e) {
-          $('.popover').not(this).hide();
-          $(this).data("bs.popover").inState.click = false;
-          $(this).popover('show');
-          e.preventDefault();
-      });
-
-      $(document).find(".res-radio").prop("checked", true);
-
-      $('.init-population').popover({html:true,title: "Initial Population"}).click(function(e) {
-          $('.popover').not(this).hide();
-          $(this).data("bs.popover").inState.click = false;
-          $(this).popover('show');
-          e.preventDefault();
-      });
-
-      $('.maxstay').popover({html:true,title: "Maximum Length of Stay"}).click(function(e) {
-          $('.popover').not(this).hide();
-          $(this).data("bs.popover").inState.click = false;
-          $(this).popover('show');
-          e.preventDefault();
-      });
-
-      $('.ap-population').popover({html:true,title: "Allowed Population"}).click(function(e) {
-          $('.popover').not(this).hide();
-          $(this).data("bs.popover").inState.click = false;
-          $(this).popover('show');
-          e.preventDefault();
-      });
-
-      $('.cap-population').popover({html:true,title: "Capacity"}).click(function(e) {
-          $('.popover').not(this).hide();
-          $(this).data("bs.popover").inState.click = false;
-          $(this).popover('show');
-          e.preventDefault();
-      });
-
-    }
-}
 
 $(document).ready(function(){
 
@@ -303,6 +212,7 @@ $(document).ready(function(){
     $(this).closest(".card").find('.subresroucewrapper').append(html)
 
   });
+
 
 
   $(".sw-btn-next").click(function(){
@@ -385,21 +295,290 @@ $(document).ready(function(){
   });
   // POPULATION LISTENERS END
 
-  $('#stateresourcetext, #stateresourcebtn').on('keyup click', function(e) {
 
-    if (e.type == 'click') {
+  // *****************
+  // STATE AND RESOURCES 
+  $('#stateresourcebtn').on('click', function(e) {
 
-       processStateRes()
+    var elem = document.getElementById("stateresselect");
+    var id = elem.options[elem.selectedIndex].id;
 
-    } else if (e.type == 'keyup') {
+    if (id != 'title'){
 
-      if (event.keyCode === 13) {
-        processStateRes()
-      }
+      let name = elem.options[elem.selectedIndex].value;
+
+      let type = $('option[id='+id+']').attr('type')
+
+      processStateRes(name,id,type)
 
     }
 
   })
+
+  $(document).on("keyup",".nameinput",function() {
+
+    let elem = $(this)
+    let v = $(this).val()
+    let i = $(this).attr('rid')
+
+    let f = 0
+
+    $(document).find(".nameinput").each(function (index, value) {
+
+      let this_val = $(this).val()
+
+      if (this_val!="") {
+      
+        if ($(this).attr('rid') != i) {
+            if (this_val==v) {
+              f = 1
+            }
+        }
+
+        if (f == 1) { 
+
+          elem.addClass('text-danger')
+          elem.next().removeClass('hide')
+
+        } else {
+
+          elem.removeClass('text-danger')
+          elem.next().addClass('hide')
+
+        }
+
+      }
+
+    });
+
+  });
+
+  function processStateRes(name,id,type){
+
+      checkstateres()
+      if (window.tableFlag== 0) {
+        window.tableFlag = 1
+        $("#staterestable tbody tr").remove()
+      }
+
+      $("#stateresselect option[id='"+id+"']").remove();
+
+      let c = $("#staterestable tbody tr").length
+
+      let row =   '<tr class="mainrow" count="'+c+'" rowname='+id+'>'+
+                  '<td style="font-weight: 900" val="'+name+'" class="stname">'+name+'</td>'+
+
+                  '<td><input rid="'+id+'" type="text" class="form-control nameinput" name="stateresname" placeholder="Name (unique)"><small class="text-danger hide">* duplication name is not allowed</small></td>'+
+
+                  '<td><label class="radio-inline"><input value="res" class="res-radio rsradio" type="radio" name="optradio-'+id+'" rid="'+id+'">&nbsp;Resource&nbsp;&nbsp;</label>'+
+                  '<label class="radio-inline"><input  rid="'+id+'" class="rsradio" type="radio" name="optradio-'+id+'" value="state">&nbsp;State</label></td>'+
+
+                  '<td class="ttd" id="td-'+id+'"><a class="init-population a-tag popover-all" id="ip-'+id+'" data-placement="bottom" data-toggle="popover">Initial Population</a>,&nbsp;&nbsp;'+
+                  '<a class="ap-population a-tag popover-all" id="ap-'+id+'" data-placement="bottom" data-toggle="popover">Allowed Population</a>,&nbsp;&nbsp;'+
+                  '<a class="t-pop a-tag popover-all" id="t-'+id+'" data-placement="bottom" data-toggle="popover">Transition</a><span id="cs-'+id+'">,&nbsp;&nbsp;'+
+                  '<a class="cap-population a-tag popover-all" data-placement="bottom" data-toggle="popover" id="c-'+id+'">Capacity</a></span>'+
+                  '<span id="ms-'+id+'">,&nbsp;&nbsp;<a class="maxstay a-tag popover-all" id="ipms-'+id+'" data-placement="bottom" data-toggle="popover">Maximum Length of Stay</a></span></td>'+
+                  
+                  '<td class="stname"><a class="divide a-tag">Divide to sub elements</a></td>'+
+
+                  '</tr>';
+
+      if (type=="state") {
+
+          row =   '<tr class="mainrow" count="'+c+'" rowname='+id+'>'+
+
+                  '<td style="font-weight: 900" val="'+name+'" class="stname">'+name+'</td>'+
+
+                  '<td><input rid="'+id+'" type="text" class="form-control nameinput" name="stateresname" placeholder="Name (unique)"><small class="text-danger hide">* duplication name is not allowed</small></td>'+
+
+                  '<td><label class="radio-inline"><input value="res" class="res-radio rsradio" type="radio" name="optradio-'+id+'" rid="'+id+'">&nbsp;Resource&nbsp;&nbsp;</label>'+
+                  '<label class="radio-inline"><input rid="'+id+'" class="rsradio" type="radio" name="optradio-'+id+'" value="state">&nbsp;State</label></td>'+
+
+                  '<td class="ttd" id="td-'+id+'"><a class="init-population a-tag popover-all" id="ip-'+id+'" data-placement="bottom" data-toggle="popover">Initial Population</a>,&nbsp;&nbsp;'+
+                  '<a class="ap-population a-tag popover-all" id="ap-'+id+'" data-placement="bottom" data-toggle="popover">Allowed Population</a>,&nbsp;&nbsp;'+
+                  '<a class="t-pop a-tag popover-all" id="t-'+id+'" data-placement="bottom" data-toggle="popover">Transition</a><span id="cs-'+id+'">'+
+                  '</td>'+
+                  
+                  '<td class="stname"><a class="divide a-tag">Divide to sub elements</a></td>'+
+
+                  '</tr>';
+
+      }
+
+      $("#staterestable tbody").append(row)
+
+      $(document).find("input[name=optradio-"+id+"][value=state]").prop("checked", true);
+
+      if (type=="res") {
+
+        $('.maxstay').popover({html:true,title: "Maximum Length of Stay"}).click(function(e) {
+            $('.popover').not(this).hide();
+            $(this).data("bs.popover").inState.click = false;
+            $(this).popover('show');
+            e.preventDefault();
+        });
+
+        $('.cap-population').popover({html:true,title: "Capacity"}).click(function(e) {
+            $('.popover').not(this).hide();
+            $(this).data("bs.popover").inState.click = false;
+            $(this).popover('show');
+            e.preventDefault();
+        });
+
+        $(document).find("input[name=optradio-"+id+"][value=res]").prop("checked", true);
+
+      }
+
+      $('.t-pop').popover({html:true,title: "Transition"}).click(function(e) {
+          $('.popover').not(this).hide();
+          $(this).data("bs.popover").inState.click = false;
+          $(this).popover('show');
+          e.preventDefault();
+      });
+
+
+      $('.init-population').popover({html:true,title: "Initial Population"}).click(function(e) {
+          $('.popover').not(this).hide();
+          $(this).data("bs.popover").inState.click = false;
+          $(this).popover('show');
+          e.preventDefault();
+      });
+
+      $('.ap-population').popover({html:true,title: "Allowed Population"}).click(function(e) {
+          $('.popover').not(this).hide();
+          $(this).data("bs.popover").inState.click = false;
+          $(this).popover('show');
+          e.preventDefault();
+      });
+
+
+
+  }
+
+  
+  $(document).on("click",".divide",function(e,data) {
+
+    let elem = $(this).parents('tr').first()
+    let rowcount = elem.attr('count')
+    let name = elem.find('td').eq(0).text();
+    let id = $(document).find('tr').length
+    let rowname = elem.attr('rowname')
+
+    let c = ($(document).find('tr[parent='+rowcount+']').length)+1
+
+    elem.addClass('hassub')
+
+    let _class = ""
+
+    if (c!=1) 
+      _class = 'nthsub'
+
+    let optionSelected = document.querySelector('input[name="optradio-'+rowname+'"]:checked').value;
+
+
+    let prevRowPropCol = '<a class="t-pop a-tag popover-all" id="t-'+id+'" data-placement="bottom" data-toggle="popover">Transition</a><span id="cs-'+id+'">';
+
+
+    elem.find('td').eq(3).html(prevRowPropCol);
+
+
+    let h = '<tr parent="'+rowcount+'" class="sub '+_class+'" count="'+c+'">'+
+            '<td style="font-weight: 900" val="'+name+'" class="stname">&nbsp;—— '+name+'(Sub-'+c+')</td>'+
+            '<td><input rid="'+id+'" type="text" class="form-control nameinput" name="stateresname" placeholder="Name (unique)"><small class="text-danger hide">* duplication name is not allowed</small></td>'+
+            '<td></td>'+
+            '<td class="ttd" id="td-'+id+'">'+
+            '<a class="init-population a-tag popover-all" id="ip-'+id+'" data-placement="bottom" data-toggle="popover">Initial Population</a>,&nbsp;&nbsp;'+
+            '<a class="ap-population a-tag popover-all" id="ap-'+id+'" data-placement="bottom" data-toggle="popover">Allowed Population</a>,&nbsp;&nbsp;'+
+            '<a class="cap-population a-tag popover-all" data-placement="bottom" data-toggle="popover" id="c-'+id+'">Capacity</a></span>'+
+            '<span id="ms-'+id+'">,&nbsp;&nbsp;<a class="maxstay a-tag popover-all" id="ipms-'+id+'" data-placement="bottom" data-toggle="popover">Maximum Length of Stay</a></span></td>'+
+            '<td></td>'+
+            '</tr>';
+
+    
+    if (optionSelected == 'state') {
+
+      h = '<tr parent="'+rowcount+'" class="sub '+_class+'" count="'+c+'">'+
+                  '<td style="font-weight: 900" val="'+name+'" class="stname">&nbsp;—— '+name+'(Sub-'+c+')</td>'+
+                  '<td><input rid="'+id+'" type="text" class="form-control nameinput" name="stateresname" placeholder="Name (unique)"><small class="text-danger hide">* duplication name is not allowed</small></td>'+
+                  '<td></td>'+
+                  '<td class="ttd" id="td-'+id+'">'+
+                  '<a class="init-population a-tag popover-all" id="ip-'+id+'" data-placement="bottom" data-toggle="popover">Initial Population</a>,&nbsp;&nbsp;'+
+                  '<a class="ap-population a-tag popover-all" id="ap-'+id+'" data-placement="bottom" data-toggle="popover">Allowed Population</a>,&nbsp;&nbsp;'+
+                  '<a class="cap-population a-tag popover-all" data-placement="bottom" data-toggle="popover" id="c-'+id+'">Capacity</a></span>'+
+                  '<span id="ms-'+id+'">,&nbsp;&nbsp;<a class="maxstay a-tag popover-all" id="ipms-'+id+'" data-placement="bottom" data-toggle="popover">Maximum Length of Stay</a></span></td>'+
+                  '<td></td>'+
+                  '</tr>';
+      
+    }
+
+    if (c==1) {
+
+      $(h).insertAfter(elem);
+
+    } else {
+
+      elem = $(document).find('tr[parent='+rowcount+']').last()
+
+      elem.addClass('nthsub')
+
+      $(h).insertAfter(elem);
+
+    }
+
+    activatePopUpWindows(optionSelected,rowname)
+    
+
+  })
+
+
+  function activatePopUpWindows(type,id){
+
+      if (type=="res") {
+
+        $(document).find('.maxstay').popover({html:true,title: "Maximum Length of Stay"}).click(function(e) {
+            $('.popover').not(this).hide();
+            $(this).data("bs.popover").inState.click = false;
+            $(this).popover('show');
+            e.preventDefault();
+        });
+
+        $(document).find('.cap-population').popover({html:true,title: "Capacity"}).click(function(e) {
+            $('.popover').not(this).hide();
+            $(this).data("bs.popover").inState.click = false;
+            $(this).popover('show');
+            e.preventDefault();
+        });
+
+        $(document).find("input[name=optradio-"+id+"][value=res]").prop("checked", true);
+
+      }
+
+      $(document).find('.t-pop').popover({html:true,title: "Transition"}).click(function(e) {
+          $('.popover').not(this).hide();
+          $(this).data("bs.popover").inState.click = false;
+          $(this).popover('show');
+          e.preventDefault();
+      });
+
+
+      $(document).find('.init-population').popover({html:true,title: "Initial Population"}).click(function(e) {
+          $('.popover').not(this).hide();
+          $(this).data("bs.popover").inState.click = false;
+          $(this).popover('show');
+          e.preventDefault();
+      });
+
+      $(document).find('.ap-population').popover({html:true,title: "Allowed Population"}).click(function(e) {
+          $('.popover').not(this).hide();
+          $(this).data("bs.popover").inState.click = false;
+          $(this).popover('show');
+          e.preventDefault();
+      });
+
+  }
+
+  // *****************
+  // STATE AND RESOURCES End
 
   $(document).on("click",".closepop",function(e,data) {
 
@@ -540,14 +719,14 @@ $(document).ready(function(){
 
     if($(document).find('.t-html[did="'+id+'"]').length == 0){
 
-      html = '<div id="t-'+id+'" class="table-responsive">'+
-         '<table id="'+id+'" class="table table-bordered">'+
-            '<thead>'+
+      html =  '<div id="t-'+id+'" class="table-responsive">'+
+              '<table id="'+id+'" class="table table-bordered">'+
+              '<thead>'+
               '<tr>'+
-                '<th>Resources and States</th><th>Transition Into</th>'+
+              '<th>Resources and States</th><th>Transition Into</th>'+
               '</tr>'+
-            '</thead>'+
-            '<tbody>';
+              '</thead>'+
+              '<tbody>';
 
 
       name = $(this).parents('tr').first().find('.stname').first().attr('val')
@@ -596,11 +775,11 @@ $(document).ready(function(){
       val = 7
     }
 
-    html = '<div class="table-responsive">'+
-       '<table id="'+id+'" class="table table-bordered"><tbody>';
+    html =  '<div class="table-responsive">'+
+            '<table id="'+id+'" class="table table-bordered"><tbody>';
 
-    html += '<tr><td style="font-weight: 900">Maximum Length of Stay (days)</td>'+
-              '<td class="ttd"><input value="'+val+'" rid="'+id+'" name="ip-rms" style="width:100px; height:100%;" placeholder="#"></td></tr>';
+    html += '<tr><td class="pop" style="font-weight: 900">Maximum Length of Stay (days)</td>'+
+              '<td class="ttd pop"><input value="'+val+'" rid="'+id+'" name="ip-rms" style="width:100px; height:100%;" placeholder="#"></td></tr>';
 
     html +=   '</tbody></table></div><div style="width:100%"><a id="'+des+'" class="closepop a-tag">Save and Close</a></div>';
 
@@ -626,8 +805,8 @@ $(document).ready(function(){
     html = '<div class="table-responsive">'+
        '<table id="'+id+'" class="table table-bordered"><tbody>';
 
-    html += '<tr><td style="font-weight: 900">Initial Population</td>'+
-              '<td class="ttd"><input value="'+val+'" rid="'+id+'" name="ip-r" style="width:100px; height:100%;" placeholder="#"></td></tr>';
+    html += '<tr><td class="pop" style="font-weight: 900">Initial Population</td>'+
+              '<td class="ttd pop"><input value="'+val+'" rid="'+id+'" name="ip-r" style="width:100px; height:100%;" placeholder="#"></td></tr>';
 
     html +=   '</tbody></table></div><div style="width:100%"><a id="'+des+'" class="closepop a-tag">Save and Close</a></div>';
 
@@ -649,16 +828,15 @@ $(document).ready(function(){
       val = 0
     }
 
-    html = '<div class="table-responsive">'+
-       '<table id="'+id+'" class="table table-bordered"><tbody>';
+    html =  '<div class="table-responsive">'+
+            '<table id="'+id+'" class="table table-bordered"><tbody>';
 
-    html += '<tr><td style="font-weight: 900">Population Count</td>'+
-              '<td class="ttd"><input id="pc-r-'+id+'" name="pc-r" style="width:100px; height:100%;" placeholder="#" value="'+val+'"></td></tr>';
+    html += '<tr><td class="pop" style="font-weight: 900">Population Count</td>'+
+            '<td class="ttd pop" ><input id="pc-r-'+id+'" name="pc-r" style="width:100px; height:100%;" placeholder="#" value="'+val+'"></td></tr>';
 
     html +=   '</tbody></table></div><div style="width:100%"><a id="'+des+'" class="closepop a-tag">Save and Close</a></div>';
 
     $(document).find('#'+id).on('shown.bs.popover', function () {
-      console.log("ccc")
       $(document).find('.popover-content').html(html);
     })
 
