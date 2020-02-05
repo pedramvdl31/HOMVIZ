@@ -5,14 +5,14 @@
 	<link rel="stylesheet" href="/SmartWizard-master/src/css/smart_wizard_theme_circles.css">
 	<link rel="stylesheet" href="/SmartWizard-master/src/css/smart_wizard_theme_arrows.css">
 	<link rel="stylesheet" href="/SmartWizard-master/src/css/smart_wizard_theme_dots.css">
-	<link rel="stylesheet" href="/assets/css/simulations/index.css?20">
+	<link rel="stylesheet" href="/assets/css/simulations/index.css?21">
 
 @stop
 @section('scripts')
 	<script src="/SmartWizard-master/src/js/jquery.smartWizard.js"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/xlsx.full.min.js"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/jszip.js"></script>
-	<script src="/assets/js/simulations/index.js?26"></script>
+	<script src="/assets/js/simulations/index.js?27"></script>
 
 @stop
 

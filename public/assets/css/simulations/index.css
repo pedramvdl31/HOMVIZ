@@ -278,6 +278,10 @@ cursor: pointer;
 
 }
 
+ul.nav.nav-tabs.step-anchor {
+  width: 100%;
+}
+
 .sub td, .hassub td{
 }
 
