@@ -66,9 +66,6 @@
                                     </div>
 
                                     <div class="text-right">
-                                      <a href="/simulations/edit/{{$val->id}}" class="btn btn-sm bg-teal">
-                                          Details
-                                      </a>
                                       <a href="/simulations/view/{{$val->id}}" class="btn btn-sm btn-primary">
                                           Results
                                       </a>

@@ -41,7 +41,23 @@ window.resstate = []
 window.loc = 0
 window.population = 0
 window.stateres = 0
+window.params = 0
 window.tableFlag = 0
+
+
+function btnStatus(){
+
+  if (window.loc == 1 && window.population == 1 && window.stateres == 1 && window.params == 1) {
+
+    $('#runsimulation').removeAttr('disabled')
+
+  } else {
+
+    $('#runsimulation').attr('disabled',true)
+
+  }
+
+}
 
 function checkLoc(){
 
@@ -51,6 +67,7 @@ function checkLoc(){
 
     $('#loc-div').removeClass('hide')
 
+
   } else {
 
     $('#loc-overview').text('Not Set').addClass('text-danger').removeClass('text-success')
@@ -58,6 +75,9 @@ function checkLoc(){
     $('#loc-div').addClass('hide')
 
   }
+
+ btnStatus()
+  
 
 }
 
@@ -69,11 +89,13 @@ function checkpopulation(){
 
     $('#population-overview').text('Set').addClass('text-success').removeClass('text-danger')
 
+
   } else {
 
     $('#population-overview').text('Not Set').addClass('text-danger').removeClass('text-success')
 
   }
+    btnStatus()
 
 }
 
@@ -85,11 +107,30 @@ function checkstateres(){
 
     $('#stateres-overview').text('Set').addClass('text-success').removeClass('text-danger')
 
+
   } else {
 
     $('#stateres-overview').text('Not Set').addClass('text-danger').removeClass('text-success')
 
   }
+    btnStatus()
+
+}
+
+function chackParamsStatus(){
+
+
+  if (window.params == 1) {
+
+    $('#params-overview').text('Set').addClass('text-success').removeClass('text-danger')
+
+
+  } else {
+
+    $('#params-overview').text('Not Set').addClass('text-danger').removeClass('text-success')
+
+  }
+    btnStatus()
 
 }
 
@@ -210,6 +251,27 @@ $(document).ready(function(){
     count = count + 1
     html = '<div class="col-6 col-sm-6 col-md-6 d-flex subresource"><div class="card bg-light"><div class="card-header text-muted border-bottom-0">Sub-Resource '+count+' &nbsp;&nbsp;&nbsp;<i class="fas fa-trash table-danger deletesubresource" style="cursor: pointer;"></i></div><div class="card-body pt-0"> <div class="row"> <div class="col-12"><div class="form-group"><label for="inputName">Name</label><input name="subresource['+resCount+']['+count+'][name]" type="text" id="inputName" class="form-control"></div><div class="form-group"><label for="inputName">Capacity</label><input name="subresource['+resCount+']['+count+'][capacity]" type="text" id="inputName" class="form-control"></div></div></div></div></div></div>';
     $(this).closest(".card").find('.subresroucewrapper').append(html)
+
+  });
+
+
+  $(document).on("keyup change","#simname,#simnum,#simweeks",function() {
+
+    let v1 = $('#simname').val()
+    let v2 = $('#simnum').val()
+    let v3 = $('#simweeks').val()
+
+    if ( v1 != "" && v2 != "" && v3 != "" ){
+
+      window.params = 1
+
+    } else {
+
+      window.params = 0
+
+    }
+
+    chackParamsStatus()
 
   });
 
@@ -702,8 +764,8 @@ $(document).ready(function(){
 
       $.each( window.populationType, function( k1, value ) {
 
-        html += '<tr><td style="font-weight: 900">'+value+'</td>'+
-                '<td class="ttd"><label class="checkbox-inline"><input class="ana" name="ap-po-'+k1+'" type="checkbox" value="" checked>Allowed</label></td></tr>';
+        html += '<tr><td class="pop" style="font-weight: 900">'+value+'</td>'+
+                '<td class="ttd pop"><label class="checkbox-inline"><input class="ana" name="ap-po-'+k1+'" type="checkbox" value="" checked>Allowed</label></td></tr>';
 
       });
 
@@ -736,7 +798,7 @@ $(document).ready(function(){
             '<table id="'+id+'" class="table table-bordered">'+
             '<thead>'+
             '<tr>'+
-            '<th>Resources and States</th><th>Transition Into</th>'+
+            '<th>Resources/States Name</th><th>Transition Into</th><th>Transition Probablity</th>'+
             '</tr>'+
             '</thead>'+
             '<tbody>';
@@ -745,19 +807,16 @@ $(document).ready(function(){
 
     $.each( window.resstate, function( k1, value ) {
 
-      if (name!=value) {
-
-        html += '<tr><td style="font-weight: 900">'+value+'</td>'+
-              '<td class="ttd"><label class="checkbox-inline"><input class="ana" name="t-po-'+k1+'" type="checkbox" value="" checked>Allowed</label></td></tr>';
-
-      }
+        html += '<tr><td class="pop" style="font-weight: 900">'+value+'</td>'+
+                '<td class="ttd pop"><label class="checkbox-inline"><input class="ana" name="t-po-'+k1+'" type="checkbox" value="" checked>Allowed</label></td>'+
+                '<td class="pop"><input class="form-control" rid="'+k1+'" name="ip-rms" style="width:100px; height:100%;" placeholder="0 to 1"></td>'+
+                '</tr>';
 
     });
 
-    html +=   '</tbody></table></div><div style="width:100%"><a type="t" tid="'+id+'" id="'+des+'" class="closepop a-tag">Save and Close</a></div>';
+    html += '</tbody></table></div><div style="width:100%"><a type="t" tid="'+id+'" id="'+des+'" class="closepop a-tag">Save and Close</a></div>';
 
-
-    if($(document).find('.t-html[did="'+id+'"]').length == 0){
+    if( $(document).find('.t-html[did="'+id+'"]' ).length == 0) {
 
 
       $('#'+id).on('shown.bs.popover', function () {
@@ -766,15 +825,17 @@ $(document).ready(function(){
 
       $('body').append('<input type="hidden" class="'+id+'">')
 
-    } else {
+    } 
 
-      html = $(document).find('.t-html[did="'+id+'"]').html()
+    // else {
 
-      $('#'+id).on('shown.bs.popover', function () {
-        $('#'+des).find('.popover-content').html(html);
-      })
+    //   html = $(document).find('.t-html[did="'+id+'"]').html()
 
-    }
+    //   $('#'+id).on('shown.bs.popover', function () {
+    //     $('#'+des).find('.popover-content').html(html);
+    //   })
+
+    // }
 
   })
 
@@ -960,13 +1021,9 @@ $(document).ready(function(){
 
   $(document).on("click","#runsimulation",function() {
 
-    // Simulate a mouse click:
-    // window.location.href = "/make-simulation";
+    $('#myform').submit()
 
-    // // Simulate an HTTP redirect:
-    // window.location.replace("/make-simulation");
-
-  //   });
+  });
 
   //   $("body").on("click", "#upload", function () {
   //     //Reference the FileUpload element.
@@ -1002,7 +1059,7 @@ $(document).ready(function(){
   //     } else {
   //         alert("Please upload a valid Excel file.");
   //     }
-  });
+  // });
 
 
 

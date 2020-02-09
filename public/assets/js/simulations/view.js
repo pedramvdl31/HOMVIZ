@@ -1,5 +1,14 @@
 $(document).ready(function(){
 
+
+  
+
+   $(document).on("click","#showdetails",function() {
+
+    $('#showdetailswrap').css('display','block')
+
+  });
+
       var areaChartData = {
       labels  : ['S1', 'S2', 'S3', 'S4', 'S5', 'S6'],
       datasets: [
@@ -74,26 +83,32 @@ $(document).ready(function(){
     })
 
 
-    var barChartCanvas = $('#barChart2').get(0).getContext('2d')
-    var barChartData = jQuery.extend(true, {}, areaChartData)
-    var temp0 = areaChartData.datasets[0]
-    var temp1 = areaChartData.datasets[1]
-    barChartData.datasets[0] = temp1
-    barChartData.datasets[1] = temp0
 
-    var barChartOptions = {
-      responsive              : true,
-      maintainAspectRatio     : false,
-      datasetFill             : false
+    for (var i = 2; i <= 14; i++) {
+
+
+      var barChartCanvas = $('#barChart'+i).get(0).getContext('2d')
+      var barChartData = jQuery.extend(true, {}, areaChartData)
+      var temp0 = areaChartData.datasets[0]
+      var temp1 = areaChartData.datasets[1]
+      barChartData.datasets[0] = temp1
+      barChartData.datasets[1] = temp0
+
+      var barChartOptions = {
+        responsive              : true,
+        maintainAspectRatio     : false,
+        datasetFill             : false
+      }
+
+      var barChart = new Chart(barChartCanvas, {
+        type: 'bar', 
+        data: barChartData,
+        options: barChartOptions
+      })
+
+
+
     }
-
-    var barChart = new Chart(barChartCanvas, {
-      type: 'bar', 
-      data: barChartData,
-      options: barChartOptions
-    })
-
-
 
 
 
@@ -135,6 +150,28 @@ $(document).ready(function(){
   // initiate drawing the chart
   chart.draw();
 
+
+      // create a chart and set the data
+  chart2 = anychart.sunburst(data, "as-tree");
+
+    // set the calculation mode
+    chart2.calculationMode("parent-independent");
+
+    // set the chart2 title
+    chart2.title().useHtml(true);
+    chart2.listen("chart2Draw", function () {
+    chart2.title("Simulation " +
+                chart2.sort() + "<br><br>" + 
+                "<span style='font-size:12; font-style:italic'>" +
+                "State Movements</span>");
+  });
+
+  // set the container id
+  chart2.container("containerSun2");
+
+  // initiate drawing the chart2
+  chart2.draw();
+
   var xValues = ['S1','S2','S3', 'S4', 'S5', 'S6'];
 
   var yValues = ['S1','S2','S3', 'S4', 'S5', 'S6'];
@@ -175,7 +212,6 @@ $(document).ready(function(){
       autosize: true
     }
   };
-
   for ( var i = 0; i < yValues.length; i++ ) {
   for ( var j = 0; j < xValues.length; j++ ) {
     var currentValue = zValues[i][j];
@@ -205,5 +241,6 @@ $(document).ready(function(){
   }
 
   Plotly.newPlot('myDiv', data, layout);
+  Plotly.newPlot('myDiv2', data, layout);
 
 });

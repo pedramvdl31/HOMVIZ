@@ -5,14 +5,14 @@
 	<link rel="stylesheet" href="/SmartWizard-master/src/css/smart_wizard_theme_circles.css">
 	<link rel="stylesheet" href="/SmartWizard-master/src/css/smart_wizard_theme_arrows.css">
 	<link rel="stylesheet" href="/SmartWizard-master/src/css/smart_wizard_theme_dots.css">
-	<link rel="stylesheet" href="/assets/css/simulations/index.css?21">
+	<link rel="stylesheet" href="/assets/css/simulations/index.css?22">
 
 @stop
 @section('scripts')
 	<script src="/SmartWizard-master/src/js/jquery.smartWizard.js"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/xlsx.full.min.js"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/jszip.js"></script>
-	<script src="/assets/js/simulations/index.js?27"></script>
+	<script src="/assets/js/simulations/index.js?28"></script>
 
 @stop
 
@@ -47,7 +47,7 @@
 
 					    <div class="card card-primary card-outline">
 
-					        <div class="card card-solid mb-0" style="border: 5px solid #3f9bff;">
+					        <div class="card card-solid mb-0" style="border: 5px solid #fb9191;">
 
 					            <div class="card-body p-0">
 
@@ -284,19 +284,16 @@
 									                <div class="col-md-4">
 														<div class="form-group">
 										                	<label for="inputName">Simulation name:</label>
-										                	<input autocomplete="off" name="simulation_name" type="text" id="inputName" class="form-control">
+										                	<input autocomplete="off" name="simulation_name" type="text" id="simname" class="form-control">
 										              	</div>
 														<div class="form-group">
 										                	<label for="inputName">Number of weeks:</label>
-										                	<input  autocomplete="off" name="numberofweeks" type="text" id="inputName" class="form-control">
+										                	<input  autocomplete="off" name="numberofweeks" type="text" id="simweeks" class="form-control">
 										              	</div>
 														<div class="form-group">
 										                	<label for="inputName">Number of simulations:</label>
-										                	<input  autocomplete="off" name="numberofsims" type="text" id="inputName" class="form-control">
+										                	<input  autocomplete="off" name="numberofsims" type="text" id="simnum" class="form-control">
 										              	</div>
-
-										            	<button type="submit" class="btn bg-gradient-primary">Save</button>
-										    
 
 										            </div>
 
@@ -322,7 +319,7 @@
 					
 						<div class="card card-primary card-outline">
 
-					        <div class="card card-solid mb-0" style="border: 5px solid #abd3ff;min-height: 710px">
+					        <div class="card card-solid mb-0" style="border: 5px solid #c3c3c3;min-height: 710px">
 
 								<div class="card-header">
 									<h3 class="card-title">
@@ -340,14 +337,14 @@
 									</div>
 									<p>Population: <span id="population-overview" class="text-danger">Not set</span></p>
 									<p>Resources and States: <span id="stateres-overview" class="text-danger">Not set</span></p>
-									<p>Parameters: <span id="parameters-overview" class="text-danger">Not set</span></p>
+									<p>Parameters: <span id="params-overview" class="text-danger">Not set</span></p>
 
 
 					            </div>
 
 				            	<div class="card-footer" style="text-align: right;">
 							
-									<button type="submit" class="btn bg-gradient-primary" id="runsimulation" disabled="">Run simulation</button>
+									<button type="text" class="btn bg-gradient-primary" id="runsimulation" disabled="">Run simulation</button>
 
 				              	</div>
 

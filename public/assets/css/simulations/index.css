@@ -278,6 +278,10 @@ cursor: pointer;
 
 }
 
+.popover{
+    max-width: 100%;
+}
+
 ul.nav.nav-tabs.step-anchor {
   width: 100%;
 }
