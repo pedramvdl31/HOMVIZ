@@ -210,11 +210,11 @@
                     toolbarBottom.append(btnGroup.clone(true));
 
                     if (btnGroupExtra !== null) {
-                      if (this.options.toolbarSettings.toolbarButtonPosition === 'start') {
-                          toolbarBottom.prepend(btnGroupExtra.clone(true));
-                      } else {
-                          toolbarBottom.append(btnGroupExtra.clone(true));
-                      }
+                        if (this.options.toolbarSettings.toolbarButtonPosition === 'start') {
+                            toolbarBottom.prepend(btnGroupExtra.clone(true));
+                        } else {
+                            toolbarBottom.append(btnGroupExtra.clone(true));
+                        }
                     }
                     this.container.after(toolbarBottom);
                     break;
@@ -566,6 +566,9 @@
         },
         prev: function () {
             this._showPrevious();
+        },
+        goToStep: function (stepNum) {
+          this._showStep(stepNum);
         },
         reset: function () {
             // Trigger "beginReset" event

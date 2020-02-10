@@ -255,7 +255,7 @@ cursor: pointer;
 }
 
 #smartwizard {
-  min-height: 700px;
+  min-height: 639px;
   display: flex;
   flex-wrap: wrap;
   align-content: start;
