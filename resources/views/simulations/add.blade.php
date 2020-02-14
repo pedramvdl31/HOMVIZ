@@ -12,8 +12,7 @@
 	<script src="/SmartWizard-master/src/js/jquery.smartWizard.js"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/xlsx.full.min.js"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/jszip.js"></script>
-	<script src="/assets/js/simulations/index.js?28"></script>
-
+	<script src="/assets/js/simulations/index.js?30"></script>
 @stop
 
 @section('content')
@@ -232,7 +231,7 @@
 
 										                	<label for="inputName">Resources and States (comma separated):</label>
 														  	<div class="form-inline">
-															  	<select class="form-control" id="stateresselect">
+															  	<select class="form-control col-md-4" id="stateresselect">
 															  		<option selected disabled id="title">Select One</option>
 															  		<option id="Street" type="res">Street</option>
 															  		<option id="Shelter" type="res">Shelter</option>
@@ -260,11 +259,11 @@
 																<table class="table table-bordered" id="staterestable">
 																	<thead>
 																		<tr>
-																			<th>Type</th><th>Name</th><th>Resources / States</th><th>Properties</th><th>Action</th>
+																			<th>Name</th><th>Asset Type</th><th>Properties</th><th>Action</th>
 																		</tr>
 																	</thead>
 																	<tbody>
-																		<tr><td></td><td></td><td></td><td></td><td></td></tr>
+																		<tr><td></td><td></td><td></td><td></td></tr>
 																	</tbody>
 																</table>
 															</div>

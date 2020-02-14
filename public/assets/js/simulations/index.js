@@ -232,14 +232,14 @@ $(document).ready(function(){
           transitionEffect:'fade'
        });
 
-  $("#addresource").click(function(){
+  // $("#addresource").click(function(){
 
-    count = $(document).find(".resources").length
-    count = count + 1
-    html = ' <div count="'+count+'" class="resources col-12 col-sm-6 col-md-4 d-flex align-items-stretch"><div class="card bg-light" style="width: 100%"><div class="card-header text-muted border-bottom-0"> Resource '+count+' &nbsp;&nbsp;&nbsp;<i class="fas fa-trash table-danger deleteresource" style="cursor: pointer;"></i></div><div class="card-body pt-0"> <div class="row"> <div class="col-12"><div class="form-group"><label for="inputName">Name</label><input name="resource['+count+'][name]" type="text" id="inputName" class="form-control"></div><div class="form-group"><label for="inputName">Capacity</label><input name="resource['+count+'][capacity]" type="text" id="inputName" class="form-control"></div><div class="form-group"><label for="inputName">Max Length (days) <small>optional</small></label><input name="resource['+count+'][maxlength]" type="text" id="inputName" class="form-control" value="NaN"></div><div class="row subresroucewrapper"></div></div></div></div><div class="card-footer"> <div class="text-right"> <a id="addsubresource" class="btn btn-sm btn-primary" style="color: white;cursor: pointer;"> <i class="fas fa-plus"></i> Add Sub-resource </a> </div></div></div></div>';
-    $(html).insertBefore("#addresourcewrapper")
+  //   count = $(document).find(".resources").length
+  //   count = count + 1
+  //   html = ' <div count="'+count+'" class="resources col-12 col-sm-6 col-md-4 d-flex align-items-stretch"><div class="card bg-light" style="width: 100%"><div class="card-header text-muted border-bottom-0"> Resource '+count+' &nbsp;&nbsp;&nbsp;<i class="fas fa-trash table-danger deleteresource" style="cursor: pointer;"></i></div><div class="card-body pt-0"> <div class="row"> <div class="col-12"><div class="form-group"><label for="inputName">Name</label><input name="resource['+count+'][name]" type="text" id="inputName" class="form-control"></div><div class="form-group"><label for="inputName">Capacity</label><input name="resource['+count+'][capacity]" type="text" id="inputName" class="form-control"></div><div class="form-group"><label for="inputName">Max Length (days) <small>optional</small></label><input name="resource['+count+'][maxlength]" type="text" id="inputName" class="form-control" value="NaN"></div><div class="row subresroucewrapper"></div></div></div></div><div class="card-footer"> <div class="text-right"> <a id="addsubresource" class="btn btn-sm btn-primary" style="color: white;cursor: pointer;"> <i class="fas fa-plus"></i> Add Sub-resource </a> </div></div></div></div>';
+  //   $(html).insertBefore("#addresourcewrapper")
 
-  });
+  // });
 
 
   $(document).on("click","#addsubresource",function() {
@@ -417,6 +417,8 @@ $(document).ready(function(){
 
   function processStateRes(name,id,type){
 
+      type=='res'?typeC="Resource":typeC="State"; 
+
       window.resstate.push(name)
 
       checkstateres()
@@ -429,49 +431,35 @@ $(document).ready(function(){
 
       let c = $("#staterestable tbody tr").length
 
-      let row =   '<tr class="mainrow" count="'+c+'" rowname='+id+'>'+
-                  '<td style="font-weight: 900" val="'+name+'" class="stname">'+name+'</td>'+
+      let tr = '<tr class="mainrow" count="'+c+'" rowname='+id+' type="'+type+'" fullname="'+name+'">';
+      let td1 = '<td><input rid="'+id+'" type="text" class="form-control nameinput" name="stateresname" placeholder="Name (unique)" value="'+name+'"><small class="text-danger hide">* duplication name is not allowed</small></td>';
+      let td2 = '<td style="font-weight: 900" val="'+name+'" class="stname">'+name+' ('+typeC+')</td>'
+      let td4 = '<td class="stname"><a class="divide a-tag">Add Sub-element</a></td>'
 
-                  '<td><input rid="'+id+'" type="text" class="form-control nameinput" name="stateresname" placeholder="Name (unique)" value="'+name+'"><small class="text-danger hide">* duplication name is not allowed</small></td>'+
-
-                  '<td><label class="radio-inline"><input value="res" class="res-radio rsradio" type="radio" name="optradio-'+id+'" rid="'+id+'">&nbsp;Resource&nbsp;&nbsp;</label>'+
-                  '<label class="radio-inline"><input  rid="'+id+'" class="rsradio" type="radio" name="optradio-'+id+'" value="state">&nbsp;State</label></td>'+
-
+      let row =   tr+
+                  td1+
+                  td2+
                   '<td class="ttd" id="td-'+id+'"><a class="init-population a-tag popover-all" id="ip-'+id+'" data-placement="bottom" data-toggle="popover">Initial Population</a>,&nbsp;&nbsp;'+
                   '<a class="ap-population a-tag popover-all" id="ap-'+id+'" data-placement="bottom" data-toggle="popover">Allowed Population</a>,&nbsp;&nbsp;'+
-                  '<a class="t-pop a-tag popover-all" id="t-'+id+'" data-placement="bottom" data-toggle="popover">Transition</a><span id="cs-'+id+'">,&nbsp;&nbsp;'+
                   '<a class="cap-population a-tag popover-all" data-placement="bottom" data-toggle="popover" id="c-'+id+'">Capacity</a></span>'+
                   '<span id="ms-'+id+'">,&nbsp;&nbsp;<a class="maxstay a-tag popover-all" id="ipms-'+id+'" data-placement="bottom" data-toggle="popover">Maximum Length of Stay</a></span></td>'+
-                  
-                  '<td class="stname"><a class="divide a-tag">Divide to sub elements</a></td>'+
-
+                  td4+
                   '</tr>';
 
       if (type=="state") {
 
-          row =   '<tr class="mainrow" count="'+c+'" rowname='+id+'>'+
-
-                  '<td style="font-weight: 900" val="'+name+'" class="stname">'+name+'</td>'+
-
-                  '<td><input rid="'+id+'" type="text" class="form-control nameinput" name="stateresname" placeholder="Name (unique)" value="'+name+'"><small class="text-danger hide">* duplication name is not allowed</small></td>'+
-
-                  '<td><label class="radio-inline"><input value="res" class="res-radio rsradio" type="radio" name="optradio-'+id+'" rid="'+id+'">&nbsp;Resource&nbsp;&nbsp;</label>'+
-                  '<label class="radio-inline"><input rid="'+id+'" class="rsradio" type="radio" name="optradio-'+id+'" value="state">&nbsp;State</label></td>'+
-
+          row =   tr+
+                  td1+
+                  td2+
                   '<td class="ttd" id="td-'+id+'"><a class="init-population a-tag popover-all" id="ip-'+id+'" data-placement="bottom" data-toggle="popover">Initial Population</a>,&nbsp;&nbsp;'+
                   '<a class="ap-population a-tag popover-all" id="ap-'+id+'" data-placement="bottom" data-toggle="popover">Allowed Population</a>,&nbsp;&nbsp;'+
-                  '<a class="t-pop a-tag popover-all" id="t-'+id+'" data-placement="bottom" data-toggle="popover">Transition</a><span id="cs-'+id+'">'+
                   '</td>'+
-                  
-                  '<td class="stname"><a class="divide a-tag">Divide to sub elements</a></td>'+
-
+                  td4+
                   '</tr>';
 
       }
 
       $("#staterestable tbody").append(row)
-
-      $(document).find("input[name=optradio-"+id+"][value=state]").prop("checked", true);
 
       if (type=="res") {
 
@@ -493,13 +481,6 @@ $(document).ready(function(){
 
       }
 
-      $('.t-pop').popover({html:true,title: "Transition"}).click(function(e) {
-          $('.popover').not(this).hide();
-          $(this).data("bs.popover").inState.click = false;
-          $(this).popover('show');
-          e.preventDefault();
-      });
-
 
       $('.init-population').popover({html:true,title: "Initial Population"}).click(function(e) {
           $('.popover').not(this).hide();
@@ -515,8 +496,6 @@ $(document).ready(function(){
           e.preventDefault();
       });
 
-
-
   }
 
   
@@ -524,9 +503,10 @@ $(document).ready(function(){
 
     let elem = $(this).parents('tr').first()
     let rowcount = elem.attr('count')
-    let name = elem.find('td').eq(0).text();
+    let name = elem.attr('fullname');
     let id = $(document).find('tr').length
     let rowname = elem.attr('rowname')
+    let type = elem.attr('type');
 
     let c = ($(document).find('tr[parent='+rowcount+']').length)+1
 
@@ -537,18 +517,11 @@ $(document).ready(function(){
     if (c!=1) 
       _class = 'nthsub'
 
-    let optionSelected = document.querySelector('input[name="optradio-'+rowname+'"]:checked').value;
+    let tr = '<tr parent="'+rowcount+'" class="sub '+_class+'" count="'+c+'">'
+    let td1 = '<td><input rid="'+id+'" type="text" class="form-control nameinput" name="stateresname" value="'+name+' '+c+'"><small class="text-danger hide">* duplication name is not allowed</small></td>'
 
-
-    let prevRowPropCol = '<a class="t-pop a-tag popover-all" id="t-'+id+'" data-placement="bottom" data-toggle="popover">Transition</a><span id="cs-'+id+'">';
-
-
-    elem.find('td').eq(3).html(prevRowPropCol);
-
-
-    let h = '<tr parent="'+rowcount+'" class="sub '+_class+'" count="'+c+'">'+
-            '<td style="font-weight: 900" val="'+name+'" class="stname">&nbsp;—— '+name+'(Sub-'+c+')</td>'+
-            '<td><input rid="'+id+'" type="text" class="form-control nameinput" name="stateresname" placeholder="Name (unique)"><small class="text-danger hide">* duplication name is not allowed</small></td>'+
+    let h = tr+
+            td1+
             '<td></td>'+
             '<td class="ttd" id="td-'+id+'">'+
             '<a class="init-population a-tag popover-all" id="ip-'+id+'" data-placement="bottom" data-toggle="popover">Initial Population</a>,&nbsp;&nbsp;'+
@@ -559,18 +532,17 @@ $(document).ready(function(){
             '</tr>';
 
     
-    if (optionSelected == 'state') {
+    if (type == 'state') {
 
-      h = '<tr parent="'+rowcount+'" class="sub '+_class+'" count="'+c+'">'+
-                  '<td style="font-weight: 900" val="'+name+'" class="stname">&nbsp;—— '+name+'(Sub-'+c+')</td>'+
-                  '<td><input rid="'+id+'" type="text" class="form-control nameinput" name="stateresname" placeholder="Name (unique)"><small class="text-danger hide">* duplication name is not allowed</small></td>'+
-                  '<td></td>'+
-                  '<td class="ttd" id="td-'+id+'">'+
-                  '<a class="init-population a-tag popover-all" id="ip-'+id+'" data-placement="bottom" data-toggle="popover">Initial Population</a>,&nbsp;&nbsp;'+
-                  '<a class="ap-population a-tag popover-all" id="ap-'+id+'" data-placement="bottom" data-toggle="popover">Allowed Population</a></td>'+
-                  '<td></td>'+
-                  '</tr>';
-      
+      h = tr+
+          td1+
+          '<td></td>'+
+          '<td class="ttd" id="td-'+id+'">'+
+          '<a class="init-population a-tag popover-all" id="ip-'+id+'" data-placement="bottom" data-toggle="popover">Initial Population</a>,&nbsp;&nbsp;'+
+          '<a class="ap-population a-tag popover-all" id="ap-'+id+'" data-placement="bottom" data-toggle="popover">Allowed Population</a></td>'+
+          '<td></td>'+
+          '</tr>';
+
     }
 
     if (c==1) {
@@ -587,8 +559,7 @@ $(document).ready(function(){
 
     }
 
-    activatePopUpWindows(optionSelected,rowname)
-    
+    activatePopUpWindows(type,rowname)
 
   })
 
@@ -615,14 +586,6 @@ $(document).ready(function(){
 
       }
 
-      $(document).find('.t-pop').popover({html:true,title: "Transition"}).click(function(e) {
-          $('.popover').not(this).hide();
-          $(this).data("bs.popover").inState.click = false;
-          $(this).popover('show');
-          e.preventDefault();
-      });
-
-
       $(document).find('.init-population').popover({html:true,title: "Initial Population"}).click(function(e) {
           $('.popover').not(this).hide();
           $(this).data("bs.popover").inState.click = false;
@@ -638,66 +601,6 @@ $(document).ready(function(){
       });
 
   }
-
-
-  $(document).on("change",".rsradio",function(e,data) {
-
-    // let id = $(this).attr('rid')
-
-    // let val = $(this).parents('td').first().attr('val')
-
-    // let elem = $(this).parents('tr').first()
-    // let parentClass = elem.hasClass('hassub')
-
-    // let rowcount = elem.attr('count')
-    // let name = elem.find('td').eq(0).text();
-    // let id = $(document).find('tr').length
-    // let rowname = elem.attr('rowname')
-
-
-    // let h = '<td class="ttd" id="td-'+id+'">'+
-    //         '<a class="init-population a-tag popover-all" id="ip-'+id+'" data-placement="bottom" data-toggle="popover">Initial Population</a>,&nbsp;&nbsp;'+
-    //         '<a class="ap-population a-tag popover-all" id="ap-'+id+'" data-placement="bottom" data-toggle="popover">Allowed Population</a>,&nbsp;&nbsp;'+
-    //         '<a class="cap-population a-tag popover-all" data-placement="bottom" data-toggle="popover" id="c-'+id+'">Capacity</a></span>'+
-    //         '<span id="ms-'+id+'">,&nbsp;&nbsp;<a class="maxstay a-tag popover-all" id="ipms-'+id+'" data-placement="bottom" data-toggle="popover">Maximum Length of Stay</a></span></td>';
-
-
-    // if (parentClass) {
-
-
-
-    // } else {
-
-    //   elem.find('td').eq(3).html(h);
-
-    // }
-
-
-
-
-
-
-
-
-
-
-    
-    // if (optionSelected == 'state') {
-
-    //   h = '<tr parent="'+rowcount+'" class="sub '+_class+'" count="'+c+'">'+
-    //               '<td style="font-weight: 900" val="'+name+'" class="stname">&nbsp;—— '+name+'(Sub-'+c+')</td>'+
-    //               '<td><input rid="'+id+'" type="text" class="form-control nameinput" name="stateresname" placeholder="Name (unique)"><small class="text-danger hide">* duplication name is not allowed</small></td>'+
-    //               '<td></td>'+
-    //               '<td class="ttd" id="td-'+id+'">'+
-    //               '<a class="init-population a-tag popover-all" id="ip-'+id+'" data-placement="bottom" data-toggle="popover">Initial Population</a>,&nbsp;&nbsp;'+
-    //               '<a class="ap-population a-tag popover-all" id="ap-'+id+'" data-placement="bottom" data-toggle="popover">Allowed Population</a></td>'+
-    //               '<td></td>'+
-    //               '</tr>';
-      
-    // }
-
-
-  })
 
   // *****************
   // STATE AND RESOURCES End
@@ -786,56 +689,6 @@ $(document).ready(function(){
       })
 
     }
-
-  })
-
-  $(document).on("click",".t-pop",function(e,data) {
-
-    id = $(this).attr('id');
-    des = $(this).attr('aria-describedby');
-
-    html =  '<div id="t-'+id+'" class="table-responsive">'+
-            '<table id="'+id+'" class="table table-bordered">'+
-            '<thead>'+
-            '<tr>'+
-            '<th>Resources/States Name</th><th>Transition Into</th><th>Transition Probablity</th>'+
-            '</tr>'+
-            '</thead>'+
-            '<tbody>';
-
-    name = $(this).parents('tr').first().attr('rowname')
-
-    $.each( window.resstate, function( k1, value ) {
-
-        html += '<tr><td class="pop" style="font-weight: 900">'+value+'</td>'+
-                '<td class="ttd pop"><label class="checkbox-inline"><input class="ana" name="t-po-'+k1+'" type="checkbox" value="" checked>Allowed</label></td>'+
-                '<td class="pop"><input class="form-control" rid="'+k1+'" name="ip-rms" style="width:100px; height:100%;" placeholder="0 to 1"></td>'+
-                '</tr>';
-
-    });
-
-    html += '</tbody></table></div><div style="width:100%"><a type="t" tid="'+id+'" id="'+des+'" class="closepop a-tag">Save and Close</a></div>';
-
-    if( $(document).find('.t-html[did="'+id+'"]' ).length == 0) {
-
-
-      $('#'+id).on('shown.bs.popover', function () {
-        $('#'+des).find('.popover-content').html(html);
-      })
-
-      $('body').append('<input type="hidden" class="'+id+'">')
-
-    } 
-
-    // else {
-
-    //   html = $(document).find('.t-html[did="'+id+'"]').html()
-
-    //   $('#'+id).on('shown.bs.popover', function () {
-    //     $('#'+des).find('.popover-content').html(html);
-    //   })
-
-    // }
 
   })
 
@@ -1007,11 +860,6 @@ $(document).ready(function(){
 
   });
 
-  $(document).on("click",".deleteresource",function() {
-
-    $(this).closest(".resources").remove();
-
-  });
 
   $(document).on("click",".deletesubresource",function() {
 
