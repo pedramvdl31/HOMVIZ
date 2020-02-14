@@ -2,20 +2,34 @@
 @section('stylesheets')
 
 	<link rel="stylesheet" href="/SmartWizard-master/src/css/smart_wizard.css">
-	<link rel="stylesheet" href="/SmartWizard-master/src/css/smart_wizard_theme_circles.css">
 	<link rel="stylesheet" href="/SmartWizard-master/src/css/smart_wizard_theme_arrows.css">
-	<link rel="stylesheet" href="/SmartWizard-master/src/css/smart_wizard_theme_dots.css">
-	<link rel="stylesheet" href="/assets/css/simulations/index.css?22">
+	<link rel="stylesheet" href="/AdminLTE-3.0.0/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
+	<link rel="stylesheet" href="/assets/css/simulations/index.css?23">
 
 @stop
 @section('scripts')
-	<script src="/SmartWizard-master/src/js/jquery.smartWizard.js"></script>
+	<script src="/SmartWizard-master/src/js/jquery.smartWizard.js?1"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/xlsx.full.min.js"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/jszip.js"></script>
-	<script src="/assets/js/simulations/index.js?30"></script>
+	<script src="/AdminLTE-3.0.0/plugins/sweetalert2/sweetalert2.min.js"></script>
+	<script src="/assets/js/simulations/index.js?34"></script>
 @stop
 
 @section('content')
+
+
+	<style>
+		
+		td.titles{
+			background-color: gray;
+    		color: white;
+    		font-weight: bold;
+		}
+		.swal2-icon.swal2-error.swal2-animate-error-icon{
+			margin-right: 10px
+		}
+	</style>
+
 	<!-- Content Wrapper. Contains page content -->
 	<div class="content-wrapper" style="margin-left: 0">
 	<!-- Content Header (Page header) -->
@@ -46,7 +60,7 @@
 
 					    <div class="card card-primary card-outline">
 
-					        <div class="card card-solid mb-0" style="border: 5px solid #fb9191;">
+					        <div class="card card-solid mb-0" style="border: 5px solid #5cb85c">
 
 					            <div class="card-body p-0">
 
@@ -57,7 +71,8 @@
 							                <li><a href="#step-1">Step 1<br /><big>Location</big></a></li>
 							                <li><a href="#step-2">Step 2<br /><big>Population</big></a></li>
 							                <li><a href="#step-3">Step 3<br /><big>Resources and States</big></a></li>
-							                <li><a href="#step-4">Step 5<br /><big>Parameters</big></a></li>
+							                <li><a href="#step-4">Step 4<br /><big>Transition Probabilities</big></a></li>
+							                <li><a href="#step-5">Step 5<br /><big>Parameters</big></a></li>
 							            </ul>
 
 							            <div style="padding-top: 15px">
@@ -72,7 +87,7 @@
 														<div class="form-group">
 										                	<label for="inputName">Location (Address or latitute, longitude):</label>
 										                	<div id="locationField"></div>
-										                	<input autocomplete="off" id="autocomplete" placeholder="Enter a city" name="location" type="text" class="form-control">
+										                	<input autocomplete="off" id="autocomplete" placeholder="Enter a city" name="location" type="text" class="form-control border-primary">
 										              	</div>
 										            </div>
 
@@ -220,7 +235,6 @@
 
 							                </div>
 
-
 							                <div id="step-3" class="">
 
 							                	<div class="row">
@@ -233,13 +247,17 @@
 														  	<div class="form-inline">
 															  	<select class="form-control col-md-4" id="stateresselect">
 															  		<option selected disabled id="title">Select One</option>
-															  		<option id="Street" type="res">Street</option>
-															  		<option id="Shelter" type="res">Shelter</option>
-												                	<option id="HiddenHomeless" type="state">Hidden Homeless</option>
-												                	<option id="NotHomeless" type="state">Not Homeless</option>
-												                	<option id="TransitionalHousing" type="res">Transitional Housing</option>
-												                	<option id="Hospital" type="res">Hospital</option>
-												                	<option id="Rehabilitation" type="state">Rehabilitation</option>
+																	<optgroup label="Resource">
+																		<option id="Hospital" type="res">Hospital</option>
+																		<option id="Shelter" type="res">Shelter</option>
+																		<option id="Street" type="res">Street</option>
+																		<option id="TransitionalHousing" type="res">Transitional Housing</option>
+																	</optgroup>
+																	<optgroup label="State">
+																		<option id="HiddenHomeless" type="state">Hidden Homeless</option>
+																		<option id="NotHomeless" type="state">Not Homeless</option>
+																		<option id="Rehabilitation" type="state">Rehabilitation</option>
+																	</optgroup>
 												                </select>
 														    	<button id="stateresourcebtn" type="button" class="btn btn-info btn-flat" style="margin-left: 10px">Add</button>
 														    </div>
@@ -259,7 +277,9 @@
 																<table class="table table-bordered" id="staterestable">
 																	<thead>
 																		<tr>
+
 																			<th>Name</th><th>Asset Type</th><th>Properties</th><th>Action</th>
+
 																		</tr>
 																	</thead>
 																	<tbody>
@@ -277,6 +297,20 @@
 							                </div>
 
 							                <div id="step-4" class="">
+
+							                	<div class="row" style="margin-left: 0;margin-right: 0;">
+
+									                <div class="col-md-12">
+														
+														<div id="transitiontable"></div>
+
+										            </div>
+
+									        	</div>
+
+							                </div>
+
+							                <div id="step-5" class="">
 
 							                	<div class="row" style="margin-left: 0;margin-right: 0;">
 
@@ -305,6 +339,13 @@
 							        </div>
 
 					            </div>
+
+					            <div class="card-footer" style="text-align: right;">
+							
+									<button type="button" class="btn btn-default" id="prev" disabled="">Back</button>
+									<button type="button" class="btn bg-gradient-primary" id="next">Next Step</button>
+
+				              	</div>
 
 					        </div>
 
@@ -336,6 +377,7 @@
 									</div>
 									<p>Population: <span id="population-overview" class="text-danger">Not set</span></p>
 									<p>Resources and States: <span id="stateres-overview" class="text-danger">Not set</span></p>
+									<p>Transition Probabilities: <span id="transprob-overview" class="text-danger">Not set</span></p>
 									<p>Parameters: <span id="params-overview" class="text-danger">Not set</span></p>
 
 
@@ -343,7 +385,7 @@
 
 				            	<div class="card-footer" style="text-align: right;">
 							
-									<button type="text" class="btn bg-gradient-primary" id="runsimulation" disabled="">Run simulation</button>
+									<button type="text" class="btn btn-default" id="runsimulation" disabled="">Run simulation</button>
 
 				              	</div>
 
