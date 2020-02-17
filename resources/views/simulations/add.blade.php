@@ -4,7 +4,7 @@
 	<link rel="stylesheet" href="/SmartWizard-master/src/css/smart_wizard.css">
 	<link rel="stylesheet" href="/SmartWizard-master/src/css/smart_wizard_theme_arrows.css">
 	<link rel="stylesheet" href="/AdminLTE-3.0.0/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
-	<link rel="stylesheet" href="/assets/css/simulations/index.css?26">
+	<link rel="stylesheet" href="/assets/css/simulations/index.css?27">
 
 @stop
 @section('scripts')
@@ -12,7 +12,7 @@
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/xlsx.full.min.js"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/jszip.js"></script>
 	<script src="/AdminLTE-3.0.0/plugins/sweetalert2/sweetalert2.min.js"></script>
-	<script src="/assets/js/simulations/index.js?34"></script>
+	<script src="/assets/js/simulations/index.js?37"></script>
 @stop
 
 @section('content')
@@ -70,9 +70,10 @@
 							            <ul>
 							                <li><a href="#step-1">Step 1<br /><big>Location&nbsp;&nbsp;<i class="fas fa-map-marked-alt"></i></big></a></li>
 							                <li><a href="#step-2">Step 2<br /><big>Population Group&nbsp;&nbsp;<i class="fas fa-users"></i></big></a></li>
-							                <li><a href="#step-3">Step 3<br /><big>Event&nbsp;&nbsp;<i class="fas fa-project-diagram"></i></big></a></li>
-							                <li><a href="#step-4">Step 4<br /><big>Transition Probability&nbsp;&nbsp;<i class="fas fa-percent"></i></big></a></li>
-							                <li><a href="#step-5">Step 5<br /><big>Parameters&nbsp;&nbsp;<i class="fas fa-sliders-h"></i></big></a></li>
+							                <li><a href="#step-3">Step 3<br /><big>Resources&nbsp;&nbsp;<i class="fas fa-shapes"></i></big></a></li>
+							                <li><a href="#step-4">Step 4<br /><big>States&nbsp;&nbsp;<i class="fas fa-project-diagram"></i></big></a></li>
+							                <li><a href="#step-5">Step 5<br /><big>Transition Probability&nbsp;&nbsp;<i class="fas fa-percent"></i></big></a></li>
+							                <li><a href="#step-6">Step 6<br /><big>Parameters&nbsp;&nbsp;<i class="fas fa-sliders-h"></i></big></a></li>
 							            </ul>
 
 							            <div style="padding-top: 15px">
@@ -211,9 +212,9 @@
 
 									                <div class="col-md-12">
 														<div class="form-group">
-										                	<label for="inputName">Population group of simulation (comma separated):</label>
+										                	<label for="inputName">Population group for simulation (comma separated):</label>
 										                	<br>
-										                	<small>Here you can set the population group and count that exist in your simulation. Population title/name does not effect the simulation outcome.</small>
+										                	<small>Here you can set the population group and count for your simulation. Population title/name does not effect the simulation outcome.</small>
 											                <div class="input-group mb-3">
 															  <input placeholder="Male, Female, Other, ..." autocomplete="off" name="states" id="populationtext" type="text" class="form-control rounded-0">
 															  <span class="input-group-append">
@@ -245,30 +246,19 @@
 
 														<div class="form-group">
 
-										                	<label for="inputName">Select between the provided events:</label>
+										                	<label for="inputName">Select between the provided resources:</label>
 										                	<br>
-										                	<small>Events are grouped into facilities and states.</small>
-										                	<small><ul>
-										                			<li>Facilities: Places and amenities provided for individuals to stay.</li>
-										                			<li>States: Particular condition of individuals such as the state of Homelessness or Rehabilitation</li>
-										                		</ul></small>
+										                	<small>Places and amenities provided by various services to individuals.</small>
 										                	
 														  	<div class="form-inline">
-															  	<select class="form-control col-md-4" id="stateresselect">
+															  	<select class="form-control col-md-4" id="resselect">
 															  		<option selected disabled id="title">Select One</option>
-																	<optgroup label="Facilities">
-																		<option id="Hospital" type="res">Hospital</option>
-																		<option id="Shelter" type="res">Shelter</option>
-																		<option id="Street" type="res">Street</option>
-																		<option id="TransitionalHousing" type="res">Transitional Housing</option>
-																	</optgroup>
-																	<optgroup label="State">
-																		<option id="HiddenHomeless" type="state">Hidden Homeless</option>
-																		<option id="NotHomeless" type="state">Not Homeless</option>
-																		<option id="Rehabilitation" type="state">Rehabilitation</option>
-																	</optgroup>
+																	<option id="Hospital" type="res">Hospital</option>
+																	<option id="Shelter" type="res">Shelter</option>
+																	<option id="Street" type="res">Street</option>
+																	<option id="TransitionalHousing" type="res">Transitional Housing</option>
 												                </select>
-														    	<button id="stateresourcebtn" type="button" class="btn btn-info btn-flat" style="margin-left: 10px">Add</button>
+														    	<button id="resourcebtn" type="button" class="btn btn-info btn-flat" style="margin-left: 10px">Add</button>
 														    </div>
 
 										              	</div>
@@ -280,19 +270,19 @@
 
 													<div class="col-lg-12">
 
-														<div id="stateresource_table">
+														<div id="resource_table">
 
 															<div class="table-responsive row-scroll" style="border: 1px solid gray;">
-																<table class="table table-bordered" id="staterestable" style="margin-bottom: 0">
+																<table class="table table-bordered staterestable" id="restable" style="margin-bottom: 0">
 																	<thead>
 																		<tr>
 
-																			<th>Name</th><th>Asset Type</th><th>Properties</th><th>Action</th>
+																			<th>Name</th><th>Properties</th><th>Action</th>
 
 																		</tr>
 																	</thead>
 																	<tbody>
-																		<tr><td></td><td></td><td></td><td></td></tr>
+																		<tr><td></td><td></td><td></td></tr>
 																	</tbody>
 																</table>
 															</div>
@@ -305,7 +295,64 @@
 
 							                </div>
 
+
 							                <div id="step-4" class="">
+
+							                	<div class="row">
+
+									                <div class="col-md-12">
+
+														<div class="form-group">
+
+										                	<label for="inputName">Select between the provided states:</label>
+										                	<br>
+										                	<small>Particular condition of individuals such as the state of Homelessness or Rehabilitation.</small>
+										                	
+														  	<div class="form-inline">
+															  	<select class="form-control col-md-4" id="stateselect">
+															  		<option selected disabled id="title">Select One</option>
+																	<option id="HiddenHomeless" type="state">Hidden Homeless</option>
+																	<option id="NotHomeless" type="state">Not Homeless</option>
+																	<option id="Rehabilitation" type="state">Rehabilitation</option>
+												                </select>
+														    	<button id="statebtn" type="button" class="btn btn-info btn-flat" style="margin-left: 10px">Add</button>
+														    </div>
+
+										              	</div>
+										            </div>
+
+												</div>
+
+												<div class="row">
+
+													<div class="col-lg-12">
+
+														<div id="state_table">
+
+															<div class="table-responsive row-scroll" style="border: 1px solid gray;">
+																<table class="table table-bordered staterestable" id="statetable" style="margin-bottom: 0">
+																	<thead>
+																		<tr>
+
+																			<th>Name</th><th>Properties</th><th>Action</th>
+
+																		</tr>
+																	</thead>
+																	<tbody>
+																		<tr><td></td><td></td><td></td></tr>
+																	</tbody>
+																</table>
+															</div>
+
+														</div>
+
+													</div>
+
+												</div>
+
+							                </div>
+
+							                <div id="step-5" class="">
 
 							                	<div class="row" style="margin-left: 0;margin-right: 0;">
 
@@ -319,7 +366,7 @@
 
 							                </div>
 
-							                <div id="step-5" class="">
+							                <div id="step-6" class="">
 
 							                	<div class="row" style="margin-left: 0;margin-right: 0;">
 
@@ -351,7 +398,7 @@
 
 					            <div class="card-footer" style="text-align: right;">
 							
-									<button type="button" class="btn btn-default" id="prev" disabled="">Back</button>
+									<button type="button" class="btn btn-default" id="prev" disabledx="">Back</button>
 									<button type="button" class="btn bg-gradient-primary" id="next">Next Step</button>
 
 				              	</div>
@@ -385,7 +432,8 @@
 										<p>&nbsp;</p>
 									</div>
 									<p>Population: <span id="population-overview" class="text-danger">Not set</span></p>
-									<p>Event: <span id="stateres-overview" class="text-danger">Not set</span></p>
+									<p>Resources: <span id="res-overview" class="text-danger">Not set</span></p>
+									<p>States: <span id="state-overview" class="text-danger">Not set</span></p>
 									<p>Transition Probabilities: <span id="transprob-overview" class="text-danger">Not set</span></p>
 									<p>Parameters: <span id="params-overview" class="text-danger">Not set</span></p>
 

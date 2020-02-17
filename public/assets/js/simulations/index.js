@@ -36,26 +36,30 @@ $(".custom-file-input").on("change", function() {
 });
 
 window.populationType = []
-window.statelist = []
-window.resstate = []
+window.states = []
+window.resources = []
 window.loc = 0
 window.population = 0
-window.stateres = 0
+window.stateset = 0
+window.resset = 0
 window.params = 0
-window.tableFlag = 0
+window.tableFlagstate = 0
+window.tableFlagres = 0
 window.currentstep = 0
+window.popovers = {}
 
 window.debug = 0
 
 function btnStatus(){
 
-  if (window.loc == 1 && window.population == 1 && window.stateres == 1 && window.params == 1) {
+  if (window.loc == 1 && window.population == 1 && window.stateset == 1&& window.resset == 1 && window.params == 1) {
 
-    $('#runsimulation').removeAttr('disabled')
+    $('#runsimulation').addClass('btn-primary').removeClass('btn-default').removeAttr('disabled')
+
 
   } else {
 
-    $('#runsimulation').attr('disabled',true)
+    $('#runsimulation').addClass('btn-default').removeClass('btn-primary').attr('disabled',true)
 
   }
 
@@ -80,10 +84,18 @@ function checkLoc(){
 
  btnStatus()
   
-
 }
 
 function resetTransitionProbTable(){
+
+
+  window.resources = removeDuplicate(window.resources)
+  window.states = removeDuplicate(window.states)
+
+  let arr = []
+
+  arr = arr.concat(window.states,window.resources)
+
 
   html = '<div class="table-responsive">'+
   '<table id="transprop" class="table table-bordered">'+
@@ -91,7 +103,7 @@ function resetTransitionProbTable(){
   '<tr><th></th>';
 
 
-  $.each( window.resstate, function( k1, value ) {
+  $.each( arr, function( k1, value ) {
 
   html += '<th>'+value+'</th>';
 
@@ -101,11 +113,11 @@ function resetTransitionProbTable(){
   '</thead>'+
   '<tbody>';
 
-  $.each( window.resstate, function( k1, v1 ) {
+  $.each( arr, function( k1, v1 ) {
 
     html += '<tr><td class="titles">'+v1+'</td>';
 
-    $.each( window.resstate, function( k1, v2 ) {
+    $.each( arr, function( k1, v2 ) {
 
       html += '<td><input id="'+v1+'-'+v2+'" type="text" class="form-control" placeholder="0 to 1" value="0"></td>';
 
@@ -140,21 +152,45 @@ function checkpopulation(){
 
 }
 
-function checkstateres(){
+function checkstate(){
 
-  window.stateres = 1
+  if (window.states.length > 0) {
 
-  if (window.stateres == 1) {
+    window.stateset = 1
 
-    $('#stateres-overview').text('Set').addClass('text-success').removeClass('text-danger')
+    $('#state-overview').text('Set').addClass('text-success').removeClass('text-danger')
 
 
   } else {
 
-    $('#stateres-overview').text('Not Set').addClass('text-danger').removeClass('text-success')
+    window.stateset = 0
+
+    $('#state-overview').text('Not Set').addClass('text-danger').removeClass('text-success')
 
   }
-    btnStatus()
+
+  btnStatus()
+
+}
+
+function checkres(){
+
+  if (window.resources.length > 0) {
+
+    window.resset = 1
+
+    $('#res-overview').text('Set').addClass('text-success').removeClass('text-danger')
+
+
+  } else {
+
+    window.resset = 0
+
+    $('#res-overview').text('Not Set').addClass('text-danger').removeClass('text-success')
+
+  }
+
+  btnStatus()
 
 }
 
@@ -213,7 +249,7 @@ function processPopulation(){
                 '<th>Population Type</th><th>Population Count #</th>';
 
       _hdntable = '<div class="table-responsive" style="display: none">'+
-         '<table id="statetable" class="table table-bordered ">'+
+         '<table id="poptable" class="table table-bordered ">'+
             '<thead>'+
             '<tr>'+
             '<th>Population Type</th><th>Population Count # <small>This table represents the popolation count of each category.</small></th>';
@@ -258,6 +294,13 @@ function processPopulation(){
     }
 }
 
+function  removeDuplicate(myarray){
+  let uniqueNames = []
+  $.each(myarray, function(i, el){
+      if($.inArray(el, uniqueNames) === -1) uniqueNames.push(el);
+  });
+  return uniqueNames
+}
 
 $(document).ready(function(){
 
@@ -312,13 +355,17 @@ $(document).ready(function(){
 
     window.currentstep = stepNumber
 
-    if (stepNumber==3 && window.stateres==1) {
+    if (stepNumber==4 && window.stateset==1 && window.resset==1) {
+
+      resetTransitionProbTable()
       
       window.transprob = 1
 
       checktranprob()
+
     }
-    if (stepNumber==4) {
+
+    if (stepNumber==5) {
 
       $('#next').attr('disabled','true')
 
@@ -374,7 +421,19 @@ $(document).ready(function(){
         break;
         case 2:
 
-          if (window.stateres == 1) {
+          if (window.resset == 1) {
+            $('#smartwizard').smartWizard("next")
+          } else {
+            Toast.fire({
+            type: 'error',
+            title: 'Resource is not set.'
+            })
+          }
+
+        break;
+        case 3:
+
+          if (window.stateset == 1) {
             $('#smartwizard').smartWizard("next")
           } else {
             Toast.fire({
@@ -384,7 +443,7 @@ $(document).ready(function(){
           }
 
         break;
-        case 3:
+        case 4:
 
           if (window.transprob == 1) {
             $('#smartwizard').smartWizard("next")
@@ -396,7 +455,7 @@ $(document).ready(function(){
           }
 
         break;
-        case 4:
+        case 5:
 
 
           if (window.params == 1) {
@@ -484,9 +543,9 @@ $(document).ready(function(){
 
   // *****************
   // STATE AND RESOURCES 
-  $('#stateresourcebtn').on('click', function(e) {
+  $('#statebtn').on('click', function(e) {
 
-    var elem = document.getElementById("stateresselect");
+    var elem = document.getElementById("stateselect");
     var id = elem.options[elem.selectedIndex].id;
 
     if (id != 'title'){
@@ -495,7 +554,32 @@ $(document).ready(function(){
 
       let type = $('option[id='+id+']').attr('type')
 
-      processStateRes(name,id,type)
+      window.states.push(name)
+
+      console.log(window.states)
+
+      processState(name,id,type)
+
+    }
+
+  })
+
+  $('#resourcebtn').on('click', function(e) {
+
+    var elem = document.getElementById("resselect");
+    var id = elem.options[elem.selectedIndex].id;
+
+    if (id != 'title'){
+
+      let name = elem.options[elem.selectedIndex].value;
+
+      let type = $('option[id='+id+']').attr('type')
+
+      window.resources.push(name)
+
+      console.log(window.resources)
+
+      processRes(name,id,type)
 
     }
 
@@ -541,84 +625,67 @@ $(document).ready(function(){
 
   });
 
-  function processStateRes(name,id,type){
+  function processState(name,id,type){
 
-      type=='res'?typeC="Facility":typeC="State";
-
-      window.resstate.push(name)
-
-      checkstateres()
-      if (window.tableFlag== 0) {
-        window.tableFlag = 1
-        $("#staterestable tbody tr").remove()
+      if (window.tableFlagstate== 0) {
+        window.tableFlagstate = 1
+        $("#statetable tbody tr").remove()
       }
 
-      let c = $("#staterestable tbody tr").length
-      let this_type_count = $('#staterestable tbody tr[rowname='+id+']').length + 1
+      let c = $("#statetable tbody tr").length
+      let this_type_count = $('#statetable tbody tr[rowname='+id+']').length + 1
 
-      let tr = '<tr class="mainrow" count="'+c+'" rowname='+id+' type="'+type+'" fullname="'+name+'">';
+      let uid = id+'-'+c
+
+      let tr = '<tr id="'+id+'-'+c+'" class="mainrow" count="'+c+'" rowname='+id+' type="'+type+'" fullname="'+name+'">';
       let td1 = '<td><input rid="'+id+'" type="text" class="form-control nameinput" name="stateresname" placeholder="Name (unique)" value="'+name+' '+this_type_count+'"><small class="text-danger hide">* duplication name is not allowed</small></td>';
-      let td2 = '<td style="font-weight: 900" val="'+name+'" class="stname">'+name+' <small>('+typeC+')</small></td>'
       let td4 = '<td class="stname"><a class="divide pointer"><i class="text-primary fas fa-layer-group"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;<a class="pointer removeRow"><i class="text-danger fas fa-minus-square"></i></a></td>'
 
-      let row =   tr+
-                  td1+
-                  td2+
-                  '<td class="ttd" id="td-'+id+'"><a class="init-population a-tag popover-all" id="ip-'+id+'" data-placement="bottom" data-toggle="popover">Initial Population</a>,&nbsp;&nbsp;'+
-                  '<a class="ap-population a-tag popover-all" id="ap-'+id+'" data-placement="bottom" data-toggle="popover">Allowed Population</a>,&nbsp;&nbsp;'+
-                  '<a class="cap-population a-tag popover-all" data-placement="bottom" data-toggle="popover" id="c-'+id+'">Capacity</a></span>'+
-                  '<span id="ms-'+id+'">,&nbsp;&nbsp;<a class="maxstay a-tag popover-all" id="ipms-'+id+'" data-placement="bottom" data-toggle="popover">Maximum Length of Stay</a></span></td>'+
-                  td4+
-                  '</tr>';
 
-      if (type=="state") {
-
-          row =   tr+
+      let row =  tr+
                   td1+
-                  td2+
-                  '<td class="ttd" id="td-'+id+'"><a class="init-population a-tag popover-all" id="ip-'+id+'" data-placement="bottom" data-toggle="popover">Initial Population</a>,&nbsp;&nbsp;'+
-                  '<a class="ap-population a-tag popover-all" id="ap-'+id+'" data-placement="bottom" data-toggle="popover">Allowed Population</a>'+
+                  '<td class="ttd" id="td-'+id+'"><a id="ppop-'+uid+'" class="a-tag popover-all" id="ip-'+id+'" data-placement="bottom" data-toggle="popover">Initial Population</a>,&nbsp;&nbsp;'+
+                  '<a id="apop-'+uid+'" class="a-tag popover-all" id="ap-'+id+'" data-placement="bottom" data-toggle="popover">Allowed Population</a>'+
                   '</td>'+
                   td4+
                   '</tr>';
 
+      $("#statetable tbody").append(row)
+
+      activatePopUpWindows(type,uid)
+      checkstate()
+
+  }
+
+  function processRes(name,id,type){
+
+      if (window.tableFlagres== 0) {
+        window.tableFlagres = 1
+        $("#restable tbody tr").remove()
       }
 
-      $("#staterestable tbody").append(row)
+      let c = $("#restable tbody tr").length
+      let this_type_count = $('#restable tbody tr[rowname='+id+']').length + 1
 
-      if (type=="res") {
+      let uid = id+'-'+c
 
-        $('.maxstay').popover({html:true,title: "Maximum Length of Stay"}).click(function(e) {
-            $('.popover').not(this).hide();
-            $(this).data("bs.popover").inState.click = false;
-            $(this).popover('show');
-            e.preventDefault();
-        });
+      let tr = '<tr id="'+id+'-'+c+'" class="mainrow" count="'+c+'" rowname='+id+' type="'+type+'" fullname="'+name+'">';
+      let td1 = '<td><input rid="'+id+'" type="text" class="form-control nameinput" name="resname" placeholder="Name (unique)" value="'+name+' '+this_type_count+'"><small class="text-danger hide">* duplication name is not allowed</small></td>';
+      let td4 = '<td class="stname"><a class="divide pointer"><i class="text-primary fas fa-layer-group"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;<a class="pointer removeRow"><i class="text-danger fas fa-minus-square"></i></a></td>'
 
-        $('.cap-population').popover({html:true,title: "Capacity"}).click(function(e) {
-            $('.popover').not(this).hide();
-            $(this).data("bs.popover").inState.click = false;
-            $(this).popover('show');
-            e.preventDefault();
-        });
+      let row =   tr+
+                  td1+
+                  '<td class="ttd" id="td-'+id+'"><a id="ppop-'+uid+'" class="a-tag popover-all" id="ip-'+id+'" data-placement="bottom" data-toggle="popover">Initial Population</a>,&nbsp;&nbsp;'+
+                  '<a id="apop-'+uid+'" class="a-tag popover-all" id="ap-'+id+'" data-placement="bottom" data-toggle="popover">Allowed Population</a>,&nbsp;&nbsp;'+
+                  '<a id="capop-'+uid+'" class="a-tag popover-all" data-placement="bottom" data-toggle="popover" id="c-'+id+'">Capacity</a></span>'+
+                  '<span id="ms-'+id+'">,&nbsp;&nbsp;<a id="maxstay-'+uid+'" class="a-tag popover-all" id="ipms-'+id+'" data-placement="bottom" data-toggle="popover">Maximum Length of Stay</a></span></td>'+
+                  td4+
+                  '</tr>';
 
-      }
+      $("#restable tbody").append(row)
 
-      $('.init-population').popover({html:true,title: "Initial Population"}).click(function(e) {
-          $('.popover').not(this).hide();
-          $(this).data("bs.popover").inState.click = false;
-          $(this).popover('show');
-          e.preventDefault();
-      });
-
-      $('.ap-population').popover({html:true,title: "Allowed Population"}).click(function(e) {
-          $('.popover').not(this).hide();
-          $(this).data("bs.popover").inState.click = false;
-          $(this).popover('show');
-          e.preventDefault();
-      });
-
-      resetTransitionProbTable()
+      activatePopUpWindows(type,uid)
+      checkres()
 
   }
 
@@ -631,9 +698,11 @@ $(document).ready(function(){
     let id = $(document).find('tr').length
     let rowname = elem.attr('rowname')
     let type = elem.attr('type');
-    type=='res'?typeC="Facility":typeC="State";
+    let parentId = elem.attr('id')
 
-    let c = ($(document).find('tr[parent='+rowcount+']').length)+1
+    let c = ($(document).find('tr[parentID='+parentId+']').length)+1
+
+    let uid = parentId+'-'+c
 
     elem.addClass('hassub')
 
@@ -642,21 +711,18 @@ $(document).ready(function(){
     if (c!=1) 
       _class = 'nthsub'
 
-    let this_type_count = $('#staterestable tbody tr[rowname='+rowname+']').length
-
-    let tr = '<tr parent="'+rowcount+'" class="sub '+_class+'" count="'+c+'">'
-    let td1 = '<td><input rid="'+id+'" type="text" class="form-control nameinput" name="stateresname" value="'+name+'-'+this_type_count+' Sub-'+c+'"><small class="text-danger hide">* duplication name is not allowed</small></td>'
-    let td2 = '<td style="font-weight: 900" val="'+name+'" class="stname">'+name+' <small>('+typeC+')</small></td>'
+    let tr = '<tr id="'+uid+'" parentID="'+parentId+'" class="sub '+_class+'" count="'+c+'">'
+    let td1 = '<td><input rid="'+id+'" type="text" class="form-control nameinput" name="stateresname" value="'+name+' Sub-'+c+'"><small class="text-danger hide">* duplication name is not allowed</small></td>'
+    
     let td4 = '<td class="stname"><a class="pointer removeRow"><i class="text-danger fas fa-minus-square"></i></a></td>'
 
     let h = tr+
             td1+
-            td2+
             '<td class="ttd" id="td-'+id+'">'+
-            '<a class="init-population a-tag popover-all" id="ip-'+id+'" data-placement="bottom" data-toggle="popover">Initial Population</a>,&nbsp;&nbsp;'+
-            '<a class="ap-population a-tag popover-all" id="ap-'+id+'" data-placement="bottom" data-toggle="popover">Allowed Population</a>,&nbsp;&nbsp;'+
-            '<a class="cap-population a-tag popover-all" data-placement="bottom" data-toggle="popover" id="c-'+id+'">Capacity</a></span>'+
-            '<span id="ms-'+id+'">,&nbsp;&nbsp;<a class="maxstay a-tag popover-all" id="ipms-'+id+'" data-placement="bottom" data-toggle="popover">Maximum Length of Stay</a></span></td>'+
+            '<a id="ppop-'+uid+'" class="a-tag popover-all" id="ip-'+id+'" data-placement="bottom" data-toggle="popover">Initial Population</a>,&nbsp;&nbsp;'+
+            '<a id="apop-'+uid+'" class="a-tag popover-all" id="ap-'+id+'" data-placement="bottom" data-toggle="popover">Allowed Population</a>,&nbsp;&nbsp;'+
+            '<a id="capop-'+uid+'" class="a-tag popover-all" data-placement="bottom" data-toggle="popover" id="c-'+id+'">Capacity</a></span>'+
+            '<span id="ms-'+id+'">,&nbsp;&nbsp;<a id="maxstay-'+uid+'" class="a-tag popover-all" id="ipms-'+id+'" data-placement="bottom" data-toggle="popover">Maximum Length of Stay</a></span></td>'+
             td4+
             '</tr>';
 
@@ -665,10 +731,9 @@ $(document).ready(function(){
 
       h = tr+
           td1+
-          td2+
           '<td class="ttd" id="td-'+id+'">'+
-          '<a class="init-population a-tag popover-all" id="ip-'+id+'" data-placement="bottom" data-toggle="popover">Initial Population</a>,&nbsp;&nbsp;'+
-          '<a class="ap-population a-tag popover-all" id="ap-'+id+'" data-placement="bottom" data-toggle="popover">Allowed Population</a></td>'+
+          '<a id="ppop-'+uid+'" class="a-tag popover-all" id="ip-'+id+'" data-placement="bottom" data-toggle="popover">Initial Population</a>,&nbsp;&nbsp;'+
+          '<a id="apop-'+uid+'" class="a-tag popover-all" id="ap-'+id+'" data-placement="bottom" data-toggle="popover">Allowed Population</a></td>'+
           td4+
           '</tr>';
 
@@ -680,7 +745,7 @@ $(document).ready(function(){
 
     } else {
 
-      elem = $(document).find('tr[parent='+rowcount+']').last()
+      elem = $(document).find('tr[parentID='+parentId+']').last()
 
       elem.addClass('nthsub')
 
@@ -688,51 +753,74 @@ $(document).ready(function(){
 
     }
 
-    activatePopUpWindows(type,rowname)
+    activatePopUpWindows(type,uid)
+
   })
 
 
   $(document).on('click','.removeRow', function(){
 
-    $(this).parents('tr').first().remove()
+    let elem = $(this).parents('tr').first();
+    let fullname = elem.attr('fullname')
+    let id = elem.attr('id')
+
+    window.states.splice( window.states.indexOf(fullname), 1 );
+    window.resources.splice( window.resources.indexOf(fullname), 1 );
+
+    delete window.popovers['ppop-'+id]
+    delete window.popovers['apop-'+id]
+    delete window.popovers['capop-'+id]
+    delete window.popovers['maxstay-'+id]
+
+    console.log(window.popovers)
+
+    elem.remove()
+
+    checkres()
+    checkstate()
 
   })
 
-  function activatePopUpWindows(type,id){
+  function activatePopUpWindows(type,uid){
+
+      console.log(uid)
 
       if (type=="res") {
 
-        $(document).find('.maxstay').popover({html:true,title: "Maximum Length of Stay"}).click(function(e) {
+        $(document).find('#maxstay-'+uid).popover({html:true,title: "Maximum Length of Stay"}).click(function(e) {
             $('.popover').not(this).hide();
             $(this).data("bs.popover").inState.click = false;
             $(this).popover('show');
             e.preventDefault();
         });
 
-        $(document).find('.cap-population').popover({html:true,title: "Capacity"}).click(function(e) {
+        $(document).find('#capop-'+uid).popover({html:true,title: "Capacity"}).click(function(e) {
             $('.popover').not(this).hide();
             $(this).data("bs.popover").inState.click = false;
             $(this).popover('show');
             e.preventDefault();
         });
-
-        $(document).find("input[name=optradio-"+id+"][value=res]").prop("checked", true);
 
       }
 
-      $(document).find('.init-population').popover({html:true,title: "Initial Population"}).click(function(e) {
+      $(document).find('#ppop-'+uid).popover({html:true,title: "Initial Population"}).click(function(e) {
           $('.popover').not(this).hide();
           $(this).data("bs.popover").inState.click = false;
           $(this).popover('show');
           e.preventDefault();
       });
 
-      $(document).find('.ap-population').popover({html:true,title: "Allowed Population"}).click(function(e) {
+      $(document).find('#apop-'+uid).popover({html:true,title: "Allowed Population"}).click(function(e) {
           $('.popover').not(this).hide();
           $(this).data("bs.popover").inState.click = false;
           $(this).popover('show');
           e.preventDefault();
       });
+
+      addppopHTML(uid)
+      addcpopHTML(uid)
+      addmaxstaypopHTML(uid)
+      addapopHTML(uid)
 
   }
 
@@ -741,30 +829,16 @@ $(document).ready(function(){
 
   $(document).on("click",".closepop",function(e,data) {
 
-    did = $(this).attr('tid')
+    let id = $(this).attr('id')
 
+    let html = $(this).parents('.popover-content').first().clone();
 
-    if ( $(this).attr('type') == 'ap' ){
+    console.log(html)
 
-        $(document).find('.ap-html[did="'+did+'"]').remove()
-
-        html = $(this).parents('.popover-content').first().html()
-
-        div = '<div style="display:none" class="ap-html" did='+did+' >'+html+'</div>'
-
-        $('body').append(div)
-
-    } else {
-
-        $(document).find('.t-html[did="'+did+'"]').remove()
-
-        html = $(this).parents('.popover-content').first().html()
-
-        div = '<div style="display:none" class="t-html" did='+did+' >'+html+'</div>'
-
-        $('body').append(div)
-
+    if(typeof window.popovers[id] !== 'undefined') {
+      window.popovers[id] = html
     }
+
 
     $('.popover-all').popover('hide');
 
@@ -772,7 +846,7 @@ $(document).ready(function(){
 
   $("#toexcel").click(function(){
 
-    exportTableToExcel('statetable', 'data')
+    // exportTableToExcel('statetable', 'data')
 
   });
 
@@ -782,136 +856,136 @@ $(document).ready(function(){
 
   });
 
+  function addapopHTML(uid){
 
-  $(document).on("click",".ap-population",function(e,data) {
+    uid = 'apop-'+uid;
 
-    id = $(this).attr('id');
-    des = $(this).attr('aria-describedby');
+    html = '<div id="tip-'+uid+'" class="table-responsive">'+
+       '<table id="'+uid+'" class="table table-bordered">'+
+          '<thead>'+
+            '<tr>'+
+              '<th>Population Type</th><th>Allowed</th>'+
+            '</tr>'+
+          '</thead>'+
+          '<tbody>';
 
-    if($(document).find('.ap-html[did="'+id+'"]').length == 0){
+    $.each( window.populationType, function( k1, value ) {
 
-      html = '<div id="tip-'+id+'" class="table-responsive">'+
-         '<table id="'+id+'" class="table table-bordered">'+
-            '<thead>'+
-              '<tr>'+
-                '<th>Population Type</th><th>Allowed</th>'+
-              '</tr>'+
-            '</thead>'+
-            '<tbody>';
+      html += '<tr><td class="pop" style="font-weight: 900">'+value+'</td>'+
+              '<td class="ttd pop"><label class="checkbox-inline"><input class="ana" name="ap-po-'+k1+'" type="checkbox" value="" checked>Allowed</label></td></tr>';
 
-      $.each( window.populationType, function( k1, value ) {
+    });
 
-        html += '<tr><td class="pop" style="font-weight: 900">'+value+'</td>'+
-                '<td class="ttd pop"><label class="checkbox-inline"><input class="ana" name="ap-po-'+k1+'" type="checkbox" value="" checked>Allowed</label></td></tr>';
+    html +=   '</tbody></table></div><div style="width:100%"><a type="ap" id="'+uid+'" class="closepop a-tag">Save and Close</a></div>';
 
-      });
 
-      html +=   '</tbody></table></div><div style="width:100%"><a type="ap" aid="'+id+'" id="'+des+'" class="closepop a-tag">Save and Close</a></div>';
-
-      $('#'+id).on('shown.bs.popover', function () {
-        $('#'+des).find('.popover-content').html(html);
-      })
-
-      $('body').append('<input type="hidden" class="'+id+'">')
-
-    } else {
-
-      html = $(document).find('.ap-html[did="'+id+'"]').html()
-
-      $('#'+id).on('shown.bs.popover', function () {
-        $('#'+des).find('.popover-content').html(html);
-      })
-
+    if(typeof window.popovers[uid] === 'undefined') {
+      window.popovers[uid] = html
     }
 
-  })
+    $(document).find('#'+uid).on('shown.bs.popover', function () {
 
-  $(document).on("click",".maxstay",function(e,data) {
+      let popid = $(this).attr('aria-describedby')
 
-    id = $(this).attr('id');
+      let thisid = $(this).attr('id')
 
-    des = $(this).attr('aria-describedby');
+      $(document).find('#'+popid).first().find('.popover-content').first().html(window.popovers[thisid]);
 
-
-    val = $('#iipms-'+id).attr('val')
-
-    if(typeof val == 'undefined'){
-      val = 7
-    }
-
-    html =  '<div class="table-responsive">'+
-            '<table id="'+id+'" class="table table-bordered"><tbody>';
-
-    html += '<tr><td class="pop" style="font-weight: 900">Maximum Length of Stay (days)</td>'+
-              '<td class="ttd pop"><input value="'+val+'" rid="'+id+'" name="ip-rms" style="width:100px; height:100%;" placeholder="#"></td></tr>';
-
-    html +=   '</tbody></table></div><div style="width:100%"><a id="'+des+'" class="closepop a-tag">Save and Close</a></div>';
-
-    $('#'+id).on('shown.bs.popover', function () {
-      $('#'+des).find('.popover-content').html(html);
     })
 
-  })
+  }
 
-  $(document).on("click",".init-population",function(e,data) {
+  function addmaxstaypopHTML(uid){
+
+    uid = 'maxstay-'+uid;
+
+    html =  '<div class="table-responsive">'+
+            '<table id="'+uid+'" class="table table-bordered"><tbody>';
+
+    html += '<tr><td class="pop" style="font-weight: 900">Maximum Length of Stay (days)</td>'+
+              '<td class="ttd pop"><input value="7" rid="'+uid+'" name="ip-rms" style="width:100px; height:100%;" placeholder="#"></td></tr>';
+
+    html +=   '</tbody></table></div><div style="width:100%"><a id="'+uid+'" class="closepop a-tag">Save and Close</a></div>';
 
 
-
-    id = $(this).attr('id');
-
-    des = $(this).attr('aria-describedby');
-
-
-    val = $('#iip-'+id).attr('val')
-
-    if(typeof val == 'undefined'){
-      val = 0
+    if(typeof window.popovers[uid] === 'undefined') {
+      window.popovers[uid] = html
     }
 
-    html = '<div class="table-responsive">'+
-       '<table id="'+id+'" class="table table-bordered"><tbody>';
+    $(document).find('#'+uid).on('shown.bs.popover', function () {
+
+      let popid = $(this).attr('aria-describedby')
+
+      let thisid = $(this).attr('id')
+
+      $(document).find('#'+popid).first().find('.popover-content').first().html(window.popovers[thisid]);
+
+    })
+
+  }
+
+  function addppopHTML(uid){
+
+    uid = 'ppop-'+uid;
+
+    let html = '<div class="table-responsive">'+
+       '<table id="'+uid+'" class="table table-bordered"><tbody>';
 
     $.each(window.populationType, function( k1, value ) {
 
       html += '<tr><td class="pop" style="font-weight: 900">'+value+'</td>'+
-              '<td class="ttd pop"><input value="'+val+'" rid="'+id+'" name="ip-r" style="width:100px; height:100%;" placeholder="#"></td></tr>';
+              '<td class="ttd pop"><input value="0" name="ip-r" style="width:100px; height:100%;" placeholder="#"></td></tr>';
+
+    });
+
+    html +=   '</tbody></table></div><div style="width:100%"><a id="'+uid+'" class="closepop a-tag">Save and Close</a></div>';
 
 
-    });  
-     
-    html +=   '</tbody></table></div><div style="width:100%"><a id="'+des+'" class="closepop a-tag">Save and Close</a></div>';
-
-    $('#'+id).on('shown.bs.popover', function () {
-      $('#'+des).find('.popover-content').html(html);
-    })
-
-  })
-
-  $(document).on("click",".cap-population",function(e,data) {
-
-    id = $(this).attr('id');
-
-    des = $(this).attr('aria-describedby');
-
-    val = $('#inp-pc-r-'+id).attr('val')
-
-    if(typeof val == 'undefined'){
-      val = 0
+    if(typeof window.popovers[uid] === 'undefined') {
+      window.popovers[uid] = html
     }
 
-    html =  '<div class="table-responsive">'+
-            '<table id="'+id+'" class="table table-bordered"><tbody>';
+    $(document).find('#'+uid).on('shown.bs.popover', function () {
 
-    html += '<tr><td class="pop" style="font-weight: 900">Population Count</td>'+
-            '<td class="ttd pop" ><input id="pc-r-'+id+'" name="pc-r" style="width:100px; height:100%;" placeholder="#" value="'+val+'"></td></tr>';
+      let popid = $(this).attr('aria-describedby')
 
-    html +=   '</tbody></table></div><div style="width:100%"><a id="'+des+'" class="closepop a-tag">Save and Close</a></div>';
+      let thisid = $(this).attr('id')
 
-    $(document).find('#'+id).on('shown.bs.popover', function () {
-      $(document).find('.popover-content').html(html);
+      $(document).find('#'+popid).first().find('.popover-content').first().html(window.popovers[thisid]);
+
     })
 
-  })
+  }
+
+  function addcpopHTML(uid){
+
+    uid = 'capop-'+uid;
+
+    html =  '<div class="table-responsive">'+
+            '<table id="'+uid+'" class="table table-bordered"><tbody>';
+
+    html += '<tr><td class="pop" style="font-weight: 900">Population Count</td>'+
+            '<td class="ttd pop" ><input id="pc-r-'+uid+'" name="pc-r" style="width:100px; height:100%;" placeholder="#" value="0"></td></tr>';
+
+    html +=   '</tbody></table></div><div style="width:100%"><a id="'+uid+'" class="closepop a-tag">Save and Close</a></div>';
+
+
+    if(typeof window.popovers[uid] === 'undefined') {
+      window.popovers[uid] = html
+    }
+
+    $(document).find('#'+uid).on('shown.bs.popover', function () {
+
+      let popid = $(this).attr('aria-describedby')
+
+      let thisid = $(this).attr('id')
+
+      $(document).find('#'+popid).first().find('.popover-content').first().html(window.popovers[thisid]);
+
+    })
+
+  }
+
 
   $(document).on("blur","input[name='ip-r']",function(e,data) {
 
