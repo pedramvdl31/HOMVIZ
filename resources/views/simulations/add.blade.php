@@ -4,7 +4,7 @@
 	<link rel="stylesheet" href="/SmartWizard-master/src/css/smart_wizard.css">
 	<link rel="stylesheet" href="/SmartWizard-master/src/css/smart_wizard_theme_arrows.css">
 	<link rel="stylesheet" href="/AdminLTE-3.0.0/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
-	<link rel="stylesheet" href="/assets/css/simulations/index.css?23">
+	<link rel="stylesheet" href="/assets/css/simulations/index.css?26">
 
 @stop
 @section('scripts')
@@ -68,11 +68,11 @@
 							        <!-- SmartWizard html -->
 							        <div id="smartwizard" style="border: 0">
 							            <ul>
-							                <li><a href="#step-1">Step 1<br /><big>Location</big></a></li>
-							                <li><a href="#step-2">Step 2<br /><big>Population</big></a></li>
-							                <li><a href="#step-3">Step 3<br /><big>Resources and States</big></a></li>
-							                <li><a href="#step-4">Step 4<br /><big>Transition Probabilities</big></a></li>
-							                <li><a href="#step-5">Step 5<br /><big>Parameters</big></a></li>
+							                <li><a href="#step-1">Step 1<br /><big>Location&nbsp;&nbsp;<i class="fas fa-map-marked-alt"></i></big></a></li>
+							                <li><a href="#step-2">Step 2<br /><big>Population Group&nbsp;&nbsp;<i class="fas fa-users"></i></big></a></li>
+							                <li><a href="#step-3">Step 3<br /><big>Event&nbsp;&nbsp;<i class="fas fa-project-diagram"></i></big></a></li>
+							                <li><a href="#step-4">Step 4<br /><big>Transition Probability&nbsp;&nbsp;<i class="fas fa-percent"></i></big></a></li>
+							                <li><a href="#step-5">Step 5<br /><big>Parameters&nbsp;&nbsp;<i class="fas fa-sliders-h"></i></big></a></li>
 							            </ul>
 
 							            <div style="padding-top: 15px">
@@ -211,7 +211,9 @@
 
 									                <div class="col-md-12">
 														<div class="form-group">
-										                	<label for="inputName">Population type for simulation (for example: male, female, etc. comma separated):</label>
+										                	<label for="inputName">Population group of simulation (comma separated):</label>
+										                	<br>
+										                	<small>Here you can set the population group and count that exist in your simulation. Population title/name does not effect the simulation outcome.</small>
 											                <div class="input-group mb-3">
 															  <input placeholder="Male, Female, Other, ..." autocomplete="off" name="states" id="populationtext" type="text" class="form-control rounded-0">
 															  <span class="input-group-append">
@@ -243,11 +245,18 @@
 
 														<div class="form-group">
 
-										                	<label for="inputName">Resources and States (comma separated):</label>
+										                	<label for="inputName">Select between the provided events:</label>
+										                	<br>
+										                	<small>Events are grouped into facilities and states.</small>
+										                	<small><ul>
+										                			<li>Facilities: Places and amenities provided for individuals to stay.</li>
+										                			<li>States: Particular condition of individuals such as the state of Homelessness or Rehabilitation</li>
+										                		</ul></small>
+										                	
 														  	<div class="form-inline">
 															  	<select class="form-control col-md-4" id="stateresselect">
 															  		<option selected disabled id="title">Select One</option>
-																	<optgroup label="Resource">
+																	<optgroup label="Facilities">
 																		<option id="Hospital" type="res">Hospital</option>
 																		<option id="Shelter" type="res">Shelter</option>
 																		<option id="Street" type="res">Street</option>
@@ -273,8 +282,8 @@
 
 														<div id="stateresource_table">
 
-															<div class="table-responsive row-scroll">
-																<table class="table table-bordered" id="staterestable">
+															<div class="table-responsive row-scroll" style="border: 1px solid gray;">
+																<table class="table table-bordered" id="staterestable" style="margin-bottom: 0">
 																	<thead>
 																		<tr>
 
@@ -376,7 +385,7 @@
 										<p>&nbsp;</p>
 									</div>
 									<p>Population: <span id="population-overview" class="text-danger">Not set</span></p>
-									<p>Resources and States: <span id="stateres-overview" class="text-danger">Not set</span></p>
+									<p>Event: <span id="stateres-overview" class="text-danger">Not set</span></p>
 									<p>Transition Probabilities: <span id="transprob-overview" class="text-danger">Not set</span></p>
 									<p>Parameters: <span id="params-overview" class="text-danger">Not set</span></p>
 

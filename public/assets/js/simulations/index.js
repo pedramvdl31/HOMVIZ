@@ -43,7 +43,9 @@ window.population = 0
 window.stateres = 0
 window.params = 0
 window.tableFlag = 0
+window.currentstep = 0
 
+window.debug = 0
 
 function btnStatus(){
 
@@ -78,6 +80,45 @@ function checkLoc(){
 
  btnStatus()
   
+
+}
+
+function resetTransitionProbTable(){
+
+  html = '<div class="table-responsive">'+
+  '<table id="transprop" class="table table-bordered">'+
+  '<thead>'+
+  '<tr><th></th>';
+
+
+  $.each( window.resstate, function( k1, value ) {
+
+  html += '<th>'+value+'</th>';
+
+  });
+
+  html += '</tr>'+
+  '</thead>'+
+  '<tbody>';
+
+  $.each( window.resstate, function( k1, v1 ) {
+
+    html += '<tr><td class="titles">'+v1+'</td>';
+
+    $.each( window.resstate, function( k1, v2 ) {
+
+      html += '<td><input id="'+v1+'-'+v2+'" type="text" class="form-control" placeholder="0 to 1" value="0"></td>';
+
+    });
+
+    html += '</tr>';
+
+  });
+
+
+  html += '</tbody></table></div>';
+
+  $('#transitiontable').html(html)
 
 }
 
@@ -117,6 +158,22 @@ function checkstateres(){
 
 }
 
+function checktranprob(){
+
+  if (window.transprob == 1) {
+
+    $('#transprob-overview').text('Set').addClass('text-success').removeClass('text-danger')
+
+  } else {
+
+    $('#transprob-overview').text('Not Set').addClass('text-danger').removeClass('text-success')
+
+  }
+
+  btnStatus()
+
+}
+
 function chackParamsStatus(){
 
 
@@ -149,7 +206,7 @@ function processPopulation(){
       _val = $("#populationtext").val()
       _exp = _val.split(',')
 
-      _table = '<small>This table represents the popolation count of each category.</small><div class="table-responsive">'+
+      _table = '<div class="table-responsive">'+
              '<table class="table table-bordered ">'+
               '<thead>'+
                 '<tr>'+
@@ -159,7 +216,7 @@ function processPopulation(){
          '<table id="statetable" class="table table-bordered ">'+
             '<thead>'+
             '<tr>'+
-            '<th>Population Type</th><th>Population Count #</th>';
+            '<th>Population Type</th><th>Population Count # <small>This table represents the popolation count of each category.</small></th>';
 
 
       _table +=   '</tr>'+
@@ -179,7 +236,7 @@ function processPopulation(){
 
         ht =   '<tr>'+
                 '<td style="font-weight: 900">'+value+'</td>'+
-                '<td class="ttd"><input name="tablex" style="width:100px; height:100%;" value="0"></td></tr>';
+                '<td class="ttd"><input type="text" class="form-control" style="width:100px; height:100%;" value="0"></td></tr>';
 
         _hdntable += ht
         _table += ht
@@ -227,33 +284,154 @@ $(document).ready(function(){
 
   // Smart Wizard
   $('#smartwizard').smartWizard({
-          selected: 0,
-          theme: 'arrows',
-          transitionEffect:'fade'
-       });
+    selected: 0,
+    theme: 'arrows',
+    transitionEffect:'fade',
+    toolbarSettings: {
+      showNextButton: false, // show/hide a Next button
+      showPreviousButton: false // show/hide a Previous button
+    }, 
+    anchorSettings: {
+      anchorClickable: false, // Enable/Disable anchor navigation
+      enableAllAnchors: false, // Activates all anchors clickable all times
+      markDoneStep: true, // add done css
+      enableAnchorOnDoneStep: true // Enable/Disable the done steps navigation
+    },
+    transitionEffect: 'fade', // Effect on navigation, none/slide/fade
+    transitionSpeed: '100'
+  });
 
-  // $("#addresource").click(function(){
+  const Toast = Swal.mixin({
+    toast: true,
+    position: 'center',
+    showConfirmButton: false,
+    timer: 3000
+  });
 
-  //   count = $(document).find(".resources").length
-  //   count = count + 1
-  //   html = ' <div count="'+count+'" class="resources col-12 col-sm-6 col-md-4 d-flex align-items-stretch"><div class="card bg-light" style="width: 100%"><div class="card-header text-muted border-bottom-0"> Resource '+count+' &nbsp;&nbsp;&nbsp;<i class="fas fa-trash table-danger deleteresource" style="cursor: pointer;"></i></div><div class="card-body pt-0"> <div class="row"> <div class="col-12"><div class="form-group"><label for="inputName">Name</label><input name="resource['+count+'][name]" type="text" id="inputName" class="form-control"></div><div class="form-group"><label for="inputName">Capacity</label><input name="resource['+count+'][capacity]" type="text" id="inputName" class="form-control"></div><div class="form-group"><label for="inputName">Max Length (days) <small>optional</small></label><input name="resource['+count+'][maxlength]" type="text" id="inputName" class="form-control" value="NaN"></div><div class="row subresroucewrapper"></div></div></div></div><div class="card-footer"> <div class="text-right"> <a id="addsubresource" class="btn btn-sm btn-primary" style="color: white;cursor: pointer;"> <i class="fas fa-plus"></i> Add Sub-resource </a> </div></div></div></div>';
-  //   $(html).insertBefore("#addresourcewrapper")
+  $("#smartwizard").on("showStep", function(e, anchorObject, stepNumber, stepDirection) {
 
-  // });
+    window.currentstep = stepNumber
 
+    if (stepNumber==3 && window.stateres==1) {
+      
+      window.transprob = 1
 
-  $(document).on("click","#addsubresource",function() {
+      checktranprob()
+    }
+    if (stepNumber==4) {
 
-    count = $(this).closest(".card").find('.subresource').length
+      $('#next').attr('disabled','true')
 
-    resCount = $(this).closest(".resources").attr("count")
+    } else {
 
-    count = count + 1
-    html = '<div class="col-6 col-sm-6 col-md-6 d-flex subresource"><div class="card bg-light"><div class="card-header text-muted border-bottom-0">Sub-Resource '+count+' &nbsp;&nbsp;&nbsp;<i class="fas fa-trash table-danger deletesubresource" style="cursor: pointer;"></i></div><div class="card-body pt-0"> <div class="row"> <div class="col-12"><div class="form-group"><label for="inputName">Name</label><input name="subresource['+resCount+']['+count+'][name]" type="text" id="inputName" class="form-control"></div><div class="form-group"><label for="inputName">Capacity</label><input name="subresource['+resCount+']['+count+'][capacity]" type="text" id="inputName" class="form-control"></div></div></div></div></div></div>';
-    $(this).closest(".card").find('.subresroucewrapper').append(html)
+      $('#next').removeAttr('disabled','true')
+
+    }
+
+    if (stepNumber==0) {
+      
+      $('#prev').attr('disabled','true')
+
+    } else {
+
+      $('#prev').removeAttr('disabled','true')
+
+    }
 
   });
 
+  if (!window.debug) {
+
+    $('#smartwizard').smartWizard('reset');
+
+    $('#next').on('click', function(e){
+
+      switch(window.currentstep){
+
+        case 0:
+
+          if (window.loc == 1) {
+            $('#smartwizard').smartWizard("next")
+          } else {
+            Toast.fire({
+            type: 'error',
+            title: 'Location is not set.'
+            })
+          }
+
+        break;
+        case 1:
+
+          if (window.population == 1) {
+            $('#smartwizard').smartWizard("next")
+          } else {
+            Toast.fire({
+            type: 'error',
+            title: 'Population is not set.'
+            })
+          }
+
+        break;
+        case 2:
+
+          if (window.stateres == 1) {
+            $('#smartwizard').smartWizard("next")
+          } else {
+            Toast.fire({
+            type: 'error',
+            title: 'State is not set.'
+            })
+          }
+
+        break;
+        case 3:
+
+          if (window.transprob == 1) {
+            $('#smartwizard').smartWizard("next")
+          } else {
+            Toast.fire({
+            type: 'error',
+            title: 'Transition Probabilities are not set.'
+            })
+          }
+
+        break;
+        case 4:
+
+
+          if (window.params == 1) {
+            
+          } else {
+            Toast.fire({
+            type: 'error',
+            title: 'Parameters  are not set.'
+            })
+          }
+
+        break;
+
+      }
+
+    })
+
+
+
+  } else {
+
+
+    $('#next').on('click', function(e){
+
+      $('#smartwizard').smartWizard("next")
+        
+    })
+
+  }
+
+  $('#prev').on('click', function(e){
+
+      $('#smartwizard').smartWizard("prev")
+      
+  })
 
   $(document).on("keyup change","#simname,#simnum,#simweeks",function() {
 
@@ -275,59 +453,6 @@ $(document).ready(function(){
 
   });
 
-
-
-  $(".sw-btn-next").click(function(){
-
-    // $('#statetransition_table').html('<p>In order to set the state transition, 2 or more states are required. Currently there are '+window.statelist.length+' state.</p>')
-
-    if(window.statelist.length !== 0 && window.statelist.length !== 1){
-
-      _exp = window.statelist
-
-      _table = '<small>This table represents the probability of moving from one state to another. Absorbing states where the movement to other states is not allowed will have a probability of 0.</small><div class="table-responsive">'+
-             '<table class="table table-bordered ">'+
-              '<thead>'+
-                '<tr>'+
-                '<th>#</th>';
-
-        $.each( _exp, function( key, value ) {
-          _table += '<th>'+value+'</th>'
-        });
-
-        _table +=   '</tr>'+
-            '</thead>'+
-              '<tbody>';
-
-        $.each( _exp, function( k1, value ) {
-
-            _table +=   '<tr>'+
-                  '<td style="font-weight: 900">'+value+'</td>';
-
-            $.each( _exp, function( key, value ) {
-
-              h = '<label class="radio-inline"><input value="isallowed" class="isallowed-radio transiteradio" type="radio" name="tranradio-'+k1+'-'+key+'">'+
-                  '&nbsp;Allowed</label>&nbsp;&nbsp;&nbsp;&nbsp;<label class="radio-inline">'+
-                  '<input class="notallowed-radio transiteradio" type="radio" name="tranradio-'+k1+'-'+key+'" value="notallowed">&nbsp;Not Allowed</label>';
-
-              _table +=   '<td class="ttd">'+h+'</td>';
-
-            });
-
-          _table += '</tr>';
-
-        });
-        
-        _table +=   '</tbody>'+
-            '</table>'+
-            '</div>';
-
-      // $("#statetransition_table").html(_table)
-
-    }
-
-  })
-
   $(document).on("change",".transiteradio",function() {
 
     let value = $(this).val();
@@ -336,7 +461,6 @@ $(document).ready(function(){
     $(this).closest("td").removeClass("table-success table-danger").addClass(_class)
 
   });
-
 
   // ********************
   // POPULATION LISTENERS
@@ -413,11 +537,13 @@ $(document).ready(function(){
 
     });
 
+    
+
   });
 
   function processStateRes(name,id,type){
 
-      type=='res'?typeC="Resource":typeC="State"; 
+      type=='res'?typeC="Facility":typeC="State";
 
       window.resstate.push(name)
 
@@ -427,14 +553,13 @@ $(document).ready(function(){
         $("#staterestable tbody tr").remove()
       }
 
-      $("#stateresselect option[id='"+id+"']").remove();
-
       let c = $("#staterestable tbody tr").length
+      let this_type_count = $('#staterestable tbody tr[rowname='+id+']').length + 1
 
       let tr = '<tr class="mainrow" count="'+c+'" rowname='+id+' type="'+type+'" fullname="'+name+'">';
-      let td1 = '<td><input rid="'+id+'" type="text" class="form-control nameinput" name="stateresname" placeholder="Name (unique)" value="'+name+'"><small class="text-danger hide">* duplication name is not allowed</small></td>';
-      let td2 = '<td style="font-weight: 900" val="'+name+'" class="stname">'+name+' ('+typeC+')</td>'
-      let td4 = '<td class="stname"><a class="divide a-tag">Add Sub-element</a></td>'
+      let td1 = '<td><input rid="'+id+'" type="text" class="form-control nameinput" name="stateresname" placeholder="Name (unique)" value="'+name+' '+this_type_count+'"><small class="text-danger hide">* duplication name is not allowed</small></td>';
+      let td2 = '<td style="font-weight: 900" val="'+name+'" class="stname">'+name+' <small>('+typeC+')</small></td>'
+      let td4 = '<td class="stname"><a class="divide pointer"><i class="text-primary fas fa-layer-group"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;<a class="pointer removeRow"><i class="text-danger fas fa-minus-square"></i></a></td>'
 
       let row =   tr+
                   td1+
@@ -452,7 +577,7 @@ $(document).ready(function(){
                   td1+
                   td2+
                   '<td class="ttd" id="td-'+id+'"><a class="init-population a-tag popover-all" id="ip-'+id+'" data-placement="bottom" data-toggle="popover">Initial Population</a>,&nbsp;&nbsp;'+
-                  '<a class="ap-population a-tag popover-all" id="ap-'+id+'" data-placement="bottom" data-toggle="popover">Allowed Population</a>,&nbsp;&nbsp;'+
+                  '<a class="ap-population a-tag popover-all" id="ap-'+id+'" data-placement="bottom" data-toggle="popover">Allowed Population</a>'+
                   '</td>'+
                   td4+
                   '</tr>';
@@ -477,10 +602,7 @@ $(document).ready(function(){
             e.preventDefault();
         });
 
-        $(document).find("input[name=optradio-"+id+"][value=res]").prop("checked", true);
-
       }
-
 
       $('.init-population').popover({html:true,title: "Initial Population"}).click(function(e) {
           $('.popover').not(this).hide();
@@ -496,6 +618,8 @@ $(document).ready(function(){
           e.preventDefault();
       });
 
+      resetTransitionProbTable()
+
   }
 
   
@@ -507,6 +631,7 @@ $(document).ready(function(){
     let id = $(document).find('tr').length
     let rowname = elem.attr('rowname')
     let type = elem.attr('type');
+    type=='res'?typeC="Facility":typeC="State";
 
     let c = ($(document).find('tr[parent='+rowcount+']').length)+1
 
@@ -517,18 +642,22 @@ $(document).ready(function(){
     if (c!=1) 
       _class = 'nthsub'
 
+    let this_type_count = $('#staterestable tbody tr[rowname='+rowname+']').length
+
     let tr = '<tr parent="'+rowcount+'" class="sub '+_class+'" count="'+c+'">'
-    let td1 = '<td><input rid="'+id+'" type="text" class="form-control nameinput" name="stateresname" value="'+name+' '+c+'"><small class="text-danger hide">* duplication name is not allowed</small></td>'
+    let td1 = '<td><input rid="'+id+'" type="text" class="form-control nameinput" name="stateresname" value="'+name+'-'+this_type_count+' Sub-'+c+'"><small class="text-danger hide">* duplication name is not allowed</small></td>'
+    let td2 = '<td style="font-weight: 900" val="'+name+'" class="stname">'+name+' <small>('+typeC+')</small></td>'
+    let td4 = '<td class="stname"><a class="pointer removeRow"><i class="text-danger fas fa-minus-square"></i></a></td>'
 
     let h = tr+
             td1+
-            '<td></td>'+
+            td2+
             '<td class="ttd" id="td-'+id+'">'+
             '<a class="init-population a-tag popover-all" id="ip-'+id+'" data-placement="bottom" data-toggle="popover">Initial Population</a>,&nbsp;&nbsp;'+
             '<a class="ap-population a-tag popover-all" id="ap-'+id+'" data-placement="bottom" data-toggle="popover">Allowed Population</a>,&nbsp;&nbsp;'+
             '<a class="cap-population a-tag popover-all" data-placement="bottom" data-toggle="popover" id="c-'+id+'">Capacity</a></span>'+
             '<span id="ms-'+id+'">,&nbsp;&nbsp;<a class="maxstay a-tag popover-all" id="ipms-'+id+'" data-placement="bottom" data-toggle="popover">Maximum Length of Stay</a></span></td>'+
-            '<td></td>'+
+            td4+
             '</tr>';
 
     
@@ -536,11 +665,11 @@ $(document).ready(function(){
 
       h = tr+
           td1+
-          '<td></td>'+
+          td2+
           '<td class="ttd" id="td-'+id+'">'+
           '<a class="init-population a-tag popover-all" id="ip-'+id+'" data-placement="bottom" data-toggle="popover">Initial Population</a>,&nbsp;&nbsp;'+
           '<a class="ap-population a-tag popover-all" id="ap-'+id+'" data-placement="bottom" data-toggle="popover">Allowed Population</a></td>'+
-          '<td></td>'+
+          td4+
           '</tr>';
 
     }
@@ -560,9 +689,14 @@ $(document).ready(function(){
     }
 
     activatePopUpWindows(type,rowname)
-
   })
 
+
+  $(document).on('click','.removeRow', function(){
+
+    $(this).parents('tr').first().remove()
+
+  })
 
   function activatePopUpWindows(type,id){
 

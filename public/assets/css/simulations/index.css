@@ -304,3 +304,6 @@ tr.sub td:first-child, tr.hassub td:first-child{
 .sub td:not(.pop){
   border-top: none;
 }
+.pointer{
+  cursor: pointer;
+}
