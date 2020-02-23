@@ -1,18 +1,22 @@
 @extends($layout)
 @section('stylesheets')
 
-	<link rel="stylesheet" href="/SmartWizard-master/src/css/smart_wizard.css">
-	<link rel="stylesheet" href="/SmartWizard-master/src/css/smart_wizard_theme_arrows.css">
-	<link rel="stylesheet" href="/AdminLTE-3.0.0/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
-	<link rel="stylesheet" href="/assets/css/simulations/index.css?27">
+	<link rel="stylesheet" href="/SmartWizard-master/src/css/smart_wizard.css?1">
+	<link rel="stylesheet" href="/SmartWizard-master/src/css/smart_wizard_theme_arrows.css?1">
+
+
+	<link rel="stylesheet" href="/assets/css/sweetalert2.min.css?1">
+	<link rel="stylesheet" href="/assets/css/simulations/index.css?31">
 
 @stop
 @section('scripts')
-	<script src="/SmartWizard-master/src/js/jquery.smartWizard.js?1"></script>
+	<script src="/SmartWizard-master/src/js/jquery.smartWizard.js?22"></script>
+
+	<script src="/assets/js/sweetalert2.min.js?1"></script>
+
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/xlsx.full.min.js"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/jszip.js"></script>
-	<script src="/AdminLTE-3.0.0/plugins/sweetalert2/sweetalert2.min.js"></script>
-	<script src="/assets/js/simulations/index.js?37"></script>
+	<script src="/assets/js/simulations/index.js?104"></script>
 @stop
 
 @section('content')
@@ -28,6 +32,13 @@
 		.swal2-icon.swal2-error.swal2-animate-error-icon{
 			margin-right: 10px
 		}
+
+		#_table{
+			max-height: 700px;
+    		overflow-y: auto;
+		}
+
+
 	</style>
 
 	<!-- Content Wrapper. Contains page content -->
@@ -50,7 +61,7 @@
 
 	        <div class="row">
 
-		        <div class="col-lg-10">
+		        <div class="col-lg-9" id="main-window">
 
 					{!! Form::open(array('action' => 'SimulationsController@postAdd','role'=>"form", 'id'=>"myform", 'autocomplete'=>"off")) !!}
 
@@ -60,7 +71,7 @@
 
 					    <div class="card card-primary card-outline">
 
-					        <div class="card card-solid mb-0" style="border: 5px solid #5cb85c">
+					        <div class="card card-solid mb-0">
 
 					            <div class="card-body p-0">
 
@@ -85,10 +96,26 @@
 
 
 									                <div class="col-md-12">
-														<div class="form-group">
-										                	<label for="inputName">Location (Address or latitute, longitude):</label>
-										                	<div id="locationField"></div>
-										                	<input autocomplete="off" id="autocomplete" placeholder="Enter a city" name="location" type="text" class="form-control border-primary">
+									                	<div class="row">
+										                	<div class="col-md-6">
+																<div class="form-group">
+												                	<label for="inputName">Simulation Name:</label>
+												                	<div id="locationField"></div>
+												                	<input name="simulation_name" id="simulation-name" type="text" class="form-control border-primary" placeholder="Simulation 1">
+												              	</div>
+											              	</div>
+										              	</div>
+										            </div>
+
+										            <div class="col-md-12">
+									                	<div class="row">
+										                	<div class="col-md-6">
+																<div class="form-group">
+												                	<label for="inputName">Enter a City:</label>
+												                	<div id="locationField"></div>
+												                	<input autocomplete="off" id="autocomplete" placeholder="Enter a city" name="location" type="text" class="form-control border-primary">
+													            </div>
+											              	</div>
 										              	</div>
 										            </div>
 
@@ -163,7 +190,7 @@
 													        } else {
 													          document.getElementById('autocomplete').placeholder = 'Enter a city';
 													        }
-													        window.loc=1;checkLoc()
+													        window.loc=1;
 													      }
 
 													      function clearMarkers() {
@@ -214,9 +241,9 @@
 														<div class="form-group">
 										                	<label for="inputName">Population group for simulation (comma separated):</label>
 										                	<br>
-										                	<small>Here you can set the population group and count for your simulation. Population title/name does not effect the simulation outcome.</small>
+										                	<small>Here you can set the population group for your simulation. Population title/name does not effect the simulation outcome.</small>
 											                <div class="input-group mb-3">
-															  <input placeholder="Male, Female, Other, ..." autocomplete="off" name="states" id="populationtext" type="text" class="form-control rounded-0">
+															  <input placeholder="Male, Female, Other, ..." autocomplete="off" name="changelater" id="populationtext" type="text" class="form-control rounded-0">
 															  <span class="input-group-append">
 															    <button id="populationbtn" type="button" class="btn btn-info btn-flat">Generate table</button>
 															  </span>
@@ -277,12 +304,12 @@
 																	<thead>
 																		<tr>
 
-																			<th>Name</th><th>Properties</th><th>Action</th>
+																			<th>Type</th><th>Name</th><th>Properties</th><th>Action</th>
 
 																		</tr>
 																	</thead>
 																	<tbody>
-																		<tr><td></td><td></td><td></td></tr>
+																		<tr><td></td><td></td><td></td><td></td></tr>
 																	</tbody>
 																</table>
 															</div>
@@ -306,7 +333,7 @@
 
 										                	<label for="inputName">Select between the provided states:</label>
 										                	<br>
-										                	<small>Particular condition of individuals such as the state of Homelessness or Rehabilitation.</small>
+										                	<small>State: Particular condition of individuals such as the state of Homelessness or Rehabilitation.</small>
 										                	
 														  	<div class="form-inline">
 															  	<select class="form-control col-md-4" id="stateselect">
@@ -334,12 +361,12 @@
 																	<thead>
 																		<tr>
 
-																			<th>Name</th><th>Properties</th><th>Action</th>
+																			<th>Type</th><th>Name</th><th>Properties</th><th>Action</th>
 
 																		</tr>
 																	</thead>
 																	<tbody>
-																		<tr><td></td><td></td><td></td></tr>
+																		<tr><td></td><td></td><td></td><td></td></tr>
 																	</tbody>
 																</table>
 															</div>
@@ -372,16 +399,12 @@
 
 									                <div class="col-md-4">
 														<div class="form-group">
-										                	<label for="inputName">Simulation name:</label>
-										                	<input autocomplete="off" name="simulation_name" type="text" id="simname" class="form-control">
-										              	</div>
-														<div class="form-group">
 										                	<label for="inputName">Number of weeks:</label>
-										                	<input  autocomplete="off" name="numberofweeks" type="text" id="simweeks" class="form-control">
+										                	<input type="number" min="1" max="999" autocomplete="off" name="numberofweeks" id="simweeks" class="form-control">
 										              	</div>
 														<div class="form-group">
 										                	<label for="inputName">Number of simulations:</label>
-										                	<input  autocomplete="off" name="numberofsims" type="text" id="simnum" class="form-control">
+										                	<input type="number" min="1" max="999"  autocomplete="off" name="numberofsims" type="text" id="simnum" class="form-control">
 										              	</div>
 
 										            </div>
@@ -411,11 +434,11 @@
 
 				</div>
 
-				<div class="col-lg-2">
+				<div class="col-lg-3" id="side-window">
 					
 						<div class="card card-primary card-outline">
 
-					        <div class="card card-solid mb-0" style="border: 5px solid #c3c3c3;min-height: 710px">
+					        <div class="card card-solid mb-0" >
 
 								<div class="card-header">
 									<h3 class="card-title">
@@ -425,17 +448,44 @@
 
         						<div class="card-body">
 
-
-									<p>Location: <span id="loc-overview" class="text-danger">Not set</span></p>
-									<div class="col-lg-12 hide" id="loc-div">
-										<div id="map2"></div>
-										<p>&nbsp;</p>
+									<div class="row">
+										<p><strong>Step 1:</strong> <span id="loc-overview" class="text-danger">Incomplete</span></p>
+										<div class="col-lg-12 hide" id="loc-div">
+											<p><strong>Simulation Name: <small id="simname-side"></small></strong></p>
+											<p><strong>City Name: <small id="cityname-side"></small></strong></p>
+											<div id="map2"></div>
+										</div>
 									</div>
-									<p>Population: <span id="population-overview" class="text-danger">Not set</span></p>
-									<p>Resources: <span id="res-overview" class="text-danger">Not set</span></p>
-									<p>States: <span id="state-overview" class="text-danger">Not set</span></p>
-									<p>Transition Probabilities: <span id="transprob-overview" class="text-danger">Not set</span></p>
-									<p>Parameters: <span id="params-overview" class="text-danger">Not set</span></p>
+
+									<hr>
+
+									<div class="row">
+										<p><strong>Step 2:</strong>: <span id="population-overview" class="text-danger">Incomplete</span></p>
+									</div>
+
+									<hr>
+
+									<div class="row">
+										<p><strong>Step 3:</strong>: <span id="resources-overview" class="text-danger">Incomplete</span></p>
+									</div>
+
+									<hr>
+
+									<div class="row">
+										<p><strong>Step 4:</strong>: <span id="states-overview" class="text-danger">Incomplete</span></p>
+									</div>
+
+									<hr>
+
+									<div class="row">
+										<p><strong>Step 5:</strong>: <span id="transitions-overview" class="text-danger">Incomplete</span></p>
+									</div>
+
+									<hr>
+
+									<div class="row">
+										<p><strong>Step 6:</strong>: <span id="parameters-overview" class="text-danger">Incomplete</span></p>
+									</div>
 
 
 					            </div>

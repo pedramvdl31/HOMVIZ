@@ -297,7 +297,7 @@ tr.sub td:first-child, tr.hassub td:first-child{
   border-left: 4px solid #585858 !important;
 }
 
-.hassub td:not(.pop),.nthsub td:not(.pop){
+.hassub td:not(.pop),.nthsub:not(:last-child) td:not(.pop),.parentrow td:not(.pop){
   border-bottom: none;
 }
 
@@ -306,4 +306,7 @@ tr.sub td:first-child, tr.hassub td:first-child{
 }
 .pointer{
   cursor: pointer;
+}
+#side-window p {
+  margin-bottom: 0
 }
