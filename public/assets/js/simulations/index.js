@@ -570,13 +570,12 @@ $(document).ready(function(){
 
       let totaltext = $(this).parents('tr').first().find('.rowtotal').first()
 
-      totaltext.text(total)
+      totaltext.find('.totalval').text(total)
 
-      if (total > 1){
-        totaltext.text('Total must be less then or equal to 1')
-        totaltext.css('color','red')
+      if (total != 1){
+        totaltext.find('.msg').first().text('The total summation of the transition probabilities in one row must add up to 1')
       } else {
-        totaltext.css('color','black')
+        totaltext.find('.msg').first().text('')
       }
 
         
@@ -1242,7 +1241,7 @@ function MakeTransitionalPropTable(){
      
 
     });
-     html += '<td class="rowtotal">0</td>';
+     html += '<td class="rowtotal"><p class="totalval">0</p><p><small class="msg" style="color:red"></small></p></td>';
 
     html += '</tr>';
 

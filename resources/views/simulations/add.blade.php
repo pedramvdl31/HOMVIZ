@@ -16,7 +16,7 @@
 
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/xlsx.full.min.js"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/jszip.js"></script>
-	<script src="/assets/js/simulations/index.js?104"></script>
+	<script src="/assets/js/simulations/index.js?105"></script>
 @stop
 
 @section('content')
@@ -399,6 +399,12 @@
 							                	<div class="row" style="margin-left: 0;margin-right: 0;">
 
 									                <div class="col-md-4">
+
+														<div class="form-group">
+										                	<label for="inputName">Created by:</label>
+										                	<input placeholder="Creator's first name" type="text" autocomplete="off" name="creatorname"  id="cname" class="form-control">
+										              	</div>
+
 														<div class="form-group">
 										                	<label for="inputName">Number of weeks:</label>
 										                	<input type="number" min="1" max="999" autocomplete="off" name="numberofweeks" id="simweeks" class="form-control">
@@ -406,11 +412,6 @@
 														<div class="form-group">
 										                	<label for="inputName">Number of simulations:</label>
 										                	<input type="number" min="1" max="999"  autocomplete="off" name="numberofsims" type="text" id="simnum" class="form-control">
-										              	</div>
-
-														<div class="form-group">
-										                	<label for="inputName">Created by:</label>
-										                	<input placeholder="Creator's first name" type="text" autocomplete="off" name="creatorname"  id="cname" class="form-control">
 										              	</div>
 
 										            </div>
