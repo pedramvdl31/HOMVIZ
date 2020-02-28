@@ -8,6 +8,7 @@ $baseDir = dirname($vendorDir);
 return array(
     'Absolute_Positioner' => $vendorDir . '/dompdf/dompdf/include/absolute_positioner.cls.php',
     'Abstract_Renderer' => $vendorDir . '/dompdf/dompdf/include/abstract_renderer.cls.php',
+    'AddCreatornameToSimulationsTable' => $baseDir . '/database/migrations/2020_02_28_165005_add_creatorname_to_simulations_table.php',
     'Adobe_Font_Metrics' => $vendorDir . '/phenx/php-font-lib/classes/Adobe_Font_Metrics.php',
     'Attribute_Translator' => $vendorDir . '/dompdf/dompdf/include/attribute_translator.cls.php',
     'Block_Frame_Decorator' => $vendorDir . '/dompdf/dompdf/include/block_frame_decorator.cls.php',
@@ -20,9 +21,7 @@ return array(
     'Canvas' => $vendorDir . '/dompdf/dompdf/include/canvas.cls.php',
     'Canvas_Factory' => $vendorDir . '/dompdf/dompdf/include/canvas_factory.cls.php',
     'Cellmap' => $vendorDir . '/dompdf/dompdf/include/cellmap.cls.php',
-    'CreateAdminsTable' => $baseDir . '/database/migrations/2015_09_14_043442_create_admins_table.php',
     'CreatePasswordResetsTable' => $baseDir . '/database/migrations/2014_10_12_100000_create_password_resets_table.php',
-    'CreateProjectsTable' => $baseDir . '/database/migrations/2019_11_12_210031_create_projects_table.php',
     'CreateSimulationsTable' => $baseDir . '/database/migrations/2019_11_12_210906_create_simulations_table.php',
     'CreateUsersTable' => $baseDir . '/database/migrations/2014_10_12_000000_create_users_table.php',
     'DOMPDF' => $vendorDir . '/dompdf/dompdf/include/dompdf.cls.php',

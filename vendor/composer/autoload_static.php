@@ -354,6 +354,7 @@ class ComposerStaticInit6ff8fbba5f58ec266906a0f204970d71
     public static $classMap = array (
         'Absolute_Positioner' => __DIR__ . '/..' . '/dompdf/dompdf/include/absolute_positioner.cls.php',
         'Abstract_Renderer' => __DIR__ . '/..' . '/dompdf/dompdf/include/abstract_renderer.cls.php',
+        'AddCreatornameToSimulationsTable' => __DIR__ . '/../..' . '/database/migrations/2020_02_28_165005_add_creatorname_to_simulations_table.php',
         'Adobe_Font_Metrics' => __DIR__ . '/..' . '/phenx/php-font-lib/classes/Adobe_Font_Metrics.php',
         'Attribute_Translator' => __DIR__ . '/..' . '/dompdf/dompdf/include/attribute_translator.cls.php',
         'Block_Frame_Decorator' => __DIR__ . '/..' . '/dompdf/dompdf/include/block_frame_decorator.cls.php',
@@ -366,9 +367,7 @@ class ComposerStaticInit6ff8fbba5f58ec266906a0f204970d71
         'Canvas' => __DIR__ . '/..' . '/dompdf/dompdf/include/canvas.cls.php',
         'Canvas_Factory' => __DIR__ . '/..' . '/dompdf/dompdf/include/canvas_factory.cls.php',
         'Cellmap' => __DIR__ . '/..' . '/dompdf/dompdf/include/cellmap.cls.php',
-        'CreateAdminsTable' => __DIR__ . '/../..' . '/database/migrations/2015_09_14_043442_create_admins_table.php',
         'CreatePasswordResetsTable' => __DIR__ . '/../..' . '/database/migrations/2014_10_12_100000_create_password_resets_table.php',
-        'CreateProjectsTable' => __DIR__ . '/../..' . '/database/migrations/2019_11_12_210031_create_projects_table.php',
         'CreateSimulationsTable' => __DIR__ . '/../..' . '/database/migrations/2019_11_12_210906_create_simulations_table.php',
         'CreateUsersTable' => __DIR__ . '/../..' . '/database/migrations/2014_10_12_000000_create_users_table.php',
         'DOMPDF' => __DIR__ . '/..' . '/dompdf/dompdf/include/dompdf.cls.php',

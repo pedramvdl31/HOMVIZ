@@ -1,288 +1,24 @@
-function exportTableToExcel(tableID, filename = ''){
-    var downloadLink;
-    var dataType = 'application/vnd.ms-excel';
-    var tableSelect = document.getElementById(tableID);
-    var tableHTML = tableSelect.outerHTML.replace(/ /g, '%20');
-    
-    // Specify file name
-    filename = filename?filename+'.xls':'excel_data.xls';
-    
-    // Create download link element
-    downloadLink = document.createElement("a");
-    
-    document.body.appendChild(downloadLink);
-    
-    if (navigator.msSaveOrOpenBlob){
-        var blob = new Blob(['\ufeff', tableHTML], {
-            type: dataType
-        });
-        navigator.msSaveOrOpenBlob( blob, filename);
-    } else {
-        // Create a link to the file
-        downloadLink.href = 'data:' + dataType + ', ' + tableHTML;
-    
-        // Setting the file name
-        downloadLink.download = filename;
-        
-        //triggering the function
-        downloadLink.click();
-    }
-}
-
-// Add the following code if you want the name of the file appear on select
-$(".custom-file-input").on("change", function() {
-  var fileName = $(this).val().split("\\").pop();
-  $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
-});
-
 window.populationType = []
-window.statelist = []
-window.resstate = []
-window.loc = 0
-window.population = 0
-window.stateres = 0
-window.params = 0
-window.tableFlag = 0
+window.states = []
+window.resources = []
+
+window.tableFlagstate = 0
 window.currentstep = 0
+window.popovers = {}
 
+//validation
+window.loc = 0
+window.stateset = 0
+window.params = 0
+
+//debug
 window.debug = 0
-
-function btnStatus(){
-
-  if (window.loc == 1 && window.population == 1 && window.stateres == 1 && window.params == 1) {
-
-    $('#runsimulation').removeAttr('disabled')
-
-  } else {
-
-    $('#runsimulation').attr('disabled',true)
-
-  }
-
-}
-
-function checkLoc(){
-
-  if (window.loc == 1) {
-
-    $('#loc-overview').text('Set').addClass('text-success').removeClass('text-danger')
-
-    $('#loc-div').removeClass('hide')
-
-
-  } else {
-
-    $('#loc-overview').text('Not Set').addClass('text-danger').removeClass('text-success')
-
-    $('#loc-div').addClass('hide')
-
-  }
-
- btnStatus()
-  
-
-}
-
-function resetTransitionProbTable(){
-
-  html = '<div class="table-responsive">'+
-  '<table id="transprop" class="table table-bordered">'+
-  '<thead>'+
-  '<tr><th></th>';
-
-
-  $.each( window.resstate, function( k1, value ) {
-
-  html += '<th>'+value+'</th>';
-
-  });
-
-  html += '</tr>'+
-  '</thead>'+
-  '<tbody>';
-
-  $.each( window.resstate, function( k1, v1 ) {
-
-    html += '<tr><td class="titles">'+v1+'</td>';
-
-    $.each( window.resstate, function( k1, v2 ) {
-
-      html += '<td><input id="'+v1+'-'+v2+'" type="text" class="form-control" placeholder="0 to 1" value="0"></td>';
-
-    });
-
-    html += '</tr>';
-
-  });
-
-
-  html += '</tbody></table></div>';
-
-  $('#transitiontable').html(html)
-
-}
-
-function checkpopulation(){
-
-  window.population = 1
-
-  if (window.population == 1) {
-
-    $('#population-overview').text('Set').addClass('text-success').removeClass('text-danger')
-
-
-  } else {
-
-    $('#population-overview').text('Not Set').addClass('text-danger').removeClass('text-success')
-
-  }
-    btnStatus()
-
-}
-
-function checkstateres(){
-
-  window.stateres = 1
-
-  if (window.stateres == 1) {
-
-    $('#stateres-overview').text('Set').addClass('text-success').removeClass('text-danger')
-
-
-  } else {
-
-    $('#stateres-overview').text('Not Set').addClass('text-danger').removeClass('text-success')
-
-  }
-    btnStatus()
-
-}
-
-function checktranprob(){
-
-  if (window.transprob == 1) {
-
-    $('#transprob-overview').text('Set').addClass('text-success').removeClass('text-danger')
-
-  } else {
-
-    $('#transprob-overview').text('Not Set').addClass('text-danger').removeClass('text-success')
-
-  }
-
-  btnStatus()
-
-}
-
-function chackParamsStatus(){
-
-
-  if (window.params == 1) {
-
-    $('#params-overview').text('Set').addClass('text-success').removeClass('text-danger')
-
-
-  } else {
-
-    $('#params-overview').text('Not Set').addClass('text-danger').removeClass('text-success')
-
-  }
-    btnStatus()
-
-}
-
-function processPopulation(){
-
-    if ($("#populationtext").val().length == 0){
-
-      
-
-    } else {
-
-      checkpopulation()
-
-      $('#_table').html("")
-
-      _val = $("#populationtext").val()
-      _exp = _val.split(',')
-
-      _table = '<div class="table-responsive">'+
-             '<table class="table table-bordered ">'+
-              '<thead>'+
-                '<tr>'+
-                '<th>Population Type</th><th>Population Count #</th>';
-
-      _hdntable = '<div class="table-responsive" style="display: none">'+
-         '<table id="statetable" class="table table-bordered ">'+
-            '<thead>'+
-            '<tr>'+
-            '<th>Population Type</th><th>Population Count # <small>This table represents the popolation count of each category.</small></th>';
-
-
-      _table +=   '</tr>'+
-        '</thead>'+
-          '<tbody>';
-
-      _hdntable +=  '</tr>'+
-          '</thead>'+
-            '<tbody>';
-
-
-      window.populationType = []
-
-      $.each( _exp, function( k1, value ) {
-
-        window.populationType.push(value)
-
-        ht =   '<tr>'+
-                '<td style="font-weight: 900">'+value+'</td>'+
-                '<td class="ttd"><input type="text" class="form-control" style="width:100px; height:100%;" value="0"></td></tr>';
-
-        _hdntable += ht
-        _table += ht
-
-      });
-
-
-      _table +=   '</tbody>'+
-        '</table>'+
-        '</div>';
-
-      _hdntable +=  '</tbody>'+
-            '</table>'+
-            '</div>';
-
-      $("#_table").append(_table)
-      $("#_table").append(_hdntable)
-
-    }
-}
 
 
 $(document).ready(function(){
 
-    $("#mcontent").css("display","block")
+  $("#mcontent").css("display","block")
 
-   var keyStop = {
-     8: ":not(input:text, textarea, input:file, input:password)", // stop backspace = back
-     13: "input:text, input:password", // stop enter = submit 
-
-     end: null
-   };
-   $(document).bind("keydown", function(event){
-    var selector = keyStop[event.which];
-
-    if(selector !== undefined && $(event.target).is(selector)) {
-        event.preventDefault(); //stop event
-    }
-    return true;
-   });
-
-  // Set our default popover options
-  $.fn.popover.Constructor.DEFAULTS.trigger = 'click';
-  $.fn.popover.Constructor.DEFAULTS.placement = 'bottom';
-
-  // Smart Wizard
   $('#smartwizard').smartWizard({
     selected: 0,
     theme: 'arrows',
@@ -301,35 +37,20 @@ $(document).ready(function(){
     transitionSpeed: '100'
   });
 
-  const Toast = Swal.mixin({
-    toast: true,
-    position: 'center',
-    showConfirmButton: false,
-    timer: 3000
-  });
-
   $("#smartwizard").on("showStep", function(e, anchorObject, stepNumber, stepDirection) {
 
-    window.currentstep = stepNumber
+    window.currentstep = stepNumber + 1
 
-    if (stepNumber==3 && window.stateres==1) {
-      
-      window.transprob = 1
+    $('#next').text('Next Step')
 
-      checktranprob()
-    }
-    if (stepNumber==4) {
+    if (window.currentstep==6) {
 
-      $('#next').attr('disabled','true')
-
-    } else {
-
-      $('#next').removeAttr('disabled','true')
+      $('#next').text('Save and Preview')
 
     }
 
-    if (stepNumber==0) {
-      
+    if (window.currentstep==1) {
+
       $('#prev').attr('disabled','true')
 
     } else {
@@ -340,767 +61,1197 @@ $(document).ready(function(){
 
   });
 
+  //WIZARD STEP RULES
   if (!window.debug) {
 
     $('#smartwizard').smartWizard('reset');
 
     $('#next').on('click', function(e){
 
-      switch(window.currentstep){
-
-        case 0:
-
-          if (window.loc == 1) {
-            $('#smartwizard').smartWizard("next")
-          } else {
-            Toast.fire({
-            type: 'error',
-            title: 'Location is not set.'
-            })
-          }
-
-        break;
-        case 1:
-
-          if (window.population == 1) {
-            $('#smartwizard').smartWizard("next")
-          } else {
-            Toast.fire({
-            type: 'error',
-            title: 'Population is not set.'
-            })
-          }
-
-        break;
-        case 2:
-
-          if (window.stateres == 1) {
-            $('#smartwizard').smartWizard("next")
-          } else {
-            Toast.fire({
-            type: 'error',
-            title: 'State is not set.'
-            })
-          }
-
-        break;
-        case 3:
-
-          if (window.transprob == 1) {
-            $('#smartwizard').smartWizard("next")
-          } else {
-            Toast.fire({
-            type: 'error',
-            title: 'Transition Probabilities are not set.'
-            })
-          }
-
-        break;
-        case 4:
-
-
-          if (window.params == 1) {
-            
-          } else {
-            Toast.fire({
-            type: 'error',
-            title: 'Parameters  are not set.'
-            })
-          }
-
-        break;
-
-      }
+      HandleStepsOnNextBtnClick()
 
     })
 
-
-
-  } else {
-
-
-    $('#next').on('click', function(e){
-
-      $('#smartwizard').smartWizard("next")
-        
-    })
-
-  }
-
-  $('#prev').on('click', function(e){
+    $('#prev').on('click', function(e){
 
       $('#smartwizard').smartWizard("prev")
       
-  })
+    })
 
-  $(document).on("keyup change","#simname,#simnum,#simweeks",function() {
+  } else {
 
-    let v1 = $('#simname').val()
-    let v2 = $('#simnum').val()
-    let v3 = $('#simweeks').val()
+    window.populationType = ['Male', 'Female', 'Other']
 
-    if ( v1 != "" && v2 != "" && v3 != "" ){
+    $('#next').on('click', function(e){
 
-      window.params = 1
+      HandleStepsOnNextBtnClick()
+        
+    })
 
-    } else {
+    $('#prev').on('click', function(e){
 
-      window.params = 0
+      $('#smartwizard').smartWizard("prev")
+      
+    })
+
+  }
+
+
+  //*********************************
+  //**************************STEP 2
+
+  $('#populationbtn').on('click', function(e) {
+
+    if ($("#populationtext").val().length != 0){
+
+      $('#populationbtn').attr('disabled','true')
+
+      window.populationType = []
+      $('#_table').html("")
+      _val = $("#populationtext").val()
+      _exp = _val.split(',')
+      _table =  '<div id="populationtable" class="table-responsive">'+
+                '<table class="table table-bordered ">'+
+                '<thead>'+
+                  '<tr>'+
+                  '<th>Population Type</th><th>Population Count #</th>'+
+                  '</tr>'+
+                '</thead>'+
+                '<tbody>';
+
+      $.each( _exp, function( k1, value ) {
+
+        window.populationType.push(value)
+
+        _table +=   '<tr>'+
+                    '<td style="font-weight: 900">'+value+'</td>'+
+                    '<td class="ttd"><input type="text" class="form-control" style="width:100px; height:100%;" value="0"></td></tr>';
+
+      });
+
+
+      _table +=   '</tbody>'+
+        '</table>'+
+        '<div style="text-align:right"><span id="removepopulationtable" class="text-danger" style="cursor:pointer">Reset (Delete Table)</span></div></div>';
+
+      $("#_table").append(_table)
 
     }
 
-    chackParamsStatus()
+  });
+
+
+  $(document).on("click","#removepopulationtable",function() {
+
+    $(document).find('#populationtable').remove()
+    $('#populationtext').val('')
+    window.populationType = []
+
+
+    $('#populationbtn').removeAttr('disabled')
+
 
   });
 
-  $(document).on("change",".transiteradio",function() {
 
-    let value = $(this).val();
-    let _class = "table-success";
-    if (value=='notallowed') _class = "table-danger"
-    $(this).closest("td").removeClass("table-success table-danger").addClass(_class)
-
-  });
-
-  // ********************
-  // POPULATION LISTENERS
-  $('#populationtext, #populationbtn').on('keyup click', function(e) {
-
-    if (e.type == 'click') {
-
-       processPopulation()
-
-    } else if (e.type == 'keyup') {
-
-      if (event.keyCode === 13) {
-        processPopulation()
-      }
-
-    }
-
-  });
-  // POPULATION LISTENERS END
+  //********************************
+  //***********************STEP 2 END
 
 
-  // *****************
-  // STATE AND RESOURCES 
-  $('#stateresourcebtn').on('click', function(e) {
 
-    var elem = document.getElementById("stateresselect");
+  //*********************************
+  //**************************STEP 3
+
+
+  $('#resourcebtn').on('click', function(e) {
+
+    var elem = document.getElementById("resselect");
     var id = elem.options[elem.selectedIndex].id;
+    let name = elem.options[elem.selectedIndex].value;
 
     if (id != 'title'){
 
-      let name = elem.options[elem.selectedIndex].value;
-
       let type = $('option[id='+id+']').attr('type')
 
-      processStateRes(name,id,type)
+      //is this the first row
+      let rowCount = $("#restable tbody .mainrow").length
+      if (rowCount== 0) {
+        $("#restable tbody tr").remove()
+      }
+
+      let rowID = makeid(5)
+      var myEle = document.getElementById(rowID);
+      while(myEle){
+        rowID = makeid(5)
+      }
+
+      var obj = {};
+      obj[rowID] = name;
+
+      window.resources.push(obj)
+
+      let tooltipClass = "tooltip-"+rowID
+      let row = MakeResourcesRowColumnHTML(rowID,tooltipClass,type,name)
+
+      $("#restable tbody").append(row)
+
+      $('.'+tooltipClass).tooltip();
+
+      activatePopUpWindows(rowID,type)
 
     }
 
   })
-
-  $(document).on("keyup",".nameinput",function() {
-
-    let elem = $(this)
-    let v = $(this).val()
-    let i = $(this).attr('rid')
-
-    let f = 0
-
-    $(document).find(".nameinput").each(function (index, value) {
-
-      let this_val = $(this).val()
-
-      if (this_val!="") {
-      
-        if ($(this).attr('rid') != i) {
-            if (this_val==v) {
-              f = 1
-            }
-        }
-
-        if (f == 1) { 
-
-          elem.addClass('text-danger')
-          elem.next().removeClass('hide')
-
-        } else {
-
-          elem.removeClass('text-danger')
-          elem.next().addClass('hide')
-
-        }
-
-      }
-
-    });
-
-    
-
-  });
-
-  function processStateRes(name,id,type){
-
-      type=='res'?typeC="Facility":typeC="State";
-
-      window.resstate.push(name)
-
-      checkstateres()
-      if (window.tableFlag== 0) {
-        window.tableFlag = 1
-        $("#staterestable tbody tr").remove()
-      }
-
-      let c = $("#staterestable tbody tr").length
-      let this_type_count = $('#staterestable tbody tr[rowname='+id+']').length + 1
-
-      let tr = '<tr class="mainrow" count="'+c+'" rowname='+id+' type="'+type+'" fullname="'+name+'">';
-      let td1 = '<td><input rid="'+id+'" type="text" class="form-control nameinput" name="stateresname" placeholder="Name (unique)" value="'+name+' '+this_type_count+'"><small class="text-danger hide">* duplication name is not allowed</small></td>';
-      let td2 = '<td style="font-weight: 900" val="'+name+'" class="stname">'+name+' <small>('+typeC+')</small></td>'
-      let td4 = '<td class="stname"><a class="divide pointer"><i class="text-primary fas fa-layer-group"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;<a class="pointer removeRow"><i class="text-danger fas fa-minus-square"></i></a></td>'
-
-      let row =   tr+
-                  td1+
-                  td2+
-                  '<td class="ttd" id="td-'+id+'"><a class="init-population a-tag popover-all" id="ip-'+id+'" data-placement="bottom" data-toggle="popover">Initial Population</a>,&nbsp;&nbsp;'+
-                  '<a class="ap-population a-tag popover-all" id="ap-'+id+'" data-placement="bottom" data-toggle="popover">Allowed Population</a>,&nbsp;&nbsp;'+
-                  '<a class="cap-population a-tag popover-all" data-placement="bottom" data-toggle="popover" id="c-'+id+'">Capacity</a></span>'+
-                  '<span id="ms-'+id+'">,&nbsp;&nbsp;<a class="maxstay a-tag popover-all" id="ipms-'+id+'" data-placement="bottom" data-toggle="popover">Maximum Length of Stay</a></span></td>'+
-                  td4+
-                  '</tr>';
-
-      if (type=="state") {
-
-          row =   tr+
-                  td1+
-                  td2+
-                  '<td class="ttd" id="td-'+id+'"><a class="init-population a-tag popover-all" id="ip-'+id+'" data-placement="bottom" data-toggle="popover">Initial Population</a>,&nbsp;&nbsp;'+
-                  '<a class="ap-population a-tag popover-all" id="ap-'+id+'" data-placement="bottom" data-toggle="popover">Allowed Population</a>'+
-                  '</td>'+
-                  td4+
-                  '</tr>';
-
-      }
-
-      $("#staterestable tbody").append(row)
-
-      if (type=="res") {
-
-        $('.maxstay').popover({html:true,title: "Maximum Length of Stay"}).click(function(e) {
-            $('.popover').not(this).hide();
-            $(this).data("bs.popover").inState.click = false;
-            $(this).popover('show');
-            e.preventDefault();
-        });
-
-        $('.cap-population').popover({html:true,title: "Capacity"}).click(function(e) {
-            $('.popover').not(this).hide();
-            $(this).data("bs.popover").inState.click = false;
-            $(this).popover('show');
-            e.preventDefault();
-        });
-
-      }
-
-      $('.init-population').popover({html:true,title: "Initial Population"}).click(function(e) {
-          $('.popover').not(this).hide();
-          $(this).data("bs.popover").inState.click = false;
-          $(this).popover('show');
-          e.preventDefault();
-      });
-
-      $('.ap-population').popover({html:true,title: "Allowed Population"}).click(function(e) {
-          $('.popover').not(this).hide();
-          $(this).data("bs.popover").inState.click = false;
-          $(this).popover('show');
-          e.preventDefault();
-      });
-
-      resetTransitionProbTable()
-
-  }
-
-  
-  $(document).on("click",".divide",function(e,data) {
-
-    let elem = $(this).parents('tr').first()
-    let rowcount = elem.attr('count')
-    let name = elem.attr('fullname');
-    let id = $(document).find('tr').length
-    let rowname = elem.attr('rowname')
-    let type = elem.attr('type');
-    type=='res'?typeC="Facility":typeC="State";
-
-    let c = ($(document).find('tr[parent='+rowcount+']').length)+1
-
-    elem.addClass('hassub')
-
-    let _class = ""
-
-    if (c!=1) 
-      _class = 'nthsub'
-
-    let this_type_count = $('#staterestable tbody tr[rowname='+rowname+']').length
-
-    let tr = '<tr parent="'+rowcount+'" class="sub '+_class+'" count="'+c+'">'
-    let td1 = '<td><input rid="'+id+'" type="text" class="form-control nameinput" name="stateresname" value="'+name+'-'+this_type_count+' Sub-'+c+'"><small class="text-danger hide">* duplication name is not allowed</small></td>'
-    let td2 = '<td style="font-weight: 900" val="'+name+'" class="stname">'+name+' <small>('+typeC+')</small></td>'
-    let td4 = '<td class="stname"><a class="pointer removeRow"><i class="text-danger fas fa-minus-square"></i></a></td>'
-
-    let h = tr+
-            td1+
-            td2+
-            '<td class="ttd" id="td-'+id+'">'+
-            '<a class="init-population a-tag popover-all" id="ip-'+id+'" data-placement="bottom" data-toggle="popover">Initial Population</a>,&nbsp;&nbsp;'+
-            '<a class="ap-population a-tag popover-all" id="ap-'+id+'" data-placement="bottom" data-toggle="popover">Allowed Population</a>,&nbsp;&nbsp;'+
-            '<a class="cap-population a-tag popover-all" data-placement="bottom" data-toggle="popover" id="c-'+id+'">Capacity</a></span>'+
-            '<span id="ms-'+id+'">,&nbsp;&nbsp;<a class="maxstay a-tag popover-all" id="ipms-'+id+'" data-placement="bottom" data-toggle="popover">Maximum Length of Stay</a></span></td>'+
-            td4+
-            '</tr>';
-
-    
-    if (type == 'state') {
-
-      h = tr+
-          td1+
-          td2+
-          '<td class="ttd" id="td-'+id+'">'+
-          '<a class="init-population a-tag popover-all" id="ip-'+id+'" data-placement="bottom" data-toggle="popover">Initial Population</a>,&nbsp;&nbsp;'+
-          '<a class="ap-population a-tag popover-all" id="ap-'+id+'" data-placement="bottom" data-toggle="popover">Allowed Population</a></td>'+
-          td4+
-          '</tr>';
-
-    }
-
-    if (c==1) {
-
-      $(h).insertAfter(elem);
-
-    } else {
-
-      elem = $(document).find('tr[parent='+rowcount+']').last()
-
-      elem.addClass('nthsub')
-
-      $(h).insertAfter(elem);
-
-    }
-
-    activatePopUpWindows(type,rowname)
-  })
-
-
-  $(document).on('click','.removeRow', function(){
-
-    $(this).parents('tr').first().remove()
-
-  })
-
-  function activatePopUpWindows(type,id){
-
-      if (type=="res") {
-
-        $(document).find('.maxstay').popover({html:true,title: "Maximum Length of Stay"}).click(function(e) {
-            $('.popover').not(this).hide();
-            $(this).data("bs.popover").inState.click = false;
-            $(this).popover('show');
-            e.preventDefault();
-        });
-
-        $(document).find('.cap-population').popover({html:true,title: "Capacity"}).click(function(e) {
-            $('.popover').not(this).hide();
-            $(this).data("bs.popover").inState.click = false;
-            $(this).popover('show');
-            e.preventDefault();
-        });
-
-        $(document).find("input[name=optradio-"+id+"][value=res]").prop("checked", true);
-
-      }
-
-      $(document).find('.init-population').popover({html:true,title: "Initial Population"}).click(function(e) {
-          $('.popover').not(this).hide();
-          $(this).data("bs.popover").inState.click = false;
-          $(this).popover('show');
-          e.preventDefault();
-      });
-
-      $(document).find('.ap-population').popover({html:true,title: "Allowed Population"}).click(function(e) {
-          $('.popover').not(this).hide();
-          $(this).data("bs.popover").inState.click = false;
-          $(this).popover('show');
-          e.preventDefault();
-      });
-
-  }
-
-  // *****************
-  // STATE AND RESOURCES End
 
   $(document).on("click",".closepop",function(e,data) {
 
-    did = $(this).attr('tid')
+    let id = $(this).attr('id')
 
+    let html = $(this).parents('.popover-content').first().clone();
 
-    if ( $(this).attr('type') == 'ap' ){
-
-        $(document).find('.ap-html[did="'+did+'"]').remove()
-
-        html = $(this).parents('.popover-content').first().html()
-
-        div = '<div style="display:none" class="ap-html" did='+did+' >'+html+'</div>'
-
-        $('body').append(div)
-
-    } else {
-
-        $(document).find('.t-html[did="'+did+'"]').remove()
-
-        html = $(this).parents('.popover-content').first().html()
-
-        div = '<div style="display:none" class="t-html" did='+did+' >'+html+'</div>'
-
-        $('body').append(div)
-
+    if(typeof window.popovers[id] !== 'undefined') {
+      window.popovers[id] = html
     }
 
     $('.popover-all').popover('hide');
 
   });
 
-  $("#toexcel").click(function(){
+  $(document).on("click",".divideRes",function(e,data) {
 
-    exportTableToExcel('statetable', 'data')
+    let elem = $(this).parents('tr').first()
 
-  });
+    let parentName = elem.attr('name')
 
-  $("#adddataanchor").click(function(){
+    //Remove Propreties Column
+    elem.find('td').eq(2).html('')
 
-    $('#uploadwrapper').addClass("show").removeClass("hide");
+    let rowcount = elem.attr('count')
 
-  });
+    let type = elem.attr('type');
 
+    let parentID = elem.attr('id')
 
-  $(document).on("click",".ap-population",function(e,data) {
+    let subRowCount = $(document).find('tr[parentID='+parentID+']').length
 
-    id = $(this).attr('id');
-    des = $(this).attr('aria-describedby');
+    let rowID = makeid(5)
+    var myEle = document.getElementById(rowID);
+    while(myEle){
+      rowID = makeid(5)
+    }
 
-    if($(document).find('.ap-html[did="'+id+'"]').length == 0){
+    let tooltipClass= "tooltip-"+rowID
 
-      html = '<div id="tip-'+id+'" class="table-responsive">'+
-         '<table id="'+id+'" class="table table-bordered">'+
-            '<thead>'+
-              '<tr>'+
-                '<th>Population Type</th><th>Allowed</th>'+
-              '</tr>'+
-            '</thead>'+
-            '<tbody>';
+    let row = MakeSUBResourcesRowColumnHTML(rowID,parentID,subRowCount,tooltipClass,parentName)
 
-      $.each( window.populationType, function( k1, value ) {
+    if (subRowCount==0) {
 
-        html += '<tr><td class="pop" style="font-weight: 900">'+value+'</td>'+
-                '<td class="ttd pop"><label class="checkbox-inline"><input class="ana" name="ap-po-'+k1+'" type="checkbox" value="" checked>Allowed</label></td></tr>';
+      elem.addClass('parentrow')
 
-      });
-
-      html +=   '</tbody></table></div><div style="width:100%"><a type="ap" aid="'+id+'" id="'+des+'" class="closepop a-tag">Save and Close</a></div>';
-
-      $('#'+id).on('shown.bs.popover', function () {
-        $('#'+des).find('.popover-content').html(html);
-      })
-
-      $('body').append('<input type="hidden" class="'+id+'">')
+      $(row).insertAfter(elem);
 
     } else {
 
-      html = $(document).find('.ap-html[did="'+id+'"]').html()
+      let childElem = $(document).find('tr[parentID='+parentID+']').last()
 
-      $('#'+id).on('shown.bs.popover', function () {
-        $('#'+des).find('.popover-content').html(html);
-      })
+      childElem.addClass('nthsub')
+
+      $(row).insertAfter(childElem);
+
+    }
+
+    $('.'+tooltipClass).tooltip();
+
+    activatePopUpWindows(rowID,type)
+
+  })
+
+  $(document).on('click','.removeResRow', function(){
+
+    let elem = $(this).parents('tr').first();
+    let rowID = elem.attr('id')
+
+    window.resources.splice( window.resources.indexOf(rowID), 1 );
+
+    let apopID = 'apop-'+rowID
+    let ipopID = 'ipop-'+rowID
+    let mpopID = 'mpop-'+rowID
+    let cpopID = 'cpop-'+rowID
+
+    delete window.popovers[apopID]
+    delete window.popovers[ipopID]
+    delete window.popovers[mpopID]
+    delete window.popovers[cpopID]
+
+    
+    //ALL SUB-ROWS
+    $(document).find('tr[parentID='+rowID+']').each(function( index ) {
+
+      let rowid = $(this).attr('id')
+
+      let apopID = 'apop-'+rowid
+      let ipopID = 'ipop-'+rowid
+      let mpopID = 'mpop-'+rowid
+      let cpopID = 'cpop-'+rowid
+
+      delete window.popovers[apopID]
+      delete window.popovers[ipopID]
+      delete window.popovers[mpopID]
+      delete window.popovers[cpopID]
+      
+      $(this).remove()
+
+    });
+
+    elem.remove()
+
+    //if no more row left
+    let rowCount = $("#restable tbody .mainrow").length
+
+    if (rowCount==0) {
+
+      $("#restable tbody").append('<tr><td></td><td></td><td></td><td></td></tr>')
+      
+    }
+
+  })
+
+  $(document).on('click','.removeResSubRow', function(){
+
+    let elem = $(this).parents('tr').first();
+    let rowID = elem.attr('id')
+    let parentID = elem.attr('parentID')
+
+    window.resources.splice( window.resources.indexOf(rowID), 1 );
+
+    let apopID = 'apop-'+rowID
+    let ipopID = 'ipop-'+rowID
+    let mpopID = 'mpop-'+rowID
+    let cpopID = 'cpop-'+rowID
+
+    delete window.popovers[apopID]
+    delete window.popovers[ipopID]
+    delete window.popovers[mpopID]
+    delete window.popovers[cpopID]
+
+    elem.remove()
+
+    //IF THIS IS THE LAST SUBROW THEN ADD PROP TD TO THE MAINROW
+    let subRowCount = $(document).find('tr[parentID='+parentID+']').length
+
+    if (subRowCount == 0) {
+      let parentElem = $(document).find('tr[id='+parentID+']')
+      let type = parentElem.attr('type')
+      let td3 = makeResourcesPropretiesTD(parentID)
+      parentElem.removeClass('parentrow')
+      parentElem.find('td').eq(2).html(td3)
+      activatePopUpWindows(parentID,type)
+    }
+
+  })
+
+
+  //********************************
+  //***********************STEP 3 END
+
+
+  //*********************************
+  //**************************STEP 4
+
+  $('#statebtn').on('click', function(e) {
+
+    var elem = document.getElementById("stateselect");
+    var id = elem.options[elem.selectedIndex].id;
+    let name = elem.options[elem.selectedIndex].value;
+
+    if (id != 'title'){
+
+      let type = $('option[id='+id+']').attr('type')
+
+      //is this the first row
+      let rowCount = $("#statetable tbody .mainrow").length
+      if (rowCount== 0) {
+        $("#statetable tbody tr").remove()
+      }
+
+      let rowID = makeid(5)
+      var myEle = document.getElementById(rowID);
+      while(myEle){
+        rowID = makeid(5)
+      }
+
+      var obj = {};
+      obj[rowID] = name;
+      window.states.push(obj)
+
+      let tooltipClass = "tooltip-"+rowID
+      let row = MakeStatesRowColumnHTML(rowID,tooltipClass,type,name)
+
+      $("#statetable tbody").append(row)
+
+      $('.'+tooltipClass).tooltip();
+
+      activatePopUpWindows(rowID,type)
 
     }
 
   })
 
-  $(document).on("click",".maxstay",function(e,data) {
+  $(document).on("click",".divideState",function(e,data) {
 
-    id = $(this).attr('id');
+    let elem = $(this).parents('tr').first()
 
-    des = $(this).attr('aria-describedby');
+    let parentName = elem.attr('name')
 
+    //Remove Propreties Column
+    elem.find('td').eq(2).html('')
 
-    val = $('#iipms-'+id).attr('val')
+    let rowcount = elem.attr('count')
 
-    if(typeof val == 'undefined'){
-      val = 7
+    let type = elem.attr('type');
+
+    let parentID = elem.attr('id')
+
+    let subRowCount = $(document).find('tr[parentID='+parentID+']').length
+
+    let rowID = makeid(5)
+    var myEle = document.getElementById(rowID);
+    while(myEle){
+      rowID = makeid(5)
     }
 
-    html =  '<div class="table-responsive">'+
-            '<table id="'+id+'" class="table table-bordered"><tbody>';
+    var obj = {};
+    obj[rowID] = 'name';
+    window.states.push(obj)
 
-    html += '<tr><td class="pop" style="font-weight: 900">Maximum Length of Stay (days)</td>'+
-              '<td class="ttd pop"><input value="'+val+'" rid="'+id+'" name="ip-rms" style="width:100px; height:100%;" placeholder="#"></td></tr>';
+    let tooltipClass= "tooltip-"+rowID
 
-    html +=   '</tbody></table></div><div style="width:100%"><a id="'+des+'" class="closepop a-tag">Save and Close</a></div>';
+    let row = MakeSUBStatesRowColumnHTML(rowID,parentID,subRowCount,tooltipClass,parentName)
 
-    $('#'+id).on('shown.bs.popover', function () {
-      $('#'+des).find('.popover-content').html(html);
-    })
+    if (subRowCount==0) {
 
-  })
+      elem.addClass('parentrow')
 
-  $(document).on("click",".init-population",function(e,data) {
-
-
-
-    id = $(this).attr('id');
-
-    des = $(this).attr('aria-describedby');
-
-
-    val = $('#iip-'+id).attr('val')
-
-    if(typeof val == 'undefined'){
-      val = 0
-    }
-
-    html = '<div class="table-responsive">'+
-       '<table id="'+id+'" class="table table-bordered"><tbody>';
-
-    $.each(window.populationType, function( k1, value ) {
-
-      html += '<tr><td class="pop" style="font-weight: 900">'+value+'</td>'+
-              '<td class="ttd pop"><input value="'+val+'" rid="'+id+'" name="ip-r" style="width:100px; height:100%;" placeholder="#"></td></tr>';
-
-
-    });  
-     
-    html +=   '</tbody></table></div><div style="width:100%"><a id="'+des+'" class="closepop a-tag">Save and Close</a></div>';
-
-    $('#'+id).on('shown.bs.popover', function () {
-      $('#'+des).find('.popover-content').html(html);
-    })
-
-  })
-
-  $(document).on("click",".cap-population",function(e,data) {
-
-    id = $(this).attr('id');
-
-    des = $(this).attr('aria-describedby');
-
-    val = $('#inp-pc-r-'+id).attr('val')
-
-    if(typeof val == 'undefined'){
-      val = 0
-    }
-
-    html =  '<div class="table-responsive">'+
-            '<table id="'+id+'" class="table table-bordered"><tbody>';
-
-    html += '<tr><td class="pop" style="font-weight: 900">Population Count</td>'+
-            '<td class="ttd pop" ><input id="pc-r-'+id+'" name="pc-r" style="width:100px; height:100%;" placeholder="#" value="'+val+'"></td></tr>';
-
-    html +=   '</tbody></table></div><div style="width:100%"><a id="'+des+'" class="closepop a-tag">Save and Close</a></div>';
-
-    $(document).find('#'+id).on('shown.bs.popover', function () {
-      $(document).find('.popover-content').html(html);
-    })
-
-  })
-
-  $(document).on("blur","input[name='ip-r']",function(e,data) {
-
-    id = $(this).attr('rid')
-    val = $(this).val()
-
-    $(document).find('#iip-'+id).remove()
-
-    html = '<input type="hidden" id="iip-'+id+'" val="'+val+'" class="caps">'
-
-    $('body').append(html)
-
-  });
-
-
-  $(document).on("blur","input[name='pc-r']",function(e,data) {
-
-    id = $(this).attr('id')
-    val = $(this).val()
-
-      $(document).find('#inp-'+id).remove()
-
-      html = '<input type="hidden" id="inp-'+id+'" val="'+val+'" class="caps">'
-
-      $('body').append(html)
-
-  });
-
-  $(document).on("change",".ana",function(e,data) {
-
-    if ($(this).is(':checked')) {
-
-      $(this).attr('checked','checked')
+      $(row).insertAfter(elem);
 
     } else {
 
-      $(this).removeAttr('checked')
+      let childElem = $(document).find('tr[parentID='+parentID+']').last()
 
+      childElem.addClass('nthsub')
+
+      $(row).insertAfter(childElem);
+
+    }
+
+    $('.'+tooltipClass).tooltip();
+
+    activatePopUpWindows(rowID,type)
+
+  })
+
+  $(document).on('click','.removeStateRow', function(){
+
+    let elem = $(this).parents('tr').first();
+    let rowID = elem.attr('id')
+
+    window.states.splice( window.states.indexOf(rowID), 1 );
+
+    let apopID = 'apop-'+rowID
+    let ipopID = 'ipop-'+rowID
+    let mpopID = 'mpop-'+rowID
+    let cpopID = 'cpop-'+rowID
+
+    delete window.popovers[apopID]
+    delete window.popovers[ipopID]
+    delete window.popovers[mpopID]
+    delete window.popovers[cpopID]
+
+    
+    //ALL SUB-ROWS
+    $(document).find('tr[parentID='+rowID+']').each(function( index ) {
+
+      let rowid = $(this).attr('id')
+
+      let apopID = 'apop-'+rowid
+      let ipopID = 'ipop-'+rowid
+      let mpopID = 'mpop-'+rowid
+      let cpopID = 'cpop-'+rowid
+
+      delete window.popovers[apopID]
+      delete window.popovers[ipopID]
+      delete window.popovers[mpopID]
+      delete window.popovers[cpopID]
+      
+      $(this).remove()
+
+    });
+
+    elem.remove()
+
+    //if no more row left
+    let rowCount = $("#statetable tbody .mainrow").length
+
+    if (rowCount==0) {
+
+      $("#statetable tbody").append('<tr><td></td><td></td><td></td><td></td></tr>')
+      
     }
 
   })
 
-  $(document).on("change","#fileinput",function(e,data) {
 
-      $(this).closest(".file").removeClass("bg-gradient-primary").addClass("bg-gradient-default").find('.txt').text($(this).val());
+  $(document).on('click','.removeStateSubRow', function(){
 
-      //Reference the FileUpload element.
-      var fileUpload = $("#fileinput")[0];
-
-      //Validate whether File is valid Excel file.
-      var regex = /^([a-zA-Z0-9\s_\\.\-:])+(.xls|.xlsx)$/;
-      if (regex.test(fileUpload.value.toLowerCase())) {
-          if (typeof (FileReader) != "undefined") {
-              var reader = new FileReader();
-
-              //For Browsers other than IE.
-              if (reader.readAsBinaryString) {
-                  reader.onload = function (e) {
-                      ProcessExcel(e.target.result);
-                  };
-                  reader.readAsBinaryString(fileUpload.files[0]);
-              } else {
-                  //For IE Browser.
-                  reader.onload = function (e) {
-                      var data = "";
-                      var bytes = new Uint8Array(e.target.result);
-                      for (var i = 0; i < bytes.byteLength; i++) {
-                          data += String.fromCharCode(bytes[i]);
-                      }
-                      ProcessExcel(data);
-                  };
-                  reader.readAsArrayBuffer(fileUpload.files[0]);
-              }
-          } else {
-              alert("This browser does not support HTML5.");
-          }
-      } else {
-          alert("Please upload a valid Excel file.");
-      }
-
-  });
+    let elem = $(this).parents('tr').first();
+    let rowID = elem.attr('id')
+    let parentID = elem.attr('parentID')
 
 
-  $(document).on("click",".deletesubresource",function() {
+    console.log(rowID)
+    console.log(window.states.indexOf(rowID))
 
-    $(this).closest(".subresource").remove();
+    window.states.splice( window.states.indexOf(rowID), 1 );
 
-  });
+    let apopID = 'apop-'+rowID
+    let ipopID = 'ipop-'+rowID
+    let mpopID = 'mpop-'+rowID
+    let cpopID = 'cpop-'+rowID
 
-  $(document).on("click","#runsimulation",function() {
+    delete window.popovers[apopID]
+    delete window.popovers[ipopID]
+    delete window.popovers[mpopID]
+    delete window.popovers[cpopID]
 
-    $('#myform').submit()
+    elem.remove()
 
-  });
+    //IF THIS IS THE LAST SUBROW THEN ADD PROP TD TO THE MAINROW
+    let subRowCount = $(document).find('tr[parentID='+parentID+']').length
 
-  //   $("body").on("click", "#upload", function () {
-  //     //Reference the FileUpload element.
-  //     var fileUpload = $("#fileinput")[0];
+    if (subRowCount == 0) {
+      let parentElem = $(document).find('tr[id='+parentID+']')
+      let type = parentElem.attr('type')
+      let td3 = makeStatesPropretiesTD(parentID)
+      parentElem.removeClass('parentrow')
+      parentElem.find('td').eq(2).html(td3)
+      activatePopUpWindows(parentID,type)
+    }
 
-  //     //Validate whether File is valid Excel file.
-  //     var regex = /^([a-zA-Z0-9\s_\\.\-:])+(.xls|.xlsx)$/;
-  //     if (regex.test(fileUpload.value.toLowerCase())) {
-  //         if (typeof (FileReader) != "undefined") {
-  //             var reader = new FileReader();
+  })
 
-  //             //For Browsers other than IE.
-  //             if (reader.readAsBinaryString) {
-  //                 reader.onload = function (e) {
-  //                     ProcessExcel(e.target.result);
-  //                 };
-  //                 reader.readAsBinaryString(fileUpload.files[0]);
-  //             } else {
-  //                 //For IE Browser.
-  //                 reader.onload = function (e) {
-  //                     var data = "";
-  //                     var bytes = new Uint8Array(e.target.result);
-  //                     for (var i = 0; i < bytes.byteLength; i++) {
-  //                         data += String.fromCharCode(bytes[i]);
-  //                     }
-  //                     ProcessExcel(data);
-  //                 };
-  //                 reader.readAsArrayBuffer(fileUpload.files[0]);
-  //             }
-  //         } else {
-  //             alert("This browser does not support HTML5.");
-  //         }
-  //     } else {
-  //         alert("Please upload a valid Excel file.");
-  //     }
-  // });
+  //*********************************
+  //**************************STEP 4 END
 
 
 
-  function ProcessExcel(data) {
+  $(document).on('keyup', '.transitioninput', function() {
 
-      var exceltojson = []
+    let val = parseFloat($(this).val())
 
-      //Read the Excel File data.
-      var workbook = XLSX.read(data, {
-          type: 'binary'
-      });
 
-      //Fetch the name of First Sheet.
-      var firstSheet = workbook.SheetNames[0];
+      let allinputs = $(this).parents('tr').first().find('input')
+      let total = 0
 
-      //Read all rows from First Sheet into an JSON array.
-      var excelRows = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[firstSheet]);
+      allinputs.each(function() {
 
-      //Add the data rows from Excel file.
-      for (var i = 0; i < excelRows.length; i++) {
+        let v = $(this).val()
 
-        _rarray = []
-
-        let _row = excelRows[i]
-
-        let c = 0
-
-        $.each(_row, function( index, value ) {
-
-          if (c!=0) {
-            _rarray.push(value)
-          }
-          c = c+1
-
-        });
-
-        exceltojson.push(_rarray)
-
-      }
-
-      let newarray = []
-
-      for (var i = 0; i < exceltojson.length; i++) {
-
-        for (var j = 0; j < exceltojson[i].length; j++) {
-
-          newarray.push(exceltojson[i][j])
-
+        if (v == "") {
+          v = 0
         }
 
-      }
+        let num = parseFloat(v)
 
-      $(document).find(".ttd").each(function (index, value) {
-        
-        $(this).find('input').val(newarray[index])
+        total = total + num
 
       });
 
-  };
+      total = total.toFixed(2)
+
+      let totaltext = $(this).parents('tr').first().find('.rowtotal').first()
+
+      totaltext.text(total)
+
+      if (total > 1){
+        totaltext.text('Total must be less then or equal to 1')
+        totaltext.css('color','red')
+      } else {
+        totaltext.css('color','black')
+      }
+
+        
+  });
+
+  //LAST STEP
+
+  $('#runsimulation').on('click', function(e){
+
+    if (submitBtnStatus()) {
+
+      $('#myform').submit()
+
+    } else {
 
 
-});
+      const Toast = Swal.mixin({
+        toast: true,
+        position: 'center',
+        showConfirmButton: false,
+        animation:false
+      });
+
+      Toast.fire({
+      title: 'Error',
+      text: "One or more steps are incomplete!",
+      icon: 'warning',
+        showConfirmButton: true,
+        confirmButtonColor: '#3085d6',
+        confirmButtonText: 'Okay'
+      })
+
+    }
+
+
+  })
+
+})
+
+function validateAllSteps(){
+
+  let output = false
+
+  if (checkStep1() && checkStep2() && checkStep3() && checkStep4() && checkStep5() && checkStep6()) {
+
+    output = true
+
+  } else {
+
+  }
+
+  return output
+
+}
+
+
+function submitBtnStatus(){
+
+  let output = false
+
+  if (validateAllSteps()) {
+
+    output = true
+
+    $('#runsimulation').addClass('btn-primary').removeClass('btn-default').removeAttr('disabled')
+
+
+  } else {
+
+    $('#runsimulation').addClass('btn-default').removeClass('btn-primary').attr('disabled',true)
+
+  }
+
+  return output
+
+}
+
+function checkStep1(){
+
+  let output = false
+
+  if (window.loc == 1 && $('#simulation-name').val()) {
+
+    $('#loc-overview').text('Complete').addClass('text-success').removeClass('text-danger')
+
+    $('#loc-div').removeClass('hide')
+
+    $('#simname-side').text( $('#simulation-name').val() )
+    $('#cityname-side').text( $('#autocomplete').val() )
+
+    output = true
+
+
+  } else {
+
+    $('#loc-overview').text('Incomplete').addClass('text-danger').removeClass('text-success')
+
+    $('#loc-div').addClass('hide')
+
+    $('#simname-side').text('')
+    $('#cityname-side').text('')
+
+  }
+
+  return output
+  
+}
+
+function checkStep2(){
+
+  let output = false
+
+  if (window.populationType.length >= 1) {
+
+    $('#population-overview').text('Complete').addClass('text-success').removeClass('text-danger')
+
+    output = true
+
+  } else {
+
+    $('#population-overview').text('Incomplete').addClass('text-danger').removeClass('text-success')
+
+  }
+  
+  return output
+
+}
+
+function checkStep3(){
+
+  let output = false
+
+  if (window.resources.length >= 1) {
+
+    $('#resources-overview').text('Complete').addClass('text-success').removeClass('text-danger')
+
+    output = true
+
+  } else {
+
+    $('#resources-overview').text('Incomplete').addClass('text-danger').removeClass('text-success')
+
+  }
+
+  return output
+
+}
+
+function checkStep4(){
+
+  let output = false
+
+  if (window.states.length >= 1) {
+
+    output = true
+
+    $('#states-overview').text('Complete').addClass('text-success').removeClass('text-danger')
+
+
+  } else {
+
+    $('#states-overview').text('Incomplete').addClass('text-danger').removeClass('text-success')
+
+  }
+
+  return output
+
+}
+
+
+function checkStep5(){
+
+  let output = false
+
+  if (checkStep3() && checkStep4()) {
+
+    output = true
+
+    $('#transitions-overview').text('Complete').addClass('text-success').removeClass('text-danger')
+
+  } else {
+
+    $('#transitions-overview').text('Incomplete').addClass('text-danger').removeClass('text-success')
+
+  }
+
+  return output
+
+}
+
+function checkStep6(){
+
+  let output = false
+
+  if ($('#simweeks').val() && $('#simnum').val()) {
+
+    output = true
+
+    $('#parameters-overview').text('Complete').addClass('text-success').removeClass('text-danger')
+
+
+  } else {
+
+    $('#parameters-overview').text('Incomplete').addClass('text-danger').removeClass('text-success')
+
+  }
+  
+  return output
+
+}
+
+function  removeDuplicate(myarray){
+  let uniqueNames = []
+  $.each(myarray, function(i, el){
+      if($.inArray(el, uniqueNames) === -1) uniqueNames.push(el);
+  });
+  return uniqueNames
+
+}
+
+function makeid(length) {
+   var result           = '';
+   var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+   var charactersLength = characters.length;
+   for ( var i = 0; i < length; i++ ) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+   }
+   return result;
+
+}
+
+function activatePopUpWindows(rowID,type){
+
+  let apopID = 'apop-'+rowID
+  let ipopID = 'ipop-'+rowID
+  let mpopID = 'mpop-'+rowID
+  let cpopID = 'cpop-'+rowID
+
+  $(document).find('#'+apopID).popover({html:true,title: "Allowed Population"}).click(function(e) {
+      $('.popover').not(this).hide();
+      $(this).data("bs.popover").inState.click = false;
+      $(this).popover('show');
+      e.preventDefault();
+  });
+
+  $(document).find('#'+ipopID).popover({html:true,title: "Initial Population"}).click(function(e) {
+      $('.popover').not(this).hide();
+      $(this).data("bs.popover").inState.click = false;
+      $(this).popover('show');
+      e.preventDefault();
+  });
+
+  if (type=="res") {
+
+    $(document).find('#'+mpopID).popover({html:true,title: "Maximum Length of Stay"}).click(function(e) {
+        $('.popover').not(this).hide();
+        $(this).data("bs.popover").inState.click = false;
+        $(this).popover('show');
+        e.preventDefault();
+    });
+
+    $(document).find('#'+cpopID).popover({html:true,title: "Capacity"}).click(function(e) {
+        $('.popover').not(this).hide();
+        $(this).data("bs.popover").inState.click = false;
+        $(this).popover('show');
+        e.preventDefault();
+    });
+
+  }
+
+  addApopHTML(apopID)
+  addIpopHTML(ipopID)
+  addMpopHTML(mpopID)
+  addCpopHTML(cpopID)
+
+}
+
+function addApopHTML(ThisID){
+
+  let html = '<div class="table-responsive">'+
+     '<table id="'+ThisID+'" class="table table-bordered">'+
+        '<thead>'+
+          '<tr>'+
+            '<th>Population Type</th><th>Allowed</th>'+
+          '</tr>'+
+        '</thead>'+
+        '<tbody>';
+
+  $.each( window.populationType, function( k1, value ) {
+
+    html += '<tr><td class="pop" style="font-weight: 900">'+value+'</td>'+
+            '<td class="pop"><label class="checkbox-inline"><input class="ana" type="checkbox" value="" checked>Allowed</label></td></tr>';
+
+  });
+
+  html +=   '</tbody></table></div><div style="width:100%"><a type="ap" id="'+ThisID+'" class="closepop a-tag">Save and Close</a></div>';
+
+
+  if(typeof window.popovers[ThisID] === 'undefined') {
+    window.popovers[ThisID] = html
+  }
+
+  $(document).find('#'+ThisID).on('shown.bs.popover', function () {
+
+    let popid = $(this).attr('aria-describedby')
+
+    let thisid = $(this).attr('id')
+
+    $(document).find('#'+popid).first().find('.popover-content').first().html(window.popovers[thisid]);
+
+  })
+
+}
+
+function addIpopHTML(ThisID){
+
+  let html = '<div class="table-responsive">'+
+     '<table id="'+ThisID+'" class="table table-bordered"><tbody>';
+
+  $.each(window.populationType, function( k1, value ) {
+
+    html += '<tr><td class="pop" style="font-weight: 900">'+value+'</td>'+
+            '<td class="pop"><input value="0" name="ip-r" style="width:100px; height:100%;" placeholder="#"></td></tr>';
+
+  });
+
+  html +=   '</tbody></table></div><div style="width:100%"><a id="'+ThisID+'" class="closepop a-tag">Save and Close</a></div>';
+
+
+  if(typeof window.popovers[ThisID] === 'undefined') {
+    window.popovers[ThisID] = html
+  }
+
+  $(document).find('#'+ThisID).on('shown.bs.popover', function () {
+
+    let popid = $(this).attr('aria-describedby')
+
+    let thisid = $(this).attr('id')
+
+    $(document).find('#'+popid).first().find('.popover-content').first().html(window.popovers[thisid]);
+
+  })
+
+}
+
+function addCpopHTML(ThisID){
+
+  let html =  '<div class="table-responsive">'+
+          '<table id="'+ThisID+'" class="table table-bordered"><tbody>';
+
+  html += '<tr><td class="pop" style="font-weight: 900">Capacity</td>'+
+          '<td class="pop" ><input style="width:100px; height:100%;" placeholder="#" value="0"></td></tr>';
+
+  html +=   '</tbody></table></div><div style="width:100%"><a id="'+ThisID+'" class="closepop a-tag">Save and Close</a></div>';
+
+
+  if(typeof window.popovers[ThisID] === 'undefined') {
+    window.popovers[ThisID] = html
+  }
+
+  $(document).find('#'+ThisID).on('shown.bs.popover', function () {
+
+    let popid = $(this).attr('aria-describedby')
+
+    let thisid = $(this).attr('id')
+
+    $(document).find('#'+popid).first().find('.popover-content').first().html(window.popovers[thisid]);
+
+  })
+
+}
+
+function addMpopHTML(ThisID){
+
+  let html =  '<div class="table-responsive">'+
+          '<table id="'+ThisID+'" class="table table-bordered"><tbody>';
+
+  html += '<tr><td class="pop" style="font-weight: 900">Maximum Length of Stay (days)</td>'+
+            '<td class="pop"><input value="7" style="width:100px; height:100%;" placeholder="#"></td></tr>';
+
+  html +=   '</tbody></table></div><div style="width:100%"><a id="'+ThisID+'" class="closepop a-tag">Save and Close</a></div>';
+
+
+  if(typeof window.popovers[ThisID] === 'undefined') {
+    window.popovers[ThisID] = html
+  }
+
+  $(document).find('#'+ThisID).on('shown.bs.popover', function () {
+
+    let popid = $(this).attr('aria-describedby')
+
+    let thisid = $(this).attr('id')
+
+    $(document).find('#'+popid).first().find('.popover-content').first().html(window.popovers[thisid]);
+
+  })
+
+}
+
+function makeResourcesPropretiesTD(rowID){
+  let html =  '<a id="apop-'+rowID+'" class="a-tag popover-all" data-placement="bottom" data-toggle="popover">Allowed Population</a>,&nbsp;&nbsp;'+
+              '<a id="ipop-'+rowID+'" class="a-tag popover-all" data-placement="bottom" data-toggle="popover">Initial Population</a>,&nbsp;&nbsp;'+
+              '<a id="mpop-'+rowID+'" class="a-tag popover-all" data-placement="bottom" data-toggle="popover">Maximum Length of Stay</a>,&nbsp;&nbsp;'+
+              '<a id="cpop-'+rowID+'" class="a-tag popover-all" data-placement="bottom" data-toggle="popover">Capacity</a>'
+  return html
+}
+
+function makeStatesPropretiesTD(rowID){
+  let html =  '<a id="apop-'+rowID+'" class="a-tag popover-all" data-placement="bottom" data-toggle="popover">Allowed Population</a>,&nbsp;&nbsp;'+
+              '<a id="ipop-'+rowID+'" class="a-tag popover-all" data-placement="bottom" data-toggle="popover">Initial Population</a>';
+  return html
+}
+
+function HandleStepsOnNextBtnClick(){
+
+  const Toast = Swal.mixin({
+    toast: true,
+    position: 'center',
+    showConfirmButton: false,
+    animation:false
+  });
+
+  let step = window.currentstep
+
+  switch(step){
+
+    //LOCATION
+    case 1:
+
+      if (checkStep1()) {
+        $('#smartwizard').smartWizard("next")
+      } else {
+        Toast.fire({
+        title: 'Error',
+        text: "Simulation name and the city name are required!",
+        icon: 'warning',
+          showConfirmButton: true,
+          confirmButtonColor: '#3085d6',
+          confirmButtonText: 'Okay'
+        })
+      }
+
+    break;
+
+    //POPULATION
+    case 2:
+
+      if (checkStep2()) {
+        $('#smartwizard').smartWizard("next")
+      } else {
+        Toast.fire({
+        title: 'Error',
+        text: "Population type is required!",
+        icon: 'warning',
+          showConfirmButton: true,
+          confirmButtonColor: '#3085d6',
+          confirmButtonText: 'Okay'
+        })
+      }
+
+    break;
+
+    //RESOURCES
+    case 3:
+
+      if (checkStep3()) {
+        $('#smartwizard').smartWizard("next")
+      } else {
+        Toast.fire({
+        title: 'Error',
+        text: "At least 1 resource is required!",
+        icon: 'warning',
+          showConfirmButton: true,
+          confirmButtonColor: '#3085d6',
+          confirmButtonText: 'Okay'
+        })
+      }
+
+    break;
+
+    //STATES
+    case 4:
+
+      if (checkStep4()) {
+        MakeTransitionalPropTable()
+        $('#smartwizard').smartWizard("next")
+      } else {
+        Toast.fire({
+        title: 'Error',
+        text: "At least 1 state is required!",
+        icon: 'warning',
+          showConfirmButton: true,
+          confirmButtonColor: '#3085d6',
+          confirmButtonText: 'Okay'
+        })
+      }
+
+    break;
+
+    //TRANSITIONS
+    case 5:
+
+      if (checkStep5()) {
+        $('#smartwizard').smartWizard("next")
+      } else {
+        Toast.fire({
+        title: 'Error',
+        text: "Transition Probability is required!",
+        icon: 'warning',
+          showConfirmButton: true,
+          confirmButtonColor: '#3085d6',
+          confirmButtonText: 'Okay'
+        })
+      }
+
+    break;
+
+    //PRAMETERS
+    case 6:
+
+      if (checkStep6()) {
+        
+      } else {
+        Toast.fire({
+        title: 'Error',
+        text: "Parameters are required!",
+        icon: 'warning',
+          showConfirmButton: true,
+          confirmButtonColor: '#3085d6',
+          confirmButtonText: 'Okay'
+        })
+      }
+
+    break;
+  }
+
+  submitBtnStatus()
+
+}
+
+function MakeResourcesRowColumnHTML(rowID,tooltipClass,type,name){
+  let rowCount = $("#restable tbody tr").length
+  let tr = '<tr id="'+rowID+'" class="mainrow" count="'+rowCount+'" type="'+type+'" name="'+name+'">';
+  let td0 = '<td>'+name+'</td>';
+  let td1 = '<td><input type="text" class="form-control" name="resname" placeholder="Name (unique)"><small class="text-danger hide">* duplication name is not allowed</small></td>';
+  let td3 = '<td>'+makeResourcesPropretiesTD(rowID)+'</td>'
+  let td4 = '<td><a data-toggle="tooltip" data-placement="top" title="Add Sub Resources" class="divideRes pointer '+tooltipClass+'"><i class="text-primary fas fa-layer-group"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;<a data-toggle="tooltip" data-placement="top" title="Delete Row" class="pointer removeResRow '+tooltipClass+'"><i class="text-danger fas fa-minus-square"></i></a></td>'
+  let row =   tr+
+              td0+
+              td1+
+              td3+
+              td4+
+              '</tr>';
+  return row;
+}
+
+function MakeSUBResourcesRowColumnHTML(rowID,parentID,subRowCount,tooltipClass,parentName){
+  let _class = ""
+  if (subRowCount!=0) 
+    _class = 'nthsub'
+
+  let tr = '<tr id="'+rowID+'" parentID="'+parentID+'" class="sub '+_class+'" count="'+subRowCount+'">'
+  let td0 = '<td>Sub '+parentName+'</td>';
+  let td1 = '<td><input type="text" class="form-control" name="resname" placeholder="Name (unique)"><small class="text-danger hide">* duplication name is not allowed</small></td>'
+  let td4 = '<td><a data-toggle="tooltip" data-placement="top" title="Delete Row" class="pointer removeResSubRow '+tooltipClass+'"><i class="text-danger fas fa-minus-square"></i></a></td>'
+  let td3 = '<td>'+makeResourcesPropretiesTD(rowID)+'</td>'
+  let row =   tr+
+              td0+
+              td1+
+              td3+
+              td4+
+              '</tr>';
+  return row;
+}
+
+function MakeStatesRowColumnHTML(rowID,tooltipClass,type,name){
+  let rowCount = $("#statetable tbody tr").length
+  let tr = '<tr id="'+rowID+'" class="mainrow" count="'+rowCount+'" type="'+type+'" name="'+name+'">';
+  let td0 = '<td>'+name+'</td>';
+  let td1 = '<td><input type="text" class="form-control" placeholder="Name (unique)"><small class="text-danger hide">* duplication name is not allowed</small></td>';
+  let td3 = '<td>'+makeStatesPropretiesTD(rowID)+'</td>'
+  let td4 = '<td><a data-toggle="tooltip" data-placement="top" title="Add Sub State" class="divideState pointer '+tooltipClass+'"><i class="text-primary fas fa-layer-group"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;<a data-toggle="tooltip" data-placement="top" title="Delete Row" class="pointer removeStateRow '+tooltipClass+'"><i class="text-danger fas fa-minus-square"></i></a></td>'
+  let row =   tr+
+              td0+
+              td1+
+              td3+
+              td4+
+              '</tr>';
+  return row;
+}
+
+function MakeSUBStatesRowColumnHTML(rowID,parentID,subRowCount,tooltipClass,parentName){
+  let _class = ""
+  if (subRowCount!=0) 
+    _class = 'nthsub'
+
+  let tr = '<tr id="'+rowID+'" parentID="'+parentID+'" class="sub '+_class+'" count="'+subRowCount+'">'
+  let td0 = '<td>Sub '+parentName+'</td>';
+  let td1 = '<td><input type="text" class="form-control" placeholder="Name (unique)"><small class="text-danger hide">* duplication name is not allowed</small></td>'
+  let td4 = '<td><a data-toggle="tooltip" data-placement="top" title="Delete Row" class="pointer removeStateSubRow '+tooltipClass+'"><i class="text-danger fas fa-minus-square"></i></a></td>'
+  let td3 = '<td>'+makeStatesPropretiesTD(rowID)+'</td>'
+  let row =   tr+
+              td0+
+              td1+
+              td3+
+              td4+
+              '</tr>';
+  return row;
+}
+
+function MakeTransitionalPropTable(){
+
+  let arr = []
+
+  Object.keys(window.resources).forEach(function(key) {
+
+    Object.keys(window.resources[key]).forEach(function(key2) {
+
+      arr.push(window.resources[key][key2])
+
+    });
+
+  });
+
+  Object.keys(window.states).forEach(function(key) {
+
+    Object.keys(window.states[key]).forEach(function(key2) {
+
+      arr.push(window.states[key][key2])
+
+    });
+
+  });
+
+
+  arr = removeDuplicate(arr)
+
+  html = '<div class="table-responsive">'+
+  '<table id="transprop" class="table table-bordered">'+
+  '<thead>'+
+  '<tr><th></th>';
+
+
+  $.each( arr, function( k1, value ) {
+
+  html += '<th>'+value+'</th>';
+
+  });
+
+  html += '<th>Total</th>';
+
+  html += '</tr>'+
+  '</thead>'+
+  '<tbody>';
+
+  $.each( arr, function( k1, v1 ) {
+
+    html += '<tr><td class="titles">'+v1+'</td>';
+
+    $.each( arr, function( k1, v2 ) {
+
+      html += '<td><input id="'+v1+'-'+v2+'" type="text" class="form-control transitioninput" placeholder="0 to 1"></td>';
+     
+
+    });
+     html += '<td class="rowtotal">0</td>';
+
+    html += '</tr>';
+
+  });
+
+
+  html += '</tbody></table></div>';
+
+  $('#transitiontable').html(html)
+
+}
+

@@ -7,6 +7,14 @@
 
 @section('content')
 
+  <style type="text/css">
+    
+    i.fas.fa-trash.deletesubresource {
+      color: #ff3a3a;
+    }
+
+  </style>
+
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper" style="margin-left: 0">
   <!-- Content Header (Page header) -->
@@ -49,6 +57,7 @@
                                         
                                         <p class="text-muted text-sm"><b>Number of weeks: </b> {{$val->numberofweeks}}</p>
                                         <p class="text-muted text-sm"><b>Number of simulation: </b> {{$val->numberofsims}}</p>
+                                        <p class="text-muted text-sm"><b>Created by: </b> {{$val->creatorname}}</p>
                                         <p class="text-muted text-sm"><b>Created at: </b> {{$val->created_at}}</p>
      
                                       </div>

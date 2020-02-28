@@ -45,7 +45,8 @@ class SimulationsController extends Controller
         $sim->table = json_encode(Input::get("table"));  
         $sim->name = Input::get("simulation_name");  
         $sim->numberofweeks = Input::get("numberofweeks");  
-        $sim->numberofsims = Input::get("numberofsims");  
+        $sim->numberofsims = Input::get("numberofsims");
+        $sim->creatorname = Input::get("creatorname");  
         $sim->save();
 
         return Redirect::route('index');
