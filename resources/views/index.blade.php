@@ -49,6 +49,7 @@
                                         
                                         <p class="text-muted text-sm"><b>Number of weeks: </b> {{$val->numberofweeks}}</p>
                                         <p class="text-muted text-sm"><b>Number of simulation: </b> {{$val->numberofsims}}</p>
+                                        <p class="text-muted text-sm"><b>Created at: </b> {{$val->created_at}}</p>
      
                                       </div>
                                     </div>

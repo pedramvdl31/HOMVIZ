@@ -36,6 +36,12 @@ class HomeController extends Controller
 
         $sim = Simulation::where("user_id",Auth::user()->id)->get();
 
+        foreach ($sim as $sk => $sv) {
+
+            $phpdate = strtotime( $sv->created_at );
+            $sv->created_at = date( 'Y-m-d H:i:s', $phpdate );
+        }
+
         return view('index')
         ->with('sim',$sim)
         ->with('layout',$layout_title);

@@ -87,7 +87,7 @@
 														<div class="form-group">
 										                	<label for="inputName">Location (Address or latitute, longitude):</label>
 										                	<div id="locationField"></div>
-										                	<input autocomplete="off" id="autocomplete" placeholder="Enter a city" name="location" type="text" class="form-control border-primary">
+										                	<input autocomplete="off" id="autocomplete" placeholder="Enter a city in Canada" name="location" type="text" class="form-control border-primary">
 										              	</div>
 										            </div>
 
