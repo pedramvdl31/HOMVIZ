@@ -42,35 +42,56 @@
                     <div class="card-body pb-0">
                         <div class="row d-flex align-items-stretch">
 
+
+
                           @if(isset($sim))
 
                             @foreach ($sim as $k => $val)
 
-                              <div class="col-12 col-sm-6 col-md-3 d-flex align-items-stretch">
-                                <div class="card bg-light" style="width: 100%;">
-                                  <div class="card-header text-muted border-bottom-0">
-                                    <h2 class="lead"><b>{{$val->name}}</b></h2>
-                                  </div>
-                                  <div class="card-body pt-0">
-                                    <div class="row">
-                                      <div class="col-12">
-                                        
-                                        <p class="text-muted text-sm"><b>Number of weeks: </b> {{$val->numberofweeks}}</p>
-                                        <p class="text-muted text-sm"><b>Number of simulation: </b> {{$val->numberofsims}}</p>
-                                        <p class="text-muted text-sm"><b>Created by: </b> {{$val->creatorname}}</p>
-                                        <p class="text-muted text-sm"><b>Created at: </b> {{$val->created_at}}</p>
-     
-                                      </div>
+
+                              <div class="col-md-2">
+                                <div class="card card-outline card-primary collapsed-card">
+                                  <div class="card-header">
+                                    <h3 class="card-title">{{$val->name}}</h3>
+
+                                    <div class="card-tools">
+                                      <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
+                                      </button>
                                     </div>
+                                    <!-- /.card-tools -->
                                   </div>
-                                  <div class="card-footer">
+                                  <!-- /.card-header -->
+                                  <div class="card-body" style="display: none;">
+                                        <p class=" "><b>Number of weeks: </b> {{$val->numberofweeks}}</p>
+                                        <p class=" "><b>Number of simulation: </b> {{$val->numberofsims}}</p>
+                                        <p class=" "><b>Created by: </b> {{$val->creatorname}}</p>
+                                        <p class=" "><b>Created at: </b> {{$val->created_at}}</p>
+                                  </div>
+                                  <!-- /.card-body -->
+
+                                <style>
+
+
+                                  .card-footer{
+                                    border-top: 1px solid rgba(0,0,0,.125);
+                                    padding: .75rem 1.25rem;
+                                    position: relative;
+                                    border-top-left-radius: .25rem;
+                                    border-top-right-radius: .25rem;
+                                    background-color: #fff
+                                  }
+                                  
+
+
+                                </style>
+
+
+                                  <div class="card-footer" style="display: none;">
 
                                     <div class="text-left" style="float: left;">
                                       
-                                      <a href="/simulations/delete/{{$val->id}}">
-                                        
-                                        <i class="fas fa-trash deletesubresource" style="cursor: pointer;"></i>
-
+                                      <a href="/simulations/delete/{{$val->id}}" class="btn btn-sm btn-danger">
+                                          Delete
                                       </a>
 
                                     </div>
@@ -81,16 +102,19 @@
                                       </a>
                                     </div>
                                   </div>
+
+
                                 </div>
+                                <!-- /.card -->
                               </div>
 
                             @endforeach
 
                           @endif
 
-                          <a class="col-12 col-sm-6 col-md-3" href="/simulations/add">
+                          <a class="col-12 col-sm-6 col-md-2" href="/simulations/add">
                               <div class="info-box">
-                                <span class="info-box-icon bg-info elevation-1"><i class="fas fa-plus"></i></span>
+                                <span class="info-box-icon btn-primary elevation-1"><i class="fas fa-plus"></i></span>
 
                                 <div class="info-box-content">
                                   <span class="info-box-text">Add Simulation</span>
