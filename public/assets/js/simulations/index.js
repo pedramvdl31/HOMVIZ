@@ -34,7 +34,8 @@ $(document).ready(function(){
       enableAnchorOnDoneStep: true // Enable/Disable the done steps navigation
     },
     transitionEffect: 'fade', // Effect on navigation, none/slide/fade
-    transitionSpeed: '100'
+    transitionSpeed: '100',
+    keyNavigation: false
   });
 
   $("#smartwizard").on("showStep", function(e, anchorObject, stepNumber, stepDirection) {
@@ -213,6 +214,30 @@ $(document).ready(function(){
       window.popovers[id] = html
     }
 
+
+    let type = $(this).attr('type')
+
+
+    // Allowed pop is changed, change init pop table
+    if (type == 'ap') {
+
+      let rowCheckboxes = $(this).parents('.popover-content').first().find('table').find('input[type=checkbox]')
+
+      let populationArray = []
+
+      rowCheckboxes.each(function () {
+         if (this.checked) {
+            populationArray.push($(this).attr('value'))
+         }
+      });
+
+      let rootID = id.replace('apop-', '')
+      let ipopID = 'ipop-'+rootID
+
+      updateIpopHTML(populationArray,ipopID)
+
+    }
+
     $('.popover-all').popover('hide');
 
   });
@@ -349,14 +374,6 @@ $(document).ready(function(){
     }
 
   })
-
-  $(document).on("change",".ana",function(e,data) {
-
-    let v = $(this).val()
-
-    
-
-  });
 
 
   //********************************
@@ -756,9 +773,21 @@ function checkStep4(){
 
 function checkStep5(){
 
-  let output = false
+  let output = false;
 
-  if (checkStep3() && checkStep4()) {
+  let transitionInput = $(document).find('.transitioninput');
+
+  let flag = true;
+
+  transitionInput.each(function(){
+
+    if ( $(this).val() == "" ){
+      flag = false
+    }
+
+  });
+
+  if (flag) {
 
     output = true
 
@@ -982,6 +1011,36 @@ function addMpopHTML(ThisID){
 
 }
 
+function updateIpopHTML(populationArray,ThisID){
+
+  let html = '<div class="table-responsive">'+
+     '<table id="'+ThisID+'" class="table table-bordered"><tbody>';
+
+  $.each(populationArray, function( k1, value ) {
+
+    html += ReturnIpopTR(value)
+
+  });
+
+  html +=   '</tbody></table></div><div style="width:100%"><a id="'+ThisID+'" class="closepop a-tag">Save and Close</a></div>';
+
+
+  if(typeof window.popovers[ThisID] !== 'undefined') {
+    window.popovers[ThisID] = html
+  }
+
+  $(document).find('#'+ThisID).on('shown.bs.popover', function () {
+
+    let popid = $(this).attr('aria-describedby')
+
+    let thisid = $(this).attr('id')
+
+    $(document).find('#'+popid).first().find('.popover-content').first().html(window.popovers[thisid]);
+
+  })
+
+}
+
 function ReturnIpopTR(value){
   let html = '<tr name="'+value+'"><td class="pop" style="font-weight: 900">'+value+'</td>'+
             '<td class="pop"><input value="0" name="ip-r" style="width:100px; height:100%;" placeholder="#"></td></tr>';
@@ -989,16 +1048,16 @@ function ReturnIpopTR(value){
 }
 
 function makeResourcesPropretiesTD(rowID){
-  let html =  '<a id="apop-'+rowID+'" class="a-tag popover-all" data-placement="bottom" data-toggle="popover">Allowed Population</a>,&nbsp;&nbsp;'+
-              '<a id="ipop-'+rowID+'" class="a-tag popover-all" data-placement="bottom" data-toggle="popover">Initial Population</a>,&nbsp;&nbsp;'+
-              '<a id="mpop-'+rowID+'" class="a-tag popover-all" data-placement="bottom" data-toggle="popover">Maximum Length of Stay</a>,&nbsp;&nbsp;'+
-              '<a id="cpop-'+rowID+'" class="a-tag popover-all" data-placement="bottom" data-toggle="popover">Capacity</a>'
+  let html =  '<a id="apop-'+rowID+'" class="a-tag popover-all apop" data-placement="bottom" data-toggle="popover">Allowed Population</a>,&nbsp;&nbsp;'+
+              '<a id="ipop-'+rowID+'" class="a-tag popover-all ipop" data-placement="bottom" data-toggle="popover">Initial Population</a>,&nbsp;&nbsp;'+
+              '<a id="mpop-'+rowID+'" class="a-tag popover-all mpop" data-placement="bottom" data-toggle="popover">Maximum Length of Stay</a>,&nbsp;&nbsp;'+
+              '<a id="cpop-'+rowID+'" class="a-tag popover-all cpop" data-placement="bottom" data-toggle="popover">Capacity</a>'
   return html
 }
 
 function makeStatesPropretiesTD(rowID){
-  let html =  '<a id="apop-'+rowID+'" class="a-tag popover-all" data-placement="bottom" data-toggle="popover">Allowed Population</a>,&nbsp;&nbsp;'+
-              '<a id="ipop-'+rowID+'" class="a-tag popover-all" data-placement="bottom" data-toggle="popover">Initial Population</a>';
+  let html =  '<a id="apop-'+rowID+'" class="a-tag popover-all apop" data-placement="bottom" data-toggle="popover">Allowed Population</a>,&nbsp;&nbsp;'+
+              '<a id="ipop-'+rowID+'" class="a-tag popover-all ipop" data-placement="bottom" data-toggle="popover">Initial Population</a>';
   return html
 }
 
@@ -1132,10 +1191,10 @@ function HandleStepsOnNextBtnClick(){
 function MakeResourcesRowColumnHTML(rowID,tooltipClass,type,name){
   let rowCount = $("#restable tbody tr").length
   let tr = '<tr id="'+rowID+'" class="mainrow" count="'+rowCount+'" type="'+type+'" name="'+name+'">';
-  let td0 = '<td>'+name+'</td>';
-  let td1 = '<td><input type="text" class="form-control" name="resname" placeholder="'+name+'"><small class="text-danger hide">* duplication name is not allowed</small></td>';
-  let td3 = '<td>'+makeResourcesPropretiesTD(rowID)+'</td>'
-  let td4 = '<td><a data-toggle="tooltip" data-placement="top" title="Add Sub Resources" class="divideRes pointer '+tooltipClass+'"><i class="text-primary fas fa-layer-group"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;<a data-toggle="tooltip" data-placement="top" title="Delete Row" class="pointer removeResRow '+tooltipClass+'"><i class="text-danger fas fa-minus-square"></i></a></td>'
+  let td0 = '<td kind="name">'+name+'</td>';
+  let td1 = '<td kind="nameinput"><input type="text" class="form-control" name="resname" placeholder="'+name+'"><small class="text-danger hide">* duplication name is not allowed</small></td>';
+  let td3 = '<td kind="props">'+makeResourcesPropretiesTD(rowID)+'</td>'
+  let td4 = '<td kind="action"><a data-toggle="tooltip" data-placement="top" title="Add Sub Resources" class="divideRes pointer '+tooltipClass+'"><i class="text-primary fas fa-layer-group"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;<a data-toggle="tooltip" data-placement="top" title="Delete Row" class="pointer removeResRow '+tooltipClass+'"><i class="text-danger fas fa-minus-square"></i></a></td>'
   let row =   tr+
               td0+
               td1+

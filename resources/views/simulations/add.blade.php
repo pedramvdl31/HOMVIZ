@@ -1,22 +1,16 @@
 @extends($layout)
 @section('stylesheets')
-
 	<link rel="stylesheet" href="/SmartWizard-master/src/css/smart_wizard.css?1">
 	<link rel="stylesheet" href="/SmartWizard-master/src/css/smart_wizard_theme_arrows.css?1">
-
-
 	<link rel="stylesheet" href="/assets/css/sweetalert2.min.css?1">
 	<link rel="stylesheet" href="/assets/css/simulations/index.css?31">
-
 @stop
 @section('scripts')
 	<script src="/SmartWizard-master/src/js/jquery.smartWizard.js?22"></script>
-
 	<script src="/assets/js/sweetalert2.min.js?1"></script>
-
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/xlsx.full.min.js"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/jszip.js"></script>
-	<script src="/assets/js/simulations/index.js?106"></script>
+	<script src="/assets/js/simulations/index.js?107"></script>
 @stop
 
 @section('content')
