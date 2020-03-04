@@ -30,7 +30,7 @@
 
   <div class="content">
 
-    <div class="container">
+    <div class="container ">
 
         <div class="row">
 
@@ -49,7 +49,7 @@
                             @foreach ($sim as $k => $val)
 
 
-                              <div class="col-md-2">
+                              <div class="col-md-3">
                                 <div class="card card-outline card-primary collapsed-card">
                                   <div class="card-header">
                                     <h3 class="card-title">{{$val->name}}</h3>
@@ -112,7 +112,7 @@
 
                           @endif
 
-                          <div class="col-md-2">
+                          <div class="col-md-3">
                             <div class="card card-outline card-primary">
                               <div class="card-header" style="display: block;">
                                 <a href="/simulations/add"><i class="fas fa-plus text-primary"></i></a>&nbsp;&nbsp;<a href="/simulations/add">Add Simulation</a>
