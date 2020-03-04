@@ -19,7 +19,7 @@
   <div class="content-wrapper" style="margin-left: 0">
   <!-- Content Header (Page header) -->
   <div class="content-header">
-    <div class="container-fluid">
+    <div class="container">
       <div class="row mb-2">
         <div class="col-sm-6">
           <h1 class="m-0 text-dark">Simulations</h1>
@@ -30,7 +30,7 @@
 
   <div class="content">
 
-    <div class="container-fluid">
+    <div class="container">
 
         <div class="row">
 
@@ -55,7 +55,7 @@
                                     <h3 class="card-title">{{$val->name}}</h3>
 
                                     <div class="card-tools">
-                                      <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
+                                      <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-plus"></i>
                                       </button>
                                     </div>
                                     <!-- /.card-tools -->
@@ -112,18 +112,14 @@
 
                           @endif
 
-                          <a class="col-12 col-sm-6 col-md-2" href="/simulations/add">
-                              <div class="info-box">
-                                <span class="info-box-icon btn-primary elevation-1"><i class="fas fa-plus"></i></span>
-
-                                <div class="info-box-content">
-                                  <span class="info-box-text">Add Simulation</span>
-                                  <span class="info-box-number">
-                                </div>
-                                <!-- /.info-box-content -->
+                          <div class="col-md-2">
+                            <div class="card card-outline card-primary">
+                              <div class="card-header" style="display: block;">
+                                <a href="/simulations/add"><i class="fas fa-plus text-primary"></i></a>&nbsp;&nbsp;<a href="/simulations/add">Add Simulation</a>
                               </div>
-                              <!-- /.info-box -->
-                          </a>
+                            </div>
+                          </div>
+
 
                         </div>
 
