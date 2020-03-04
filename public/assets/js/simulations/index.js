@@ -350,6 +350,14 @@ $(document).ready(function(){
 
   })
 
+  $(document).on("change",".ana",function(e,data) {
+
+    let v = $(this).val()
+
+    
+
+  });
+
 
   //********************************
   //***********************STEP 3 END
@@ -867,7 +875,7 @@ function addApopHTML(ThisID){
   $.each( window.populationType, function( k1, value ) {
 
     html += '<tr><td class="pop" style="font-weight: 900">'+value+'</td>'+
-            '<td class="pop"><label class="checkbox-inline"><input class="ana" type="checkbox" value="" checked>Allowed</label></td></tr>';
+            '<td class="pop"><label class="checkbox-inline"><input class="ana" type="checkbox" value="'+value+'" checked>Allowed</label></td></tr>';
 
   });
 
@@ -897,8 +905,7 @@ function addIpopHTML(ThisID){
 
   $.each(window.populationType, function( k1, value ) {
 
-    html += '<tr><td class="pop" style="font-weight: 900">'+value+'</td>'+
-            '<td class="pop"><input value="0" name="ip-r" style="width:100px; height:100%;" placeholder="#"></td></tr>';
+    html += ReturnIpopTR(value)
 
   });
 
@@ -973,6 +980,12 @@ function addMpopHTML(ThisID){
 
   })
 
+}
+
+function ReturnIpopTR(value){
+  let html = '<tr name="'+value+'"><td class="pop" style="font-weight: 900">'+value+'</td>'+
+            '<td class="pop"><input value="0" name="ip-r" style="width:100px; height:100%;" placeholder="#"></td></tr>';
+  return html;
 }
 
 function makeResourcesPropretiesTD(rowID){
@@ -1120,7 +1133,7 @@ function MakeResourcesRowColumnHTML(rowID,tooltipClass,type,name){
   let rowCount = $("#restable tbody tr").length
   let tr = '<tr id="'+rowID+'" class="mainrow" count="'+rowCount+'" type="'+type+'" name="'+name+'">';
   let td0 = '<td>'+name+'</td>';
-  let td1 = '<td><input type="text" class="form-control" name="resname" placeholder="Name (unique)"><small class="text-danger hide">* duplication name is not allowed</small></td>';
+  let td1 = '<td><input type="text" class="form-control" name="resname" placeholder="'+name+'"><small class="text-danger hide">* duplication name is not allowed</small></td>';
   let td3 = '<td>'+makeResourcesPropretiesTD(rowID)+'</td>'
   let td4 = '<td><a data-toggle="tooltip" data-placement="top" title="Add Sub Resources" class="divideRes pointer '+tooltipClass+'"><i class="text-primary fas fa-layer-group"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;<a data-toggle="tooltip" data-placement="top" title="Delete Row" class="pointer removeResRow '+tooltipClass+'"><i class="text-danger fas fa-minus-square"></i></a></td>'
   let row =   tr+
@@ -1139,7 +1152,7 @@ function MakeSUBResourcesRowColumnHTML(rowID,parentID,subRowCount,tooltipClass,p
 
   let tr = '<tr id="'+rowID+'" parentID="'+parentID+'" class="sub '+_class+'" count="'+subRowCount+'">'
   let td0 = '<td>Sub '+parentName+'</td>';
-  let td1 = '<td><input type="text" class="form-control" name="resname" placeholder="Name (unique)"><small class="text-danger hide">* duplication name is not allowed</small></td>'
+  let td1 = '<td><input type="text" class="form-control" name="resname" placeholder="Sub '+parentName+'"><small class="text-danger hide">* duplication name is not allowed</small></td>'
   let td4 = '<td><a data-toggle="tooltip" data-placement="top" title="Delete Row" class="pointer removeResSubRow '+tooltipClass+'"><i class="text-danger fas fa-minus-square"></i></a></td>'
   let td3 = '<td>'+makeResourcesPropretiesTD(rowID)+'</td>'
   let row =   tr+

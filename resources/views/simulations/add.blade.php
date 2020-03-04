@@ -16,7 +16,7 @@
 
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/xlsx.full.min.js"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/jszip.js"></script>
-	<script src="/assets/js/simulations/index.js?105"></script>
+	<script src="/assets/js/simulations/index.js?106"></script>
 @stop
 
 @section('content')
