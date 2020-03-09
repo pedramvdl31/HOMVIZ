@@ -16,7 +16,7 @@
 
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/xlsx.full.min.js"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/jszip.js"></script>
-	<script src="/assets/js/simulations/index.js?106"></script>
+	<script src="/assets/js/simulations/index.js?108"></script>
 @stop
 
 @section('content')
@@ -68,6 +68,12 @@
 					        	<input type="hidden" name="project_id" value="{{$project_id}}">
 					    @endif
 
+							
+						<!-- Popoovers are going to be here -->
+					    <div style="display: none" id="popoverhtmls"> 
+
+					    </div>
+
 					    <div class="card card-primary card-outline">
 
 					        <div class="card card-solid mb-0">
@@ -112,7 +118,7 @@
 																<div class="form-group">
 												                	<label for="inputName">Enter a name of city in Canda:</label>
 												                	<div id="locationField"></div>
-												                	<input autocomplete="off" id="autocomplete" placeholder="City name" name="location" type="text" class="form-control border-primary">
+												                	<input autocomplete="off" id="autocomplete" placeholder="City name" name="simulation_location" type="text" class="form-control border-primary">
 													            </div>
 											              	</div>
 										              	</div>
@@ -242,7 +248,7 @@
 										                	<br>
 										                	<small>Here you can set the population group for your simulation. Population title/name does not effect the simulation outcome.</small>
 											                <div class="input-group mb-3">
-															  <input placeholder="Male, Female, Other, ..." autocomplete="off" name="changelater" id="populationtext" type="text" class="form-control rounded-0">
+															  <input placeholder="Male, Female, Other, ..." autocomplete="off" id="populationtext" type="text" class="form-control rounded-0">
 															  <span class="input-group-append">
 															    <button id="populationbtn" type="button" class="btn btn-info btn-flat">Generate table</button>
 															  </span>
@@ -465,31 +471,31 @@
 									<hr>
 
 									<div class="row">
-										<p><strong>Step 2:</strong>: <span id="population-overview" class="text-danger">Incomplete</span></p>
+										<p><strong>Step 2:</strong> <span id="population-overview" class="text-danger">Incomplete</span></p>
 									</div>
 
 									<hr>
 
 									<div class="row">
-										<p><strong>Step 3:</strong>: <span id="resources-overview" class="text-danger">Incomplete</span></p>
+										<p><strong>Step 3:</strong> <span id="resources-overview" class="text-danger">Incomplete</span></p>
 									</div>
 
 									<hr>
 
 									<div class="row">
-										<p><strong>Step 4:</strong>: <span id="states-overview" class="text-danger">Incomplete</span></p>
+										<p><strong>Step 4:</strong> <span id="states-overview" class="text-danger">Incomplete</span></p>
 									</div>
 
 									<hr>
 
 									<div class="row">
-										<p><strong>Step 5:</strong>: <span id="transitions-overview" class="text-danger">Incomplete</span></p>
+										<p><strong>Step 5:</strong> <span id="transitions-overview" class="text-danger">Incomplete</span></p>
 									</div>
 
 									<hr>
 
 									<div class="row">
-										<p><strong>Step 6:</strong>: <span id="parameters-overview" class="text-danger">Incomplete</span></p>
+										<p><strong>Step 6:</strong> <span id="parameters-overview" class="text-danger">Incomplete</span></p>
 									</div>
 
 

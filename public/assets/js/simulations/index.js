@@ -121,11 +121,13 @@ $(document).ready(function(){
 
       $.each( _exp, function( k1, value ) {
 
+        value = value.trim()
+
         window.populationType.push(value)
 
         _table +=   '<tr>'+
                     '<td style="font-weight: 900">'+value+'</td>'+
-                    '<td class="ttd"><input type="text" class="form-control" style="width:100px; height:100%;" value="0"></td></tr>';
+                    '<td class="ttd"><input type="text" class="form-control" name="populationTypeCount['+value+']" style="width:100px; height:100%;" value="0"></td></tr>';
 
       });
 
@@ -144,12 +146,8 @@ $(document).ready(function(){
   $(document).on("click","#removepopulationtable",function() {
 
     $(document).find('#populationtable').remove()
-    $('#populationtext').val('')
     window.populationType = []
-
-
     $('#populationbtn').removeAttr('disabled')
-
 
   });
 
@@ -595,6 +593,14 @@ $(document).ready(function(){
 
     if (submitBtnStatus()) {
 
+      InsertArrayElementToDOM(window.populationType,'#myform','populationType')
+
+      Object.keys(window.popovers).forEach(function(key) {
+
+        $('#popoverhtmls').append(window.popovers[key])
+
+      });
+
       $('#myform').submit()
 
     } else {
@@ -822,21 +828,24 @@ function activatePopUpWindows(rowID,type){
   let mpopID = 'mpop-'+rowID
   let cpopID = 'cpop-'+rowID
 
-  $(document).find('#'+apopID).popover({html:true,title: "Allowed Population"}).click(function(e) {
+  $(document).find('#'+apopID).popover({html:true,title: "Allowed Population Type"}).click(function(e) {
       $('.popover').not(this).hide();
       $(this).data("bs.popover").inState.click = false;
       $(this).popover('show');
       e.preventDefault();
   });
 
-  $(document).find('#'+ipopID).popover({html:true,title: "Initial Population"}).click(function(e) {
+  $(document).find('#'+ipopID).popover({html:true,title: "Initial Population Count"}).click(function(e) {
       $('.popover').not(this).hide();
       $(this).data("bs.popover").inState.click = false;
       $(this).popover('show');
       e.preventDefault();
   });
 
+  let _type = 'state'
   if (type=="res") {
+
+    _type = 'resource'
 
     $(document).find('#'+mpopID).popover({html:true,title: "Maximum Length of Stay"}).click(function(e) {
         $('.popover').not(this).hide();
@@ -854,14 +863,14 @@ function activatePopUpWindows(rowID,type){
 
   }
 
-  addApopHTML(apopID)
-  addIpopHTML(ipopID)
-  addMpopHTML(mpopID)
-  addCpopHTML(cpopID)
+  addApopHTML(apopID,rowID,_type)
+  addIpopHTML(ipopID,rowID,_type)
+  addMpopHTML(mpopID,rowID,_type)
+  addCpopHTML(cpopID,rowID,_type)
 
 }
 
-function addApopHTML(ThisID){
+function addApopHTML(ThisID,rowID,_type){
 
   let html = '<div class="table-responsive">'+
      '<table id="'+ThisID+'" class="table table-bordered">'+
@@ -875,7 +884,7 @@ function addApopHTML(ThisID){
   $.each( window.populationType, function( k1, value ) {
 
     html += '<tr><td class="pop" style="font-weight: 900">'+value+'</td>'+
-            '<td class="pop"><label class="checkbox-inline"><input class="ana" type="checkbox" value="'+value+'" checked>Allowed</label></td></tr>';
+            '<td class="pop"><label class="checkbox-inline"><input name="allowedPopulation['+_type+']['+rowID+']['+value+']" class="ana" type="checkbox" value="'+value+'" checked>Allowed</label></td></tr>';
 
   });
 
@@ -898,14 +907,14 @@ function addApopHTML(ThisID){
 
 }
 
-function addIpopHTML(ThisID){
+function addIpopHTML(ThisID,rowID,_type){
 
   let html = '<div class="table-responsive">'+
      '<table id="'+ThisID+'" class="table table-bordered"><tbody>';
 
   $.each(window.populationType, function( k1, value ) {
 
-    html += ReturnIpopTR(value)
+    html += ReturnIpopTR(value,rowID,_type)
 
   });
 
@@ -928,13 +937,13 @@ function addIpopHTML(ThisID){
 
 }
 
-function addCpopHTML(ThisID){
+function addCpopHTML(ThisID,rowID,_type){
 
   let html =  '<div class="table-responsive">'+
           '<table id="'+ThisID+'" class="table table-bordered"><tbody>';
 
   html += '<tr><td class="pop" style="font-weight: 900">Capacity</td>'+
-          '<td class="pop" ><input style="width:100px; height:100%;" placeholder="#" value="0"></td></tr>';
+          '<td class="pop" ><input name="capacity['+_type+']['+rowID+']" style="width:100px; height:100%;" placeholder="#" value="0"></td></tr>';
 
   html +=   '</tbody></table></div><div style="width:100%"><a id="'+ThisID+'" class="closepop a-tag">Save and Close</a></div>';
 
@@ -955,13 +964,13 @@ function addCpopHTML(ThisID){
 
 }
 
-function addMpopHTML(ThisID){
+function addMpopHTML(ThisID,rowID,_type){
 
   let html =  '<div class="table-responsive">'+
           '<table id="'+ThisID+'" class="table table-bordered"><tbody>';
 
   html += '<tr><td class="pop" style="font-weight: 900">Maximum Length of Stay (days)</td>'+
-            '<td class="pop"><input value="7" style="width:100px; height:100%;" placeholder="#"></td></tr>';
+            '<td class="pop"><input name="maximumlengthofstay['+_type+']['+rowID+']" value="7" style="width:100px; height:100%;" placeholder="#"></td></tr>';
 
   html +=   '</tbody></table></div><div style="width:100%"><a id="'+ThisID+'" class="closepop a-tag">Save and Close</a></div>';
 
@@ -982,23 +991,23 @@ function addMpopHTML(ThisID){
 
 }
 
-function ReturnIpopTR(value){
+function ReturnIpopTR(value,rowID,_type){
   let html = '<tr name="'+value+'"><td class="pop" style="font-weight: 900">'+value+'</td>'+
-            '<td class="pop"><input value="0" name="ip-r" style="width:100px; height:100%;" placeholder="#"></td></tr>';
+            '<td class="pop"><input value="0" name="initialPopulation['+_type+']['+rowID+']['+value+']" style="width:100px; height:100%;" placeholder="#"></td></tr>';
   return html;
 }
 
 function makeResourcesPropretiesTD(rowID){
-  let html =  '<a id="apop-'+rowID+'" class="a-tag popover-all" data-placement="bottom" data-toggle="popover">Allowed Population</a>,&nbsp;&nbsp;'+
-              '<a id="ipop-'+rowID+'" class="a-tag popover-all" data-placement="bottom" data-toggle="popover">Initial Population</a>,&nbsp;&nbsp;'+
+  let html =  '<a id="apop-'+rowID+'" class="a-tag popover-all" data-placement="bottom" data-toggle="popover">Allowed Population Type</a>,&nbsp;&nbsp;'+
+              '<a id="ipop-'+rowID+'" class="a-tag popover-all" data-placement="bottom" data-toggle="popover">Initial Population Count</a>,&nbsp;&nbsp;'+
               '<a id="mpop-'+rowID+'" class="a-tag popover-all" data-placement="bottom" data-toggle="popover">Maximum Length of Stay</a>,&nbsp;&nbsp;'+
               '<a id="cpop-'+rowID+'" class="a-tag popover-all" data-placement="bottom" data-toggle="popover">Capacity</a>'
   return html
 }
 
 function makeStatesPropretiesTD(rowID){
-  let html =  '<a id="apop-'+rowID+'" class="a-tag popover-all" data-placement="bottom" data-toggle="popover">Allowed Population</a>,&nbsp;&nbsp;'+
-              '<a id="ipop-'+rowID+'" class="a-tag popover-all" data-placement="bottom" data-toggle="popover">Initial Population</a>';
+  let html =  '<a id="apop-'+rowID+'" class="a-tag popover-all" data-placement="bottom" data-toggle="popover">Allowed Population Type</a>,&nbsp;&nbsp;'+
+              '<a id="ipop-'+rowID+'" class="a-tag popover-all" data-placement="bottom" data-toggle="popover">Initial Population Count</a>';
   return html
 }
 
@@ -1133,7 +1142,7 @@ function MakeResourcesRowColumnHTML(rowID,tooltipClass,type,name){
   let rowCount = $("#restable tbody tr").length
   let tr = '<tr id="'+rowID+'" class="mainrow" count="'+rowCount+'" type="'+type+'" name="'+name+'">';
   let td0 = '<td>'+name+'</td>';
-  let td1 = '<td><input type="text" class="form-control" name="resname" placeholder="'+name+'"><small class="text-danger hide">* duplication name is not allowed</small></td>';
+  let td1 = '<td><input type="text" class="form-control" name="resources['+rowID+'][name]" placeholder="'+name+'"><small class="text-danger hide">* duplication name is not allowed</small></td>';
   let td3 = '<td>'+makeResourcesPropretiesTD(rowID)+'</td>'
   let td4 = '<td><a data-toggle="tooltip" data-placement="top" title="Add Sub Resources" class="divideRes pointer '+tooltipClass+'"><i class="text-primary fas fa-layer-group"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;<a data-toggle="tooltip" data-placement="top" title="Delete Row" class="pointer removeResRow '+tooltipClass+'"><i class="text-danger fas fa-minus-square"></i></a></td>'
   let row =   tr+
@@ -1152,7 +1161,7 @@ function MakeSUBResourcesRowColumnHTML(rowID,parentID,subRowCount,tooltipClass,p
 
   let tr = '<tr id="'+rowID+'" parentID="'+parentID+'" class="sub '+_class+'" count="'+subRowCount+'">'
   let td0 = '<td>Sub '+parentName+'</td>';
-  let td1 = '<td><input type="text" class="form-control" name="resname" placeholder="Sub '+parentName+'"><small class="text-danger hide">* duplication name is not allowed</small></td>'
+  let td1 = '<td><input type="text" class="form-control" name="subresources['+parentID+']['+rowID+'][name]" placeholder="Sub '+parentName+'"><small class="text-danger hide">* duplication name is not allowed</small></td>'
   let td4 = '<td><a data-toggle="tooltip" data-placement="top" title="Delete Row" class="pointer removeResSubRow '+tooltipClass+'"><i class="text-danger fas fa-minus-square"></i></a></td>'
   let td3 = '<td>'+makeResourcesPropretiesTD(rowID)+'</td>'
   let row =   tr+
@@ -1168,7 +1177,7 @@ function MakeStatesRowColumnHTML(rowID,tooltipClass,type,name){
   let rowCount = $("#statetable tbody tr").length
   let tr = '<tr id="'+rowID+'" class="mainrow" count="'+rowCount+'" type="'+type+'" name="'+name+'">';
   let td0 = '<td>'+name+'</td>';
-  let td1 = '<td><input type="text" class="form-control" placeholder="Name (unique)"><small class="text-danger hide">* duplication name is not allowed</small></td>';
+  let td1 = '<td><input type="text" class="form-control" name="states['+rowID+'][name]" placeholder="Name (unique)"><small class="text-danger hide">* duplication name is not allowed</small></td>';
   let td3 = '<td>'+makeStatesPropretiesTD(rowID)+'</td>'
   let td4 = '<td><a data-toggle="tooltip" data-placement="top" title="Add Sub State" class="divideState pointer '+tooltipClass+'"><i class="text-primary fas fa-layer-group"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;<a data-toggle="tooltip" data-placement="top" title="Delete Row" class="pointer removeStateRow '+tooltipClass+'"><i class="text-danger fas fa-minus-square"></i></a></td>'
   let row =   tr+
@@ -1187,7 +1196,7 @@ function MakeSUBStatesRowColumnHTML(rowID,parentID,subRowCount,tooltipClass,pare
 
   let tr = '<tr id="'+rowID+'" parentID="'+parentID+'" class="sub '+_class+'" count="'+subRowCount+'">'
   let td0 = '<td>Sub '+parentName+'</td>';
-  let td1 = '<td><input type="text" class="form-control" placeholder="Name (unique)"><small class="text-danger hide">* duplication name is not allowed</small></td>'
+  let td1 = '<td><input type="text" class="form-control" name="substates['+parentID+']['+rowID+'][name]" placeholder="Name (unique)"><small class="text-danger hide">* duplication name is not allowed</small></td>'
   let td4 = '<td><a data-toggle="tooltip" data-placement="top" title="Delete Row" class="pointer removeStateSubRow '+tooltipClass+'"><i class="text-danger fas fa-minus-square"></i></a></td>'
   let td3 = '<td>'+makeStatesPropretiesTD(rowID)+'</td>'
   let row =   tr+
@@ -1234,7 +1243,7 @@ function MakeTransitionalPropTable(){
 
   $.each( arr, function( k1, value ) {
 
-  html += '<th>'+value+'</th>';
+    html += '<th>'+value+'</th>';
 
   });
 
@@ -1250,11 +1259,11 @@ function MakeTransitionalPropTable(){
 
     $.each( arr, function( k1, v2 ) {
 
-      html += '<td><input id="'+v1+'-'+v2+'" type="text" class="form-control transitioninput" placeholder="0 to 1"></td>';
-     
+      html += '<td><input name="TransitionProbability['+v1+']['+v2+']" id="'+v1+'-'+v2+'" type="text" class="form-control transitioninput" placeholder="0 to 1"></td>';
 
     });
-     html += '<td class="rowtotal"><p class="totalval">0</p><p><small class="msg" style="color:red"></small></p></td>';
+
+    html += '<td class="rowtotal"><p class="totalval">0</p><p><small class="msg" style="color:red"></small></p></td>';
 
     html += '</tr>';
 
@@ -1267,3 +1276,13 @@ function MakeTransitionalPropTable(){
 
 }
 
+function InsertArrayElementToDOM(array,elem,inputName){
+
+  $(document).find('.'+inputName+'-input').remove()
+
+  let i = 0;
+  for (i = 0; i < array.length; i++) {
+    $(elem).append('<input type="hidden" class="'+inputName+'-input" name="'+inputName+'['+i+']" value="'+array[i]+'">')
+  }
+
+}
