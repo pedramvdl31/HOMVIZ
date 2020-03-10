@@ -36,22 +36,22 @@ class SimulationsController extends Controller
     public function postAdd()
     {
 
-        Job::dump(Input::all());
+        // Job::dump(Input::all());
 
-        // $sim = new Simulation();
-        // $sim->user_id = Auth::user()->id;  
-        // $sim->location = Input::get("location");  
-        // $sim->resources = json_encode(Input::get("resource"));
-        // $sim->subresources = json_encode(Input::get("subresource"));
-        // $sim->states = json_encode(Input::get("states"));  
-        // $sim->table = json_encode(Input::get("table"));  
-        // $sim->name = Input::get("simulation_name");  
-        // $sim->numberofweeks = Input::get("numberofweeks");  
-        // $sim->numberofsims = Input::get("numberofsims");
-        // $sim->creatorname = Input::get("creatorname");  
-        // $sim->save();
+        $sim = new Simulation();
+        $sim->user_id = Auth::user()->id;  
+        $sim->location = Input::get("simulation_location");  
+        $sim->resources = json_encode(Input::get("resource"));
+        $sim->subresources = json_encode(Input::get("subresource"));
+        $sim->states = json_encode(Input::get("states"));  
+        $sim->table = json_encode(Input::get("table"));  
+        $sim->name = Input::get("simulation_name");  
+        $sim->numberofweeks = Input::get("numberofweeks");  
+        $sim->numberofsims = Input::get("numberofsims");
+        $sim->creatorname = Input::get("creatorname");  
+        $sim->save();
 
-        // return Redirect::route('index');
+        return Redirect::route('index');
 
     }
 
