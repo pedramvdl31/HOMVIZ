@@ -10,7 +10,7 @@
 	<script src="/assets/js/sweetalert2.min.js?1"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/xlsx.full.min.js"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/jszip.js"></script>
-	<script src="/assets/js/simulations/index.js?109"></script>
+	<script src="/assets/js/simulations/index.js?110"></script>
 @stop
 
 @section('content')

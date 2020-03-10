@@ -231,10 +231,9 @@ $(document).ready(function(){
       });
 
       let rootID = id.replace('apop-', '')
-      let ipopID = 'ipop-'+rootID
       let _type = rowCheckboxes.attr('kind')
 
-      updateIpopHTML(populationArray,ipopID,_type)
+      updateIpopHTML(populationArray,rootID,_type)
 
     }
 
@@ -971,14 +970,16 @@ function addMpopHTML(ThisID,rowID,_type){
 }
 
 
-function updateIpopHTML(populationArray,ThisID,_type){
+function updateIpopHTML(populationArray,rootID,_type){
+
+  let ThisID = 'ipop-'+rootID
 
   let html = '<div class="table-responsive">'+
      '<table id="'+ThisID+'" class="table table-bordered"><tbody>';
 
   $.each(populationArray, function( k1, value ) {
 
-    html += ReturnIpopTR(value,ThisID,_type)
+    html += ReturnIpopTR(value,rootID,_type)
 
   });
 
