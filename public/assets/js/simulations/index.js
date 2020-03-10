@@ -34,7 +34,8 @@ $(document).ready(function(){
       enableAnchorOnDoneStep: true // Enable/Disable the done steps navigation
     },
     transitionEffect: 'fade', // Effect on navigation, none/slide/fade
-    transitionSpeed: '100'
+    transitionSpeed: '100',
+    keyNavigation: false
   });
 
   $("#smartwizard").on("showStep", function(e, anchorObject, stepNumber, stepDirection) {
@@ -181,6 +182,7 @@ $(document).ready(function(){
       var myEle = document.getElementById(rowID);
       while(myEle){
         rowID = makeid(5)
+        myEle = document.getElementById(rowID);
       }
 
       var obj = {};
@@ -211,6 +213,31 @@ $(document).ready(function(){
       window.popovers[id] = html
     }
 
+
+    let type = $(this).attr('type')
+
+
+    // Allowed pop is changed, change init pop table
+    if (type == 'ap') {
+
+      let rowCheckboxes = $(this).parents('.popover-content').first().find('table').find('input[type=checkbox]')
+
+      let populationArray = []
+
+      rowCheckboxes.each(function () {
+         if (this.checked) {
+            populationArray.push($(this).attr('value'))
+         }
+      });
+
+      let rootID = id.replace('apop-', '')
+      let ipopID = 'ipop-'+rootID
+      let _type = rowCheckboxes.attr('kind')
+
+      updateIpopHTML(populationArray,ipopID,_type)
+
+    }
+
     $('.popover-all').popover('hide');
 
   });
@@ -230,12 +257,15 @@ $(document).ready(function(){
 
     let parentID = elem.attr('id')
 
+    removeAllPopoverOfID(parentID)
+
     let subRowCount = $(document).find('tr[parentID='+parentID+']').length
 
     let rowID = makeid(5)
     var myEle = document.getElementById(rowID);
     while(myEle){
       rowID = makeid(5)
+      myEle = document.getElementById(rowID);
     }
 
     let tooltipClass= "tooltip-"+rowID
@@ -271,15 +301,7 @@ $(document).ready(function(){
 
     window.resources.splice( window.resources.indexOf(rowID), 1 );
 
-    let apopID = 'apop-'+rowID
-    let ipopID = 'ipop-'+rowID
-    let mpopID = 'mpop-'+rowID
-    let cpopID = 'cpop-'+rowID
-
-    delete window.popovers[apopID]
-    delete window.popovers[ipopID]
-    delete window.popovers[mpopID]
-    delete window.popovers[cpopID]
+    removeAllPopoverOfID(rowID)
 
     
     //ALL SUB-ROWS
@@ -287,15 +309,7 @@ $(document).ready(function(){
 
       let rowid = $(this).attr('id')
 
-      let apopID = 'apop-'+rowid
-      let ipopID = 'ipop-'+rowid
-      let mpopID = 'mpop-'+rowid
-      let cpopID = 'cpop-'+rowid
-
-      delete window.popovers[apopID]
-      delete window.popovers[ipopID]
-      delete window.popovers[mpopID]
-      delete window.popovers[cpopID]
+      removeAllPopoverOfID(rowid)
       
       $(this).remove()
 
@@ -320,17 +334,7 @@ $(document).ready(function(){
     let rowID = elem.attr('id')
     let parentID = elem.attr('parentID')
 
-    window.resources.splice( window.resources.indexOf(rowID), 1 );
-
-    let apopID = 'apop-'+rowID
-    let ipopID = 'ipop-'+rowID
-    let mpopID = 'mpop-'+rowID
-    let cpopID = 'cpop-'+rowID
-
-    delete window.popovers[apopID]
-    delete window.popovers[ipopID]
-    delete window.popovers[mpopID]
-    delete window.popovers[cpopID]
+    removeAllPopoverOfID(rowID)
 
     elem.remove()
 
@@ -347,14 +351,6 @@ $(document).ready(function(){
     }
 
   })
-
-  $(document).on("change",".ana",function(e,data) {
-
-    let v = $(this).val()
-
-    
-
-  });
 
 
   //********************************
@@ -384,6 +380,7 @@ $(document).ready(function(){
       var myEle = document.getElementById(rowID);
       while(myEle){
         rowID = makeid(5)
+        myEle = document.getElementById(rowID);
       }
 
       var obj = {};
@@ -417,6 +414,7 @@ $(document).ready(function(){
     let type = elem.attr('type');
 
     let parentID = elem.attr('id')
+    removeAllPopoverOfID(parentID)
 
     let subRowCount = $(document).find('tr[parentID='+parentID+']').length
 
@@ -424,12 +422,12 @@ $(document).ready(function(){
     var myEle = document.getElementById(rowID);
     while(myEle){
       rowID = makeid(5)
+      myEle = document.getElementById(rowID);
     }
 
     var obj = {};
     obj[rowID] = 'name';
-    window.states.push(obj)
-
+    
     let tooltipClass= "tooltip-"+rowID
 
     let row = MakeSUBStatesRowColumnHTML(rowID,parentID,subRowCount,tooltipClass,parentName)
@@ -463,31 +461,14 @@ $(document).ready(function(){
 
     window.states.splice( window.states.indexOf(rowID), 1 );
 
-    let apopID = 'apop-'+rowID
-    let ipopID = 'ipop-'+rowID
-    let mpopID = 'mpop-'+rowID
-    let cpopID = 'cpop-'+rowID
-
-    delete window.popovers[apopID]
-    delete window.popovers[ipopID]
-    delete window.popovers[mpopID]
-    delete window.popovers[cpopID]
-
+    removeAllPopoverOfID(rowID)
     
     //ALL SUB-ROWS
     $(document).find('tr[parentID='+rowID+']').each(function( index ) {
 
       let rowid = $(this).attr('id')
 
-      let apopID = 'apop-'+rowid
-      let ipopID = 'ipop-'+rowid
-      let mpopID = 'mpop-'+rowid
-      let cpopID = 'cpop-'+rowid
-
-      delete window.popovers[apopID]
-      delete window.popovers[ipopID]
-      delete window.popovers[mpopID]
-      delete window.popovers[cpopID]
+      removeAllPopoverOfID(rowid)
       
       $(this).remove()
 
@@ -513,21 +494,7 @@ $(document).ready(function(){
     let rowID = elem.attr('id')
     let parentID = elem.attr('parentID')
 
-
-    console.log(rowID)
-    console.log(window.states.indexOf(rowID))
-
-    window.states.splice( window.states.indexOf(rowID), 1 );
-
-    let apopID = 'apop-'+rowID
-    let ipopID = 'ipop-'+rowID
-    let mpopID = 'mpop-'+rowID
-    let cpopID = 'cpop-'+rowID
-
-    delete window.popovers[apopID]
-    delete window.popovers[ipopID]
-    delete window.popovers[mpopID]
-    delete window.popovers[cpopID]
+    removeAllPopoverOfID(rowID)
 
     elem.remove()
 
@@ -762,9 +729,21 @@ function checkStep4(){
 
 function checkStep5(){
 
-  let output = false
+  let output = false;
 
-  if (checkStep3() && checkStep4()) {
+  let transitionInput = $(document).find('.transitioninput');
+
+  let flag = true;
+
+  transitionInput.each(function(){
+
+    if ( $(this).val() == "" ){
+      flag = false
+    }
+
+  });
+
+  if (flag) {
 
     output = true
 
@@ -884,7 +863,7 @@ function addApopHTML(ThisID,rowID,_type){
   $.each( window.populationType, function( k1, value ) {
 
     html += '<tr><td class="pop" style="font-weight: 900">'+value+'</td>'+
-            '<td class="pop"><label class="checkbox-inline"><input name="allowedPopulation['+_type+']['+rowID+']['+value+']" class="ana" type="checkbox" value="'+value+'" checked>Allowed</label></td></tr>';
+            '<td class="pop"><label class="checkbox-inline"><input kind="'+_type+'" name="allowedPopulation['+_type+']['+rowID+']['+value+']" class="ana" type="checkbox" value="'+value+'" checked>Allowed</label></td></tr>';
 
   });
 
@@ -976,6 +955,37 @@ function addMpopHTML(ThisID,rowID,_type){
 
 
   if(typeof window.popovers[ThisID] === 'undefined') {
+    window.popovers[ThisID] = html
+  }
+
+  $(document).find('#'+ThisID).on('shown.bs.popover', function () {
+
+    let popid = $(this).attr('aria-describedby')
+
+    let thisid = $(this).attr('id')
+
+    $(document).find('#'+popid).first().find('.popover-content').first().html(window.popovers[thisid]);
+
+  })
+
+}
+
+
+function updateIpopHTML(populationArray,ThisID,_type){
+
+  let html = '<div class="table-responsive">'+
+     '<table id="'+ThisID+'" class="table table-bordered"><tbody>';
+
+  $.each(populationArray, function( k1, value ) {
+
+    html += ReturnIpopTR(value,ThisID,_type)
+
+  });
+
+  html +=   '</tbody></table></div><div style="width:100%"><a id="'+ThisID+'" class="closepop a-tag">Save and Close</a></div>';
+
+
+  if(typeof window.popovers[ThisID] !== 'undefined') {
     window.popovers[ThisID] = html
   }
 
@@ -1140,11 +1150,13 @@ function HandleStepsOnNextBtnClick(){
 
 function MakeResourcesRowColumnHTML(rowID,tooltipClass,type,name){
   let rowCount = $("#restable tbody tr").length
+
   let tr = '<tr id="'+rowID+'" class="mainrow" count="'+rowCount+'" type="'+type+'" name="'+name+'">';
-  let td0 = '<td>'+name+'</td>';
-  let td1 = '<td><input type="text" class="form-control" name="resources['+rowID+'][name]" placeholder="'+name+'"><small class="text-danger hide">* duplication name is not allowed</small></td>';
-  let td3 = '<td>'+makeResourcesPropretiesTD(rowID)+'</td>'
-  let td4 = '<td><a data-toggle="tooltip" data-placement="top" title="Add Sub Resources" class="divideRes pointer '+tooltipClass+'"><i class="text-primary fas fa-layer-group"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;<a data-toggle="tooltip" data-placement="top" title="Delete Row" class="pointer removeResRow '+tooltipClass+'"><i class="text-danger fas fa-minus-square"></i></a></td>'
+  let td0 = '<td kind="name">'+name+'</td>';
+  let td1 = '<td kind="nameinput"><input type="text" class="form-control" name="resources['+rowID+'][name]" placeholder="'+name+'"><small class="text-danger hide">* duplication name is not allowed</small></td>';
+  let td3 = '<td kind="props">'+makeResourcesPropretiesTD(rowID)+'</td>'
+  let td4 = '<td kind="action"><a data-toggle="tooltip" data-placement="top" title="Add Sub Resources" class="divideRes pointer '+tooltipClass+'"><i class="text-primary fas fa-layer-group"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;<a data-toggle="tooltip" data-placement="top" title="Delete Row" class="pointer removeResRow '+tooltipClass+'"><i class="text-danger fas fa-minus-square"></i></a></td>'
+
   let row =   tr+
               td0+
               td1+
@@ -1285,4 +1297,16 @@ function InsertArrayElementToDOM(array,elem,inputName){
     $(elem).append('<input type="hidden" class="'+inputName+'-input" name="'+inputName+'['+i+']" value="'+array[i]+'">')
   }
 
+}
+
+function removeAllPopoverOfID(rowID){
+  let apopID = 'apop-'+rowID
+  let ipopID = 'ipop-'+rowID
+  let mpopID = 'mpop-'+rowID
+  let cpopID = 'cpop-'+rowID
+
+  delete window.popovers[apopID]
+  delete window.popovers[ipopID]
+  delete window.popovers[mpopID]
+  delete window.popovers[cpopID]
 }
