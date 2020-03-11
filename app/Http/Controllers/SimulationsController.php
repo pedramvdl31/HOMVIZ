@@ -35,17 +35,10 @@ class SimulationsController extends Controller
 
     public function postAdd()
     {
-
-        Job::dump(Input::all());
-
         $resources = Input::get('resources');
-
         $subresources = Input::get('subresources');
-
         $states = Input::get('states');
-
         $substates = Input::get('substates');
-
 
         if (isset($resources)) {
 
@@ -65,12 +58,7 @@ class SimulationsController extends Controller
                 }
 
             }
-
         }
-
-
-        Job::dump($resources);
-
 
         if (isset($states)) {
 
@@ -91,11 +79,7 @@ class SimulationsController extends Controller
                 }
 
             }
-
         }
-
-        Job::dump($states);
-
 
         $allowedPopulation = Input::get('allowedPopulation');
         $initialPopulation = Input::get('initialPopulation');
@@ -106,36 +90,44 @@ class SimulationsController extends Controller
         $resources = Simulation::mergeResourcesPropreties($resources, $initialPopulation, 'initialPopulation');
         $resources = Simulation::mergeResourcesPropreties($resources, $maximumlengthofstay, 'maximumlengthofstay');
         $resources = Simulation::mergeResourcesPropreties($resources, $capacity, 'capacity');
-
-
         $states = Simulation::mergeStatesPropreties($states, $allowedPopulation, 'allowedpopulation');
         $states = Simulation::mergeStatesPropreties($states, $initialPopulation, 'initialPopulation');
 
+        $transitionProbability = Input::get('TransitionProbability');
+        $creatorname = Input::get('creatorname');
+        $numberofweeks = Input::get('numberofweeks');
+        $numberofsims = Input::get('numberofsims');
+        $populationType = Input::get('populationType');
+        $simulation_name = Input::get('simulation_name');
+        $simulation_location = Input::get('simulation_location');
 
-        Job::dump('-------');
+        $output = array();
 
+        $output['simulation_name'] = $simulation_name;
+        $output['simulation_location'] = $simulation_location;
+        $output['creatorname'] = $creatorname;
+        $output['numberofweeks'] = $numberofweeks;
+        $output['numberofsims'] = $numberofsims;
+        $output['populationType'] = $populationType;
+        $output['resources'] = $resources;
+        $output['states'] = $states;
+        $output['transitionProbability'] = $transitionProbability;
 
-        Job::dump($allowedPopulation);
+        $sim = new Simulation();
+        $sim->user_id = Auth::user()->id;
+        $sim->simulation_name = $output['simulation_name'];
+        $sim->simulation_location = $output['simulation_location'];
+        $sim->creatorname = $output['creatorname'];
+        $sim->numberofweeks = $output['numberofweeks'];
+        $sim->numberofsims = $output['numberofsims'];
+        $sim->populationType = json_encode($output['populationType']);
+        $sim->resources = json_encode($output['resources']);
+        $sim->states = json_encode($output['states']);
+        $sim->transitionProbability = json_encode($output['transitionProbability']);  
 
-        Job::dump('-------');
+        $sim->save();
 
-        Job::dump($resources);
-        Job::dump($states);
-
-        // $sim = new Simulation();
-        // $sim->user_id = Auth::user()->id;  
-        // $sim->location = Input::get("simulation_location");  
-        // $sim->resources = json_encode(Input::get("resource"));
-        // $sim->subresources = json_encode(Input::get("subresource"));
-        // $sim->states = json_encode(Input::get("states"));  
-        // $sim->table = json_encode(Input::get("table"));  
-        // $sim->name = Input::get("simulation_name");  
-        // $sim->numberofweeks = Input::get("numberofweeks");  
-        // $sim->numberofsims = Input::get("numberofsims");
-        // $sim->creatorname = Input::get("creatorname");  
-        // $sim->save();
-
-        // return Redirect::route('index');
+        return Redirect::route('index');
 
     }
 

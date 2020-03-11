@@ -16,16 +16,20 @@ class CreateSimulationsTable extends Migration
         Schema::create('simulations', function (Blueprint $table) {
 
             $table->increments('id');
-            $table->string('name')->nullable();
-            $table->string('numberofweeks')->nullable();
-            $table->string('numberofsims')->nullable();
-            $table->string('location')->nullable();
-            $table->text('resources')->nullable();
-            $table->text('subresources')->nullable();
-            $table->text('states')->nullable();
-            $table->text('table')->nullable();
-            $table->string('datasheetURI')->nullable();
             $table->unsignedInteger('user_id',false)->nullable();
+            $table->string('simulation_name');
+            $table->string('simulation_location');
+
+
+            $table->string('creatorname');
+            $table->string('numberofweeks');
+            $table->string('numberofsims');
+            
+            $table->text('populationType');
+            $table->text('resources');
+            $table->text('states');
+            $table->text('transitionProbability');
+            $table->string('datasheetURI')->nullable();
             $table->timestamps();
             $table->softDeletes();
 
