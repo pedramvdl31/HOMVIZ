@@ -19,7 +19,7 @@ class JsonFileDumperTest extends TestCase
 {
     public function testDump()
     {
-        if (PHP_VERSION_ID < 50400) {
+        if (\PHP_VERSION_ID < 50400) {
             $this->markTestIncomplete('PHP below 5.4 doesn\'t support JSON pretty printing');
         }
 
@@ -30,7 +30,7 @@ class JsonFileDumperTest extends TestCase
         $dumper = new JsonFileDumper();
         $dumper->dump($catalogue, array('path' => $tempDir));
 
-        $this->assertEquals(file_get_contents(__DIR__.'/../fixtures/resources.json'), file_get_contents($tempDir.'/messages.en.json'));
+        $this->assertFileEquals(__DIR__.'/../fixtures/resources.json', $tempDir.'/messages.en.json');
 
         unlink($tempDir.'/messages.en.json');
     }

@@ -26,6 +26,14 @@ Route::group(['middleware' => 'beforeFilter'], function () {
 		Route::post('/simulations/add',  ['uses' => 'SimulationsController@postAdd']);
 		Route::get('/simulations/view/{id}',  ['as'=>'simulation_view', 'uses' => 'SimulationsController@getView']);
 
+		Route::post('/simulations/progress-update',  ['uses' => 'SimulationsController@postprogressUpdate']);
+
+
+
+
+
 	});
 
 });
+
+Route::get('/test',  ['uses' => 'SimulationsController@getTest']);

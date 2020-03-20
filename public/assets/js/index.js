@@ -1,84 +1,63 @@
-$(document).ready(function() {
-    main.pageLoad();
-    main.events();
-    MakeMenuGray();
-});
+  
+$(document).ready(function(){
 
-main = {
-    pageLoad: function() {
 
-    },
-    events: function() {
-        $('#main-contact-formx').submit(function(e) {
-            e.preventDefault();
-            var postdata = $('#main-contact-formx').serialize();
-            requestw.send_email_purchace(postdata)
-        });
-        $('.tesreadmore').on('click', function() {
-            $(this).parents('.item').find('.moretes').removeClass('hide');
-            $(this).addClass('hide')
-        });
-        $('.navbar-nav .scroll a').on('click', function() {
-            $('.scroll').removeClass('active');
-            $(this).parent('.scroll').addClass('active')
-        });
-        $('.modal-body').on('click', function() {
-            alert()
-        });
-        $(".nav").find(".scroll").on("click", "a", function() {
-            $('.navbar-collapse.in').collapse('hide')
-        });
-        $('.nav .dropdown').on('click', function() {
-            setTimeout(function() {
-                var dx = $('.navbar-collapse');
-                dx.scrollTop(dx.prop("scrollHeight"))
-            }, 10)
-        });
-        $('.dropdown-submenu a').on('click', function() {
-            setTimeout(function() {
-                var dx = $('.navbar-collapse');
-                dx.scrollTop(dx.prop("scrollHeight"))
-            }, 10)
-        })
-    }
-}
-requestw = {
-    send_email_purchace: function(pform) {
-        var token = $('meta[name=csrf-token]').attr('content');
-        $.post('/send-email-from-site', {
-            "_token": token,
-            "pform": pform
-        }, function(result) {
-            var status = result.status;
-            switch (status) {
-                case 200:
-                    alert('Your email has been sent.');
-                    $("input[name='name']").val('');
-                    $("input[name='email']").val('');
-                    $("input[name='subject']").val('');
-                    $("textarea[name='message']").val('');
-                    break;
-                case 400:
-                    alert('Somthing went wrong. Please try again later. ERR400');
-                    break;
-                default:
-                    break
+  update()
+
+
+})
+
+function update(){
+
+    let flag = false
+
+    var el = $('.jobs').attr('id')
+    
+    var token = $('input[name=_token]').attr('value');
+
+    $.ajax({
+        url: "/simulations/progress-update",
+        type:"POST",
+        data: { '_token': token,"ids": ['?gkghfk5.423g44ths4.2y3yhey?.']},
+        success:function(data){
+
+
+          if (data['status']==200) {
+
+            console.log(data)
+            $.each(data['output'], function( index, value ) {
+
+              let elem = $('.jobs[id='+index+']')
+
+              elem.find('.statushtml').html(data['output'][index]['statushtml'])
+
+              if (data['output'][index]['status'] != 1) {
+                flag = true
+              }
+
+              let progress = parseFloat(data['output'][index]['progress']);
+              progress =  progress.toFixed(2)
+              if (progress==100.00) progress = 100
+
+              elem.find('.progress-bar').first().css('width', progress+'%').attr('aria-valuenow',progress).html(progress+'%')
+
+            });
+
+
+          }
+
+
+
+          setTimeout(function(){
+            if (flag) {
+              update()
             }
-        })
-    }
-};
+            // update()
+          }, 500)
 
-function MakeMenuGray() {
-    $(location).attr('href');
-    var pathname = window.location.pathname;
-    var slug = pathname.split('/');
-    slug = slug[slug.length - 1];
-    if (slug == '') {
-        $('a[href^="#home"]').parent('.scroll').addClass('active')
-    } else {
-        var newhref = "/" + slug;
-        $('a[href^="' + newhref + '"]').parent('.scroll').addClass('active')
-    }
+        },error:function(e){
+          console.log('ee')
+        }
+
+    });
 }
-
-

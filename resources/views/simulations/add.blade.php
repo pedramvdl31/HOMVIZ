@@ -10,7 +10,7 @@
 	<script src="/assets/js/sweetalert2.min.js?1"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/xlsx.full.min.js"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/jszip.js"></script>
-	<script src="/assets/js/simulations/index.js?110"></script>
+	<script src="/assets/js/simulations/index.js?112"></script>
 @stop
 
 @section('content')
@@ -82,8 +82,8 @@
 							                <li><a href="#step-2">Step 2<br /><big>Population Group&nbsp;&nbsp;<i class="fas fa-users"></i></big></a></li>
 							                <li><a href="#step-3">Step 3<br /><big>Resources&nbsp;&nbsp;<i class="fas fa-shapes"></i></big></a></li>
 							                <li><a href="#step-4">Step 4<br /><big>States&nbsp;&nbsp;<i class="fas fa-project-diagram"></i></big></a></li>
-							                <li><a href="#step-5">Step 5<br /><big>Transition Probability&nbsp;&nbsp;<i class="fas fa-percent"></i></big></a></li>
-							                <li><a href="#step-6">Step 6<br /><big>Parameters&nbsp;&nbsp;<i class="fas fa-sliders-h"></i></big></a></li>
+							                <!-- <li><a href="#step-5">Step 5<br /><big>Transition Probability&nbsp;&nbsp;<i class="fas fa-percent"></i></big></a></li> -->
+							                <li><a href="#step-6">Step 5<br /><big>Parameters&nbsp;&nbsp;<i class="fas fa-sliders-h"></i></big></a></li>
 							            </ul>
 
 							            <div style="padding-top: 15px">
@@ -480,16 +480,16 @@
 										<p><strong>Step 4:</strong> <span id="states-overview" class="text-danger">Incomplete</span></p>
 									</div>
 
-									<hr>
+<!-- 									<hr>
 
 									<div class="row">
 										<p><strong>Step 5:</strong> <span id="transitions-overview" class="text-danger">Incomplete</span></p>
-									</div>
+									</div> -->
 
 									<hr>
 
 									<div class="row">
-										<p><strong>Step 6:</strong> <span id="parameters-overview" class="text-danger">Incomplete</span></p>
+										<p><strong>Step 5:</strong> <span id="parameters-overview" class="text-danger">Incomplete</span></p>
 									</div>
 
 

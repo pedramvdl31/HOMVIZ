@@ -2,7 +2,7 @@
 @section('stylesheets')
 @stop
 @section('scripts')
-
+<script src="/assets/js/index.js?5"></script>
 @stop
 
 @section('content')
@@ -48,11 +48,22 @@
 
                             @foreach ($sim as $k => $val)
 
-
-                              <div class="col-md-3">
+                              <div class="col-md-6 jobs" id="{{$val->id}}" status="{{$val->status}}">
                                 <div class="card card-outline card-primary collapsed-card">
                                   <div class="card-header">
-                                    <h3 class="card-title">{{$val->simulation_name}}</h3>
+                                    <div class="card-title">
+
+                                      <h5>Simulation Name: {{$val->simulation_name}}&nbsp;&nbsp;<span class="statushtml">{!!$val->statusMessage!!}</span></h5>
+                                      
+                                      @if($val->status!=1)
+                                        <div class="progress">
+                                          <div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+                                        </div>
+                                      @endif
+
+
+
+                                    </div>
 
                                     <div class="card-tools">
                                       <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-plus"></i>
@@ -62,9 +73,10 @@
                                   </div>
                                   <!-- /.card-header -->
                                   <div class="card-body" style="display: none;">
+                                        <p class=" "><b>Created by: </b> {{$val->creatorname}}</p>
+                                        <p class=" "><b>Simulation Location: </b> {{$val->simulation_location}}</p>
                                         <p class=" "><b>Number of weeks: </b> {{$val->numberofweeks}}</p>
                                         <p class=" "><b>Number of simulation: </b> {{$val->numberofsims}}</p>
-                                        <p class=" "><b>Created by: </b> {{$val->creatorname}}</p>
                                         <p class=" "><b>Created at: </b> {{$val->created_at}}</p>
                                   </div>
                                   <!-- /.card-body -->

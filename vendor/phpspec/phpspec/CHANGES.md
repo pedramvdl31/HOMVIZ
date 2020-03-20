@@ -1,3 +1,14 @@
+2.5.8 / 2017-07-29
+==================
+
+* [fixed] parameters after extensions ignored in config file (@borNfreee)
+
+2.5.7 / 2017-05-12
+==================
+
+* [fixed] constructor no longer generated multuple tiles (@CarlosV2)
+* [fixed] warning when src_path is empty (@vitorf7)
+
 2.5.6 / 2017-04-27
 ==================
 

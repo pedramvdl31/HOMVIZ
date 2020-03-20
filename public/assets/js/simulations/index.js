@@ -599,7 +599,7 @@ function validateAllSteps(){
 
   let output = false
 
-  if (checkStep1() && checkStep2() && checkStep3() && checkStep4() && checkStep5() && checkStep6()) {
+  if (checkStep1() && checkStep2() && checkStep3() && checkStep4() && checkStep6()) {
 
     output = true
 
@@ -1111,7 +1111,8 @@ function HandleStepsOnNextBtnClick(){
     //TRANSITIONS
     case 5:
 
-      if (checkStep5()) {
+      // if (checkStep5()) {
+      if (true) {
         $('#smartwizard').smartWizard("next")
       } else {
         Toast.fire({
@@ -1154,7 +1155,7 @@ function MakeResourcesRowColumnHTML(rowID,tooltipClass,type,name){
 
   let tr = '<tr id="'+rowID+'" class="mainrow" count="'+rowCount+'" type="'+type+'" name="'+name+'">';
   let td0 = '<td kind="name">'+name+'</td>';
-  let td1 = '<td kind="nameinput"><input type="text" class="form-control" name="resources['+rowID+'][name]" placeholder="'+name+'"><small class="text-danger hide">* duplication name is not allowed</small></td>';
+  let td1 = '<td kind="nameinput"><input type="text" class="form-control" name="resources['+rowID+'][name]" value="'+name+'"><small class="text-danger hide">* duplication name is not allowed</small></td>';
   let td3 = '<td kind="props">'+makeResourcesPropretiesTD(rowID)+'</td>'
   let td4 = '<td kind="action"><a data-toggle="tooltip" data-placement="top" title="Add Sub Resources" class="divideRes pointer '+tooltipClass+'"><i class="text-primary fas fa-layer-group"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;<a data-toggle="tooltip" data-placement="top" title="Delete Row" class="pointer removeResRow '+tooltipClass+'"><i class="text-danger fas fa-minus-square"></i></a></td>'
 
@@ -1190,7 +1191,7 @@ function MakeStatesRowColumnHTML(rowID,tooltipClass,type,name){
   let rowCount = $("#statetable tbody tr").length
   let tr = '<tr id="'+rowID+'" class="mainrow" count="'+rowCount+'" type="'+type+'" name="'+name+'">';
   let td0 = '<td>'+name+'</td>';
-  let td1 = '<td><input type="text" class="form-control" name="states['+rowID+'][name]" placeholder="Name (unique)"><small class="text-danger hide">* duplication name is not allowed</small></td>';
+  let td1 = '<td><input type="text" class="form-control" name="states['+rowID+'][name]" value="'+name+'"><small class="text-danger hide">* duplication name is not allowed</small></td>';
   let td3 = '<td>'+makeStatesPropretiesTD(rowID)+'</td>'
   let td4 = '<td><a data-toggle="tooltip" data-placement="top" title="Add Sub State" class="divideState pointer '+tooltipClass+'"><i class="text-primary fas fa-layer-group"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;<a data-toggle="tooltip" data-placement="top" title="Delete Row" class="pointer removeStateRow '+tooltipClass+'"><i class="text-danger fas fa-minus-square"></i></a></td>'
   let row =   tr+

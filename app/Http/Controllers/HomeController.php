@@ -38,6 +38,22 @@ class HomeController extends Controller
 
         foreach ($sim as $sk => $sv) {
 
+            $d = json_decode($sv->data);
+
+            $sv->data = '';
+            $sv->simulation_name = $d->simulation_name;
+            $sv->simulation_location = $d->simulation_location;
+            $sv->numberofweeks = $d->numberofweeks;
+            $sv->numberofsims = $d->numberofsims;
+            $sv->creatorname = $d->creatorname;
+            
+            $sv->statusMessage = '<span class="badge badge-success">Submitted</span>';
+            if ($sv->status==1) {
+               $sv->statusMessage = '<span class="badge badge-info">Completed</span>';
+            } else if($sv->status==2) {
+               $sv->statusMessage = '<span class="badge badge-info">Processing</span>';
+            }
+
             $phpdate = strtotime( $sv->created_at );
             $sv->created_at = date( 'Y-m-d H:i:s', $phpdate );
         }

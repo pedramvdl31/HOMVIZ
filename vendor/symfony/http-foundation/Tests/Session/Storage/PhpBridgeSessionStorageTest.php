@@ -62,7 +62,7 @@ class PhpBridgeSessionStorageTest extends TestCase
 
     public function testPhpSession53()
     {
-        if (PHP_VERSION_ID >= 50400) {
+        if (\PHP_VERSION_ID >= 50400) {
             $this->markTestSkipped('Test skipped, for PHP 5.3 only.');
         }
 
@@ -79,9 +79,9 @@ class PhpBridgeSessionStorageTest extends TestCase
         $this->assertFalse($storage->isStarted());
 
         $key = $storage->getMetadataBag()->getStorageKey();
-        $this->assertFalse(isset($_SESSION[$key]));
+        $this->assertArrayNotHasKey($key, $_SESSION);
         $storage->start();
-        $this->assertTrue(isset($_SESSION[$key]));
+        $this->assertArrayHasKey($key, $_SESSION);
     }
 
     /**
@@ -102,9 +102,9 @@ class PhpBridgeSessionStorageTest extends TestCase
         $this->assertFalse($storage->isStarted());
 
         $key = $storage->getMetadataBag()->getStorageKey();
-        $this->assertFalse(isset($_SESSION[$key]));
+        $this->assertArrayNotHasKey($key, $_SESSION);
         $storage->start();
-        $this->assertTrue(isset($_SESSION[$key]));
+        $this->assertArrayHasKey($key, $_SESSION);
     }
 
     public function testClear()
