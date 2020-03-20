@@ -110,7 +110,7 @@ class SimulationsController extends Controller
                         "http" => [
                             "method" => "POST",
                             "header" => "key: ".$serverkey."\r\n" .
-                                "simulation_id: 32\r\n"
+                                "simulation_id: ".$simulation->serverID."\r\n"
                         ]
                     ];
                     $context = stream_context_create($opts);
