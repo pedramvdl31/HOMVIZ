@@ -947,7 +947,7 @@ function addMpopHTML(ThisID,rowID,_type){
   let html =  '<div class="table-responsive">'+
           '<table id="'+ThisID+'" class="table table-bordered"><tbody>';
 
-  html += '<tr><td class="pop" style="font-weight: 900">Maximum Length of Stay (days)</td>'+
+  html += '<tr><td class="pop" style="font-weight: 900">Maximum Length of Stay (weeks)</td>'+
             '<td class="pop"><input name="maximumlengthofstay['+_type+']['+rowID+']" value="7" style="width:100px; height:100%;" placeholder="#"></td></tr>';
 
   html +=   '</tbody></table></div><div style="width:100%"><a id="'+ThisID+'" class="closepop a-tag">Save and Close</a></div>';
