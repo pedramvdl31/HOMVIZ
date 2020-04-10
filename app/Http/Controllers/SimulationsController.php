@@ -99,11 +99,11 @@ class SimulationsController extends Controller
                 $res = json_decode($file,1);
 
                 if ($res['status']=='complete') {
+
                     $s = Simulation::find($simulation->id);
                     $s->status = 1;
                     $s->save();
                     $output[$simulation->id]['status']=1;
-
 
                     $url = 'http://andr.fish:3114/api/v1/simulation/result';
                     $opts = [
@@ -113,6 +113,7 @@ class SimulationsController extends Controller
                                 "simulation_id: ".$simulation->serverID."\r\n"
                         ]
                     ];
+
                     $context = stream_context_create($opts);
                     $file = file_get_contents($url, false, $context);
                     $res = json_decode($file,1);
@@ -122,10 +123,7 @@ class SimulationsController extends Controller
                         $s->save();
                         $output[$simulation->id]['progress']=100;
                         $output[$simulation->id]['statushtml']='<span class="badge badge-info">Completed</span>';
-
-
                     }
-
 
                 } else {
 
@@ -134,10 +132,18 @@ class SimulationsController extends Controller
                         $var = $res['status'];
                         $var = str_replace(' ', '', $var);
                         $var = explode(',', $var);
+
+                        if (isset($var[0])) {
+                            $simnum = str_replace('sim_', '', $var[0]);
+                            $simname = 'Simulation '. ( ((int)$simnum)+1  );
+                            $output[$simulation->id]['simulationname'] = $simname;
+                        }
+
                         $first4='';
                         if (isset($var[1])) {
                            $first4 = substr($var[1], 0,4);
                         }
+
                         if ($first4=='week') {
 
                             $d = json_decode($simulation->data,1);
@@ -150,10 +156,6 @@ class SimulationsController extends Controller
                             $output[$simulation->id]['status']=2;
                             $output[$simulation->id]['progress']=$progress;
                             $output[$simulation->id]['statushtml']='<span class="badge badge-info">Processing</span>';
-
-
-
-
 
                         }
 
@@ -305,7 +307,7 @@ class SimulationsController extends Controller
 
         $sim = Simulation::find($sim_id);
 
-        $data = '{
+        $xxdata = '{
             "simulation_0": 
                 {  
                     "week_0": {
@@ -537,63 +539,111 @@ class SimulationsController extends Controller
 
         $weekLabel = [];
         $dataSeriesLabel = [];
+        $dataSeriesLabelPie = [];
         $populationLabel = [];
+        $resourceLabel = [];
+
+        $c2 = 0;
 
         foreach ($data as $key => $sim) {
-            foreach ($sim as $key => $week) {
-                $numberofweeks = $numberofweeks + 1;
-                array_push($weekLabel, 'Week '.$numberofweeks);
+
+            foreach ($sim as $w1key => $week) {
+
+
+                if ($c2==0) {
+                    array_push($weekLabel, 'Week '.$numberofweeks);
+                    $numberofweeks = $numberofweeks + 1;
+                }
+                
                 $weektotal = 0;
+
                 foreach ($week as $wk => $wv) {
+
+                    array_push($resourceLabel, $wk);
+
                     $total = 0;
+
                     foreach ($wv as $pk => $pv) {
                         $total = $total + $pv;
                     }
-                    // $data[$key][$wk]['Total'] = $total;
+
+                    $data[$key][$w1key][$wk]['Total'] = $total;
                     $weektotal = $weektotal + $total;
                 }
-                // $data[$key]['Total'] = [$weektotal];
+
             }
+
+            $c2 += 1;
+
         }
 
+        $resourceLabel = array_unique($resourceLabel);
 
-        foreach ($data as $key => $sim) {
+        $mycounter = 0;
+
+        foreach ($data as $key0 => $sim) {
+
+            $dataSeriesLabel[$key0]=[];
+            $dataSeriesLabelPie[$key0]=[];
 
             foreach ($sim as $key => $week) {
 
                 foreach ($week as $wk => $wv) {
 
-                    if(!isset($dataSeriesLabel[$wk]))
-                        $dataSeriesLabel[$wk]=[];
+                    if(!isset($dataSeriesLabel[$key0][$wk]))
+                        $dataSeriesLabel[$key0][$wk]=[];
+
+                    if(!isset($dataSeriesLabelPie[$key0][$wk]))
+                        $dataSeriesLabelPie[$key0][$wk]=[];                    
 
                     foreach ($wv as $pk => $pv) {
 
-                        if(!isset($dataSeriesLabel[$wk][$pk]))
-                            $dataSeriesLabel[$wk][$pk]=[];
+                        if(!isset($dataSeriesLabel[$key0][$wk][$pk]))
+                            $dataSeriesLabel[$key0][$wk][$pk]=[];
+
+                        if(!isset($dataSeriesLabelPie[$key0][$wk][$pk]))
+                            $dataSeriesLabelPie[$key0][$wk][$pk]=['init'=>null,'final'=>null];
+
+                        if ($mycounter==0) {
+                            $dataSeriesLabelPie[$key0][$wk][$pk]['init'] = $pv;
+                        }
+
+                        // Job::dump($numberofweeks);
+                        if ($mycounter==$numberofweeks-1) {
+                            $dataSeriesLabelPie[$key0][$wk][$pk]['final'] = $pv;
+                        }
+
 
                         if(!in_array($pk, $populationLabel))
                             array_push($populationLabel, $pk);
 
-                        array_push($dataSeriesLabel[$wk][$pk], $pv);
+                        array_push($dataSeriesLabel[$key0][$wk][$pk], $pv);
                     }
 
+                    
                 }
 
+                $mycounter += 1;
+
             }
+            $mycounter = 0;
         }
 
 
+        // Job::dump($dataSeriesLabelPie);
+        // Job::dump($dataSeriesLabel);
+
         return view('simulations.view')
         ->with('dataSeriesLabel',json_encode($dataSeriesLabel))
+        ->with('dataSeriesLabelPie',json_encode($dataSeriesLabelPie))
+        ->with('resourceLabel',json_encode($resourceLabel))
         ->with('populationLabel',json_encode($populationLabel))
         ->with('weekLabel',json_encode($weekLabel))
         ->with('populationLabelview',$populationLabel)
         ->with('layout',$this->layout)
-        ->with('sim',$sim);
+        ->with('sim',$sim)
+        ->with('simnumber',count($data));
 
     }
-
-    
-
 
 }

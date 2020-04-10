@@ -10,7 +10,7 @@
 	<script src="/assets/js/sweetalert2.min.js?1"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/xlsx.full.min.js"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/jszip.js"></script>
-	<script src="/assets/js/simulations/index.js?114"></script>
+	<script src="/assets/js/simulations/index.js?115"></script>
 @stop
 
 @section('content')
@@ -405,11 +405,11 @@
 
 														<div class="form-group">
 										                	<label for="inputName">Number of weeks:</label>
-										                	<input type="number" min="1" max="999" autocomplete="off" name="numberofweeks" id="simweeks" class="form-control">
+										                	<input type="number" min="1" max="999" autocomplete="off" name="numberofweeks" id="simweeks" value="12" class="form-control">
 										              	</div>
 														<div class="form-group">
 										                	<label for="inputName">Number of simulations:</label>
-										                	<input type="number" min="1" max="999"  autocomplete="off" name="numberofsims" type="text" id="simnum" class="form-control">
+										                	<input type="number" min="1" max="999"  autocomplete="off" name="numberofsims" type="text" value="1" id="simnum" class="form-control">
 										              	</div>
 
 										            </div>

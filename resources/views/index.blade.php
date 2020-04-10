@@ -2,7 +2,7 @@
 @section('stylesheets')
 @stop
 @section('scripts')
-<script src="/assets/js/index.js?5"></script>
+<script src="/assets/js/index.js?7"></script>
 @stop
 
 @section('content')
@@ -56,12 +56,18 @@
                                       <h5>Simulation Name: {{$val->simulation_name}}&nbsp;&nbsp;<span class="statushtml">{!!$val->statusMessage!!}</span></h5>
                                       
                                       @if($val->status!=1)
-                                        <div class="progress">
-                                          <div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+                                        
+                                        <div class="siminfo">
+                                          
+                                          <p class="simname"></p>
+                                          <div class="progress">
+                                            <div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+                                          </div>
+
                                         </div>
+
+
                                       @endif
-
-
 
                                     </div>
 
