@@ -194,7 +194,7 @@ $(document).ready(function(){
               ],
               label: 'My dataset'
             }],
-            labels: resourceLabel
+            labels: ''
           },
           options: {
             responsive: true,
@@ -203,7 +203,7 @@ $(document).ready(function(){
             },
             title: {
               display: true,
-              text: popoluation2+' Population'
+              text: ''
             },
             scale: {
               ticks: {
@@ -217,6 +217,9 @@ $(document).ready(function(){
             }
           }
         };
+
+        config.data.labels = resourceLabel;
+
         
         $.each( resourceLabel, function( key2, value2 ) {
 
@@ -224,8 +227,10 @@ $(document).ready(function(){
           
 
           if (z==0) {
+            config.options.title.text = popoluation2+' Initial Population'
             config.data.datasets[0].data.push(dataSeriesLabelPie['simulation_'+i2][value2][popoluation2]['init'])
           } else {
+            config.options.title.text = popoluation2+' Final Population'
             config.data.datasets[0].data.push(dataSeriesLabelPie['simulation_'+i2][value2][popoluation2]['final'])
           }
 
@@ -234,7 +239,6 @@ $(document).ready(function(){
 
         var ctx = document.getElementById('chart-area-'+z+'-'+(i2+1)+'-'+index2);
         window.myPolarArea = Chart.PolarArea(ctx, config);
-
 
 
       }
