@@ -1,13 +1,7 @@
+var chartColors = { red: "rgb(255, 99, 132)", orange: "rgb(255, 159, 64)", yellow: "rgb(255, 205, 86)", green: "rgb(75, 192, 192)", blue: "rgb(54, 162, 235)", purple: "rgb(153, 102, 255)", grey: "rgb(201, 203, 207)" };
+
+
 $(document).ready(function(){
-
-
-
-  var dynamicColors = function() {
-    var r = Math.floor(Math.random() * 255);
-    var g = Math.floor(Math.random() * 255);
-    var b = Math.floor(Math.random() * 255);
-    return "rgb(" + r + "," + g + "," + b + ")";
-  };
 
    $(document).on("click","#showdetails",function() {
 
@@ -15,44 +9,14 @@ $(document).ready(function(){
 
   });
 
-  var colors = [
-      {"backgroundColor":'transparent',
-      "borderColor":'rgba(60,141,188,0.8)',
-      "pointColor":'#3b8bba',
-      "pointStrokeColor":'rgba(60,141,188,1)',
-      "pointHighlightStroke":'rgba(60,141,188,1)'}
-    ,
-    
-      {"backgroundColor":'transparent',
-      "borderColor":'rgba(210, 214, 222, 1)',
-      "pointColor":'#c1c7d1',
-      "pointStrokeColor":'rgba(210, 214, 222, 1)',
-      "pointHighlightStroke":'rgba(220,220,220,1))'}
-    ,
-    
-      {"backgroundColor":'transparent',
-      "borderColor":'#ff5d5d',
-      "pointColor":'#c1c7d1',
-      "pointStrokeColor":'rgba(210, 214, 222, 1)',
-      "pointHighlightStroke":'rgba(220,220,220,1)'}
-    ,
-    
-      {"backgroundColor":'transparent',
-      "borderColor":'#99fd99',
-      "pointColor":'#c1c7d1',
-      "pointStrokeColor":'rgba(210, 214, 222, 1)',
-      "pointHighlightStroke":'rgba(220,220,220,1)'}
-    ,
-    
-      {"backgroundColor":'transparent',
-      "borderColor":dynamicColors(),
-      "pointColor":'#c1c7d1',
-      "pointStrokeColor":dynamicColors(),
-      "pointHighlightStroke":dynamicColors(),}
-    ,
 
-  ]
- 
+   $(document).on("click",".togglepirbar",function() {
+
+
+    $('.radarpie').css('display','none')
+    $('.barcharts').not(this).css('display','block')
+
+  });
 
   months = [
   'January',
@@ -92,7 +56,6 @@ $(document).ready(function(){
     return Math.round(Math.random() * 100);
   };
 
-  var chartColors = { red: "rgb(255, 99, 132)", orange: "rgb(255, 159, 64)", yellow: "rgb(255, 205, 86)", green: "rgb(75, 192, 192)", blue: "rgb(54, 162, 235)", purple: "rgb(153, 102, 255)", grey: "rgb(201, 203, 207)" };
 
   var color = Chart.helpers.color;
 
@@ -110,13 +73,7 @@ $(document).ready(function(){
 
       $.each( dataSeriesLabel['simulation_'+i], function( key, value ) {
 
-        var pallet = null;
-
-        if (count>3) {
-          pallet = colors[4]
-        } else {
-          pallet = colors[count]
-        }
+        pallet = genColor(count)
         count = count + 1
 
         let line = {
@@ -198,22 +155,10 @@ $(document).ready(function(){
           },
           options: {
             responsive: true,
-            legend: {
-              position: 'right',
-            },
             title: {
               display: true,
-              text: ''
-            },
-            scale: {
-              ticks: {
-                beginAtZero: true
-              },
-              reverse: false
-            },
-            animation: {
-              animateRotate: false,
-              animateScale: true
+              text: '',
+              position: 'top',
             }
           }
         };
@@ -223,19 +168,17 @@ $(document).ready(function(){
         
         $.each( resourceLabel, function( key2, value2 ) {
 
-          console.log(value2)
           
 
           if (z==0) {
-            config.options.title.text = popoluation2+' Initial Population'
+            config.options.title.text = 'Initial '+popoluation2+' Population'
             config.data.datasets[0].data.push(dataSeriesLabelPie['simulation_'+i2][value2][popoluation2]['init'])
           } else {
-            config.options.title.text = popoluation2+' Final Population'
+            config.options.title.text = 'Final '+popoluation2+' Population'
             config.data.datasets[0].data.push(dataSeriesLabelPie['simulation_'+i2][value2][popoluation2]['final'])
           }
 
         });
-
 
         var ctx = document.getElementById('chart-area-'+z+'-'+(i2+1)+'-'+index2);
         window.myPolarArea = Chart.PolarArea(ctx, config);
@@ -247,5 +190,148 @@ $(document).ready(function(){
 
   }
 
+  var cflag = true;
+  var carray = {}
+  for (var i2= 0; i2 < simnumber; i2++) {
+
+    $.each(populationLabel, function( index2, popoluation2 ) {
+
+      var config = {
+        data: {
+          datasets: [],
+          labels: ["Initial "+popoluation2+" Population", "Final "+popoluation2+" Population"],
+        },
+        options: {
+          responsive: true,
+          legend: {
+            position: 'right',
+          },
+          title: {
+            display: true,
+            text: ''
+          },
+          scale: {
+            ticks: {
+              beginAtZero: true
+            },
+            reverse: false,
+          },
+          animation: {
+            animateRotate: false,
+            animateScale: true
+          }
+
+        }
+      };
+
+      $.each( resourceLabel, function( key2, value2 ) {
+
+        let thiscolor = returnColor(key2,0.7)
+
+        config.data.datasets.push({data:[ 
+                                            dataSeriesLabelPie['simulation_'+i2][value2][popoluation2]['init'],
+                                            dataSeriesLabelPie['simulation_'+i2][value2][popoluation2]['final'],
+                                        ],
+                                  backgroundColor: thiscolor,
+                                  maxBarThickness:50,
+                                  label: [value2]})
+
+      });
+
+      var ctx = document.getElementById('chart-bar-'+(i2+1)+'-'+index2);
+      
+      var myBarChart = new Chart(ctx, {
+          type: 'bar',
+          data: config.data,
+          options: {
+            responsive: true
+          }
+      });
+
+    });
+
+  }
 
 });
+
+
+
+var dynamicColors = function() {
+  var r = Math.floor(Math.random() * 255);
+  var g = Math.floor(Math.random() * 255);
+  var b = Math.floor(Math.random() * 255);
+  return "rgb(" + r + "," + g + "," + b + ")";
+};
+
+
+function genColor(count){
+  
+  var palletx = null;
+
+  if (count>3){
+    count = 4;
+  }
+
+  var colors = [
+    {"backgroundColor":'transparent',
+    "borderColor":'rgba(60,141,188,0.8)',
+    "pointColor":'#3b8bba',
+    "pointStrokeColor":'rgba(60,141,188,1)',
+    "pointHighlightStroke":'rgba(60,141,188,1)'}
+  ,
+
+    {"backgroundColor":'transparent',
+    "borderColor":'rgba(210, 214, 222, 1)',
+    "pointColor":'#c1c7d1',
+    "pointStrokeColor":'rgba(210, 214, 222, 1)',
+    "pointHighlightStroke":'rgba(220,220,220,1))'}
+  ,
+
+    {"backgroundColor":'transparent',
+    "borderColor":'#ff5d5d',
+    "pointColor":'#c1c7d1',
+    "pointStrokeColor":'rgba(210, 214, 222, 1)',
+    "pointHighlightStroke":'rgba(220,220,220,1)'}
+  ,
+
+    {"backgroundColor":'transparent',
+    "borderColor":'#99fd99',
+    "pointColor":'#c1c7d1',
+    "pointStrokeColor":'rgba(210, 214, 222, 1)',
+    "pointHighlightStroke":'rgba(220,220,220,1)'}
+  ,
+
+    {"backgroundColor":'transparent',
+    "borderColor":dynamicColors(),
+    "pointColor":'#c1c7d1',
+    "pointStrokeColor":dynamicColors(),
+    "pointHighlightStroke":dynamicColors()}
+
+  ]
+
+  palletx = colors[count]
+
+  return palletx
+}
+
+function returnColor(k,alpha){
+  var color = Chart.helpers.color;
+  switch(k){
+    case 0:
+      return color(chartColors.red).alpha(alpha).rgbString()
+    case 1:
+      return color(chartColors.orange).alpha(alpha).rgbString()
+    case 2:
+      return color(chartColors.yellow).alpha(alpha).rgbString()
+    case 3:
+      return color(chartColors.green).alpha(alpha).rgbString()
+    case 4:
+      return color(chartColors.blue).alpha(alpha).rgbString()
+    case 5:
+      return color(chartColors.purple).alpha(alpha).rgbString()
+    default:
+      return dynamicColors()
+  }
+
+}
+

@@ -44,7 +44,6 @@ function update(){
 
               elem.find('.simname').first().text(data['output'][index]['simulationname']);
 
-
             });
 
           }
