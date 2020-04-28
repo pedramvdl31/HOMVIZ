@@ -44,9 +44,9 @@ $(document).ready(function(){
 
     $('#next').text('Next Step')
 
-    if (window.currentstep==6) {
+    if (window.currentstep==5) {
 
-      $('#next').text('Save and Preview')
+      $('#next').text('Run Simulation')
 
     }
 
@@ -557,38 +557,7 @@ $(document).ready(function(){
 
   $('#runsimulation').on('click', function(e){
 
-    if (submitBtnStatus()) {
 
-      InsertArrayElementToDOM(window.populationType,'#myform','populationType')
-
-      Object.keys(window.popovers).forEach(function(key) {
-
-        $('#popoverhtmls').append(window.popovers[key])
-
-      });
-
-      $('#myform').submit()
-
-    } else {
-
-
-      const Toast = Swal.mixin({
-        toast: true,
-        position: 'center',
-        showConfirmButton: false,
-        animation:false
-      });
-
-      Toast.fire({
-      title: 'Error',
-      text: "One or more steps are incomplete!",
-      icon: 'warning',
-        showConfirmButton: true,
-        confirmButtonColor: '#3085d6',
-        confirmButtonText: 'Okay'
-      })
-
-    }
 
 
   })
@@ -603,35 +572,12 @@ function validateAllSteps(){
 
     output = true
 
-  } else {
-
   }
 
   return output
 
 }
 
-
-function submitBtnStatus(){
-
-  let output = false
-
-  if (validateAllSteps()) {
-
-    output = true
-
-    $('#runsimulation').addClass('btn-primary').removeClass('btn-default').removeAttr('disabled')
-
-
-  } else {
-
-    $('#runsimulation').addClass('btn-default').removeClass('btn-primary').attr('disabled',true)
-
-  }
-
-  return output
-
-}
 
 function checkStep1(){
 
@@ -762,7 +708,7 @@ function checkStep6(){
 
   let output = false
 
-  if ($('#simweeks').val() && $('#simnum').val()) {
+  if ($('#simweeks').val() && $('#simnum').val() && $('#cname').val() ) {
 
     output = true
 
@@ -1028,7 +974,8 @@ function HandleStepsOnNextBtnClick(){
     toast: true,
     position: 'center',
     showConfirmButton: false,
-    animation:false
+    animation:true,
+    timer: 2500
   });
 
   let step = window.currentstep
@@ -1044,10 +991,7 @@ function HandleStepsOnNextBtnClick(){
         Toast.fire({
         title: 'Error',
         text: "Simulation name and the city name are required!",
-        icon: 'warning',
-          showConfirmButton: true,
-          confirmButtonColor: '#3085d6',
-          confirmButtonText: 'Okay'
+        icon: 'warning'
         })
       }
 
@@ -1109,44 +1053,73 @@ function HandleStepsOnNextBtnClick(){
     break;
 
     //TRANSITIONS
-    case 5:
+    // case 5:
 
-      // if (checkStep5()) {
-      if (true) {
-        $('#smartwizard').smartWizard("next")
-      } else {
-        Toast.fire({
-        title: 'Error',
-        text: "Transition Probability is required!",
-        icon: 'warning',
-          showConfirmButton: true,
-          confirmButtonColor: '#3085d6',
-          confirmButtonText: 'Okay'
-        })
-      }
+    //   // if (checkStep5()) {
+    //   if (true) {
+    //     $('#smartwizard').smartWizard("next")
+    //   } else {
+    //     Toast.fire({
+    //     title: 'Error',
+    //     text: "Transition Probability is required!",
+    //     icon: 'warning',
+    //       showConfirmButton: true,
+    //       confirmButtonColor: '#3085d6',
+    //       confirmButtonText: 'Okay'
+    //     })
+    //   }
 
-    break;
+    // break;
 
     //PRAMETERS
-    case 6:
-
+    case 5:
       if (checkStep6()) {
-        
+
+        if (validateAllSteps()) {
+
+          InsertArrayElementToDOM(window.populationType,'#myform','populationType')
+
+          Object.keys(window.popovers).forEach(function(key) {
+
+            $('#popoverhtmls').append(window.popovers[key])
+
+          });
+
+          $('#myform').submit()
+
+        } else {
+
+          const Toast = Swal.mixin({
+            toast: true,
+            position: 'center',
+            showConfirmButton: false,
+            animation:false
+          });
+
+          Toast.fire({
+          title: 'Error',
+          text: "One or more steps are incomplete!",
+          icon: 'warning',
+            showConfirmButton: true,
+            confirmButtonColor: '#3085d6',
+            confirmButtonText: 'Okay'
+          })
+
+        }
+
       } else {
         Toast.fire({
         title: 'Error',
-        text: "Parameters are required!",
+        text: "All parameters are required!",
         icon: 'warning',
-          showConfirmButton: true,
-          confirmButtonColor: '#3085d6',
-          confirmButtonText: 'Okay'
+        showConfirmButton: true,
+        confirmButtonColor: '#3085d6',
+        confirmButtonText: 'Okay'
         })
       }
 
     break;
   }
-
-  submitBtnStatus()
 
 }
 

@@ -1,5 +1,4 @@
-var chartColors = { red: "rgb(255, 99, 132)", orange: "rgb(255, 159, 64)", yellow: "rgb(255, 205, 86)", green: "rgb(75, 192, 192)", blue: "rgb(54, 162, 235)", purple: "rgb(153, 102, 255)", grey: "rgb(201, 203, 207)" };
-
+window.colorscheme = 'brewer.Paired12';
 
 $(document).ready(function(){
 
@@ -73,18 +72,12 @@ $(document).ready(function(){
 
       $.each( dataSeriesLabel['simulation_'+i], function( key, value ) {
 
-        pallet = genColor(count)
         count = count + 1
 
         let line = {
                       label               : key,
-                      backgroundColor     : pallet['backgroundColor'],
-                      borderColor         : pallet['borderColor'],
                       pointRadius          : false,
-                      pointColor          : pallet['pointColor'],
-                      pointStrokeColor    : pallet['pointStrokeColor'],
-                      pointHighlightFill  : '#fff',
-                      pointHighlightStroke: pallet['pointHighlightStroke'],
+                      backgroundColor     : 'transparent',
                       data                : dataSeriesLabel['simulation_'+i][key][popoluation]
                     }
 
@@ -109,6 +102,12 @@ $(document).ready(function(){
         title: {
           display: true,
           text: popoluation+' Population'
+        },
+        plugins: {
+          colorschemes: {
+            scheme: window.colorscheme,
+            fillAlpha: 0.2
+          }
         }
       }
 
@@ -130,7 +129,7 @@ $(document).ready(function(){
   }
 
 
-
+  //RADAR
   for (var i2= 0; i2 < simnumber; i2++) {
 
     $.each(populationLabel, function( index2, popoluation2 ) {
@@ -143,11 +142,19 @@ $(document).ready(function(){
             datasets: [{
               data: [],
               backgroundColor: [
-                color(chartColors.red).alpha(0.5).rgbString(),
-                color(chartColors.orange).alpha(0.5).rgbString(),
-                color(chartColors.yellow).alpha(0.5).rgbString(),
-                color(chartColors.green).alpha(0.5).rgbString(),
-                color(chartColors.blue).alpha(0.5).rgbString(),
+                color('#a6cee3').alpha(0.5).rgbString(),
+                color('#1f78b4').alpha(0.5).rgbString(),
+                color('#b2df8a').alpha(0.5).rgbString(),
+                color('#33a02c').alpha(0.5).rgbString(),
+                color('#33a02c').alpha(0.5).rgbString(),
+                color('#fb9a99').alpha(0.5).rgbString(),
+                color('#e31a1c').alpha(0.5).rgbString(),
+                color('#fdbf6f').alpha(0.5).rgbString(),
+                color('#ff7f00').alpha(0.5).rgbString(),
+                color('#cab2d6').alpha(0.5).rgbString(),
+                color('#6a3d9a').alpha(0.5).rgbString(),
+                color('#ffff99').alpha(0.5).rgbString(),
+                color('#b15928').alpha(0.5).rgbString(),
               ],
               label: 'My dataset'
             }],
@@ -159,6 +166,12 @@ $(document).ready(function(){
               display: true,
               text: '',
               position: 'top',
+            },
+            plugins: {
+              colorschemes: {
+                scheme: window.colorscheme,
+                fillAlpha: 0.2
+              }
             }
           }
         };
@@ -190,6 +203,10 @@ $(document).ready(function(){
 
   }
 
+
+
+
+  // BAR
   var cflag = true;
   var carray = {}
   for (var i2= 0; i2 < simnumber; i2++) {
@@ -200,51 +217,53 @@ $(document).ready(function(){
         data: {
           datasets: [],
           labels: ["Initial "+popoluation2+" Population", "Final "+popoluation2+" Population"],
-        },
-        options: {
-          responsive: true,
-          legend: {
-            position: 'right',
-          },
-          title: {
-            display: true,
-            text: ''
-          },
-          scale: {
-            ticks: {
-              beginAtZero: true
-            },
-            reverse: false,
-          },
-          animation: {
-            animateRotate: false,
-            animateScale: true
-          }
-
         }
       };
 
       $.each( resourceLabel, function( key2, value2 ) {
 
-        let thiscolor = returnColor(key2,0.7)
-
         config.data.datasets.push({data:[ 
                                             dataSeriesLabelPie['simulation_'+i2][value2][popoluation2]['init'],
                                             dataSeriesLabelPie['simulation_'+i2][value2][popoluation2]['final'],
                                         ],
-                                  backgroundColor: thiscolor,
                                   maxBarThickness:50,
                                   label: [value2]})
 
       });
 
       var ctx = document.getElementById('chart-bar-'+(i2+1)+'-'+index2);
-      
+          
       var myBarChart = new Chart(ctx, {
           type: 'bar',
           data: config.data,
           options: {
-            responsive: true
+            responsive: true,
+            plugins: {
+              responsive: true,
+              legend: {
+                position: 'right',
+              },
+              title: {
+                display: true,
+                text: ''
+              },
+              scale: {
+                ticks: {
+                  beginAtZero: true
+                },
+                reverse: false,
+              },
+              animation: {
+                animateRotate: false,
+                animateScale: true
+              },
+              plugins: {
+                colorschemes: {
+                  scheme: window.colorscheme,
+                  fillAlpha: 0.2
+                }
+              }
+            }
           }
       });
 
@@ -253,85 +272,4 @@ $(document).ready(function(){
   }
 
 });
-
-
-
-var dynamicColors = function() {
-  var r = Math.floor(Math.random() * 255);
-  var g = Math.floor(Math.random() * 255);
-  var b = Math.floor(Math.random() * 255);
-  return "rgb(" + r + "," + g + "," + b + ")";
-};
-
-
-function genColor(count){
-  
-  var palletx = null;
-
-  if (count>3){
-    count = 4;
-  }
-
-  var colors = [
-    {"backgroundColor":'transparent',
-    "borderColor":'rgba(60,141,188,0.8)',
-    "pointColor":'#3b8bba',
-    "pointStrokeColor":'rgba(60,141,188,1)',
-    "pointHighlightStroke":'rgba(60,141,188,1)'}
-  ,
-
-    {"backgroundColor":'transparent',
-    "borderColor":'rgba(210, 214, 222, 1)',
-    "pointColor":'#c1c7d1',
-    "pointStrokeColor":'rgba(210, 214, 222, 1)',
-    "pointHighlightStroke":'rgba(220,220,220,1))'}
-  ,
-
-    {"backgroundColor":'transparent',
-    "borderColor":'#ff5d5d',
-    "pointColor":'#c1c7d1',
-    "pointStrokeColor":'rgba(210, 214, 222, 1)',
-    "pointHighlightStroke":'rgba(220,220,220,1)'}
-  ,
-
-    {"backgroundColor":'transparent',
-    "borderColor":'#99fd99',
-    "pointColor":'#c1c7d1',
-    "pointStrokeColor":'rgba(210, 214, 222, 1)',
-    "pointHighlightStroke":'rgba(220,220,220,1)'}
-  ,
-
-    {"backgroundColor":'transparent',
-    "borderColor":dynamicColors(),
-    "pointColor":'#c1c7d1',
-    "pointStrokeColor":dynamicColors(),
-    "pointHighlightStroke":dynamicColors()}
-
-  ]
-
-  palletx = colors[count]
-
-  return palletx
-}
-
-function returnColor(k,alpha){
-  var color = Chart.helpers.color;
-  switch(k){
-    case 0:
-      return color(chartColors.red).alpha(alpha).rgbString()
-    case 1:
-      return color(chartColors.orange).alpha(alpha).rgbString()
-    case 2:
-      return color(chartColors.yellow).alpha(alpha).rgbString()
-    case 3:
-      return color(chartColors.green).alpha(alpha).rgbString()
-    case 4:
-      return color(chartColors.blue).alpha(alpha).rgbString()
-    case 5:
-      return color(chartColors.purple).alpha(alpha).rgbString()
-    default:
-      return dynamicColors()
-  }
-
-}
 

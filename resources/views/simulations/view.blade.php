@@ -4,6 +4,7 @@
 @section('scripts')
   <script src="//d3js.org/d3.v4.min.js"></script>
   <script src="/AdminLTE-3.0.0/plugins/chart.js/Chart.min.js?v1"></script>
+  <script src="https://unpkg.com/chartjs-plugin-colorschemes"></script>
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
   <script src="/assets/js/simulations/view.js?26"></script>
 @stop
