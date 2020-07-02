@@ -4,13 +4,14 @@
 	<link rel="stylesheet" href="/SmartWizard-master/src/css/smart_wizard_theme_arrows.css?1">
 	<link rel="stylesheet" href="/assets/css/sweetalert2.min.css?1">
 	<link rel="stylesheet" href="/assets/css/simulations/index.css?31">
+	<link rel="stylesheet"href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.0.0/animate.min.css"/>
 @stop
 @section('scripts')
 	<script src="/SmartWizard-master/src/js/jquery.smartWizard.js?22"></script>
 	<script src="/assets/js/sweetalert2.min.js?1"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/xlsx.full.min.js"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/jszip.js"></script>
-	<script src="/assets/js/simulations/index.js?115"></script>
+	<script src="/assets/js/simulations/index.js?116"></script>
 @stop
 
 @section('content')
@@ -108,7 +109,7 @@
 							                	<div class="row">
 								                	<div class="col-md-6">
 														<div class="form-group">
-										                	<label for="inputName">Simulation Name:</label>
+										                	<label for="inputName">Simulation Name&nbsp;<a data-toggle="tooltip" data-placement="top" title="Name your simulation. This element is for your recollection and does not affect the outcome of your simulation." class="divideRes pointer general-info"><i class="text-primary fas fa-info-circle"></i></a>&nbsp;:</label>
 										                	<div id="locationField"></div>
 										                	<input name="simulation_name" id="simulation-name" type="text" class="form-control border-primary" placeholder="Simulation 1">
 										              	</div>
@@ -120,7 +121,7 @@
 							                	<div class="row">
 								                	<div class="col-md-6">
 														<div class="form-group">
-										                	<label for="inputName">Enter a name of city in Canda:</label>
+										                	<label for="inputName">Enter a name of city in Canda&nbsp;<a data-toggle="tooltip" data-placement="top" title="Select the city that your data is representing. This element is for your recollection and does not affect the outcome of your simulation." class="divideRes pointer general-info"><i class="text-primary fas fa-info-circle"></i></a>&nbsp;:</label>
 										                	<div id="locationField"></div>
 										                	<input autocomplete="off" id="autocomplete" placeholder="City name" name="simulation_location" type="text" class="form-control border-primary">
 											            </div>
@@ -250,7 +251,7 @@
 												<div class="form-group">
 								                	<label for="inputName">Population group for simulation (comma separated):</label>
 								                	<br>
-								                	<small>Here you can set the population group for your simulation. Population title/name does not effect the simulation outcome.</small>
+								                	<p>Set your population type/types and click on the <span class="text-primary">Generate table</span> button to create a population table&nbsp;<a data-toggle="tooltip" data-placement="right" title="Select the population type for your simulation. Population types can be based on your labeling system. For example, you can use Male, Female, and Other. In the later stage, you can use this population types to customize your simulation. If you wish to reset the population table simply retype the new population names and click on the Generate table button" class="divideRes pointer general-info"><i class="text-primary fas fa-info-circle"></i></a>&nbsp;.</p>
 									                <div class="input-group mb-3">
 													  <input placeholder="Male, Female, Other, ..." autocomplete="off" id="populationtext" type="text" class="form-control rounded-0">
 													  <span class="input-group-append">
@@ -266,7 +267,28 @@
 
 											<div class="col-lg-12">
 
-												<div id="_table"></div>
+												<div id="_table">
+
+													<div id="populationtable" class="table-responsive">
+														<table class="table table-bordered ">
+														<thead>
+														<tr>
+														<th>Population Type</th><th>Population Count #<span id="pop-count-info" style="display: none">&nbsp;<a data-toggle="tooltip" data-placement="right" title="Enter the total population of each population type" class="pointer general-info"><i class="text-primary fas fa-info-circle"></i></a>&nbsp;</span></th>
+														</tr>
+														</thead>
+														<tbody>
+															<tr>
+											                    <td></td>
+											                    <td></td>
+										                	</tr>
+														</tbody>
+														</table>
+														<div style="text-align:right">
+															<span id="removepopulationtable" class="text-danger" style="cursor:pointer">Reset (Delete Table)</span>
+														</div>
+													</div>
+
+												</div>
 
 											</div>
 
@@ -409,16 +431,17 @@
 							                <div class="col-md-4">
 
 												<div class="form-group">
-								                	<label for="inputName">Created by:</label>
+								                	<label for="inputName">Created by&nbsp;<a data-toggle="tooltip" data-placement="right" title="This element is for your recollection and does not affect the outcome of your simulation." class="divideRes pointer general-info"><i class="text-primary fas fa-info-circle"></i></a>&nbsp;:</label>
 								                	<input placeholder="Creator's first name" type="text" autocomplete="off" name="creatorname"  id="cname" class="form-control">
 								              	</div>
 
 												<div class="form-group">
-								                	<label for="inputName">Number of weeks:</label>
+								                	<label for="inputName">Number of weeks&nbsp;<a data-toggle="tooltip" data-placement="right" title="The total number of weeks to run the simulation." class="divideRes pointer general-info"><i class="text-primary fas fa-info-circle"></i></a>&nbsp;:</label>
 								                	<input type="number" min="1" max="999" autocomplete="off" name="numberofweeks" id="simweeks" value="12" class="form-control">
 								              	</div>
+
 												<div class="form-group">
-								                	<label for="inputName">Number of simulations:</label>
+								                	<label for="inputName">Number of simulations&nbsp;<a data-toggle="tooltip" data-placement="right" title="The total number of separate simulation to run. In the end, the simulations' results will be averaged." class="divideRes pointer general-info"><i class="text-primary fas fa-info-circle"></i></a>&nbsp;:</label>
 								                	<input type="number" min="1" max="999"  autocomplete="off" name="numberofsims" type="text" value="1" id="simnum" class="form-control">
 								              	</div>
 
@@ -471,6 +494,21 @@
 
 							<div class="row">
 								<p><strong>Step 2:</strong> <span id="population-overview" class="text-danger">Incomplete</span></p>
+								
+								<div class="table-responsive table-bordered row-scroll" id="population-info-table" style="max-height: 300px;overflow: auto;display: none;margin-top: 10px">
+									<table class="table" style="margin-bottom: 0">
+										<thead>
+											<tr>
+
+												<th>Population</th><th>Count</th>
+
+											</tr>
+										</thead>
+										<tbody>
+										</tbody>
+									</table>
+								</div>
+
 							</div>
 
 							<hr>

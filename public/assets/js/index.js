@@ -32,7 +32,11 @@ function update(){
               if (data['output'][index]['status'] != 1) {
                 flag = true
               } else {
-                $('.jobs[id='+index+']').find('.siminfo').first().remove(); 
+                let this_job = $('.jobs[id='+index+']')
+                this_job.find('.result-btn').removeClass('disabled').attr('href','/simulations/view/'+index)
+                setTimeout(function(){
+                  this_job.find('.siminfo').first().remove();
+                },3000)
              }
 
               let progress = parseFloat(data['output'][index]['progress']);

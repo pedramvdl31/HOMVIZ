@@ -38,12 +38,14 @@ class SimulationsController extends Controller
 
     public function postprogressUpdate()
     {   
+        
         $status = 200;
         $serverkey = env("SERVER_KEY");
 
         $output = [];
 
         $sim = Simulation::all();
+
         foreach ($sim as $key => $simulation) {
 
             $output[$simulation->id] = [];
@@ -307,117 +309,137 @@ class SimulationsController extends Controller
 
         $sim = Simulation::find($sim_id);
 
-        $data = json_decode($sim->result, true);
+        if (isset($sim->result) && !empty($sim->result)) {
 
-        $numberofweeks = 0;
+            $data = json_decode($sim->result, true);
 
-        $weekLabel = [];
-        $dataSeriesLabel = [];
-        $dataSeriesLabelPie = [];
-        $populationLabel = [];
-        $resourceLabel = [];
+            $numberofweeks = 0;
 
-        $c2 = 0;
+            $weekLabel = [];
+            $dataSeriesLabel = [];
+            $dataSeriesLabelPie = [];
+            $populationLabel = [];
+            $resourceLabel = [];
+            $avg_msg = null;
 
-        foreach ($data as $key => $sim) {
+            $c2 = 0;
 
-            foreach ($sim as $w1key => $week) {
+            foreach ($data as $key => $sim) {
+
+                foreach ($sim as $w1key => $week) {
 
 
-                if ($c2==0) {
-                    array_push($weekLabel, 'Week '.$numberofweeks);
-                    $numberofweeks = $numberofweeks + 1;
-                }
-                
-                $weektotal = 0;
-
-                foreach ($week as $wk => $wv) {
-
-                    array_push($resourceLabel, $wk);
-
-                    $total = 0;
-
-                    foreach ($wv as $pk => $pv) {
-                        $total = $total + $pv;
+                    if ($c2==0) {
+                        array_push($weekLabel, 'Week '.$numberofweeks);
+                        $numberofweeks = $numberofweeks + 1;
                     }
-
-                    $data[$key][$w1key][$wk]['Combined'] = $total;
-                    $weektotal = $weektotal + $total;
-                }
-
-            }
-
-            $c2 += 1;
-
-        }
-
-        $resourceLabel = array_unique($resourceLabel);
-
-        $mycounter = 0;
-
-        foreach ($data as $key0 => $sim) {
-
-            $dataSeriesLabel[$key0]=[];
-            $dataSeriesLabelPie[$key0]=[];
-
-            foreach ($sim as $key => $week) {
-
-                foreach ($week as $wk => $wv) {
-
-                    if(!isset($dataSeriesLabel[$key0][$wk]))
-                        $dataSeriesLabel[$key0][$wk]=[];
-
-                    if(!isset($dataSeriesLabelPie[$key0][$wk]))
-                        $dataSeriesLabelPie[$key0][$wk]=[];                    
-
-                    foreach ($wv as $pk => $pv) {
-
-                        if(!isset($dataSeriesLabel[$key0][$wk][$pk]))
-                            $dataSeriesLabel[$key0][$wk][$pk]=[];
-
-                        if(!isset($dataSeriesLabelPie[$key0][$wk][$pk]))
-                            $dataSeriesLabelPie[$key0][$wk][$pk]=['init'=>null,'final'=>null];
-
-                        if ($mycounter==0) {
-                            $dataSeriesLabelPie[$key0][$wk][$pk]['init'] = $pv;
-                        }
-
-                        // Job::dump($numberofweeks);
-                        if ($mycounter==$numberofweeks-1) {
-                            $dataSeriesLabelPie[$key0][$wk][$pk]['final'] = $pv;
-                        }
-
-
-                        if(!in_array($pk, $populationLabel))
-                            array_push($populationLabel, $pk);
-
-                        array_push($dataSeriesLabel[$key0][$wk][$pk], $pv);
-                    }
-
                     
+                    $weektotal = 0;
+
+                    foreach ($week as $wk => $wv) {
+
+                        array_push($resourceLabel, $wk);
+
+                        $total = 0;
+
+                        foreach ($wv as $pk => $pv) {
+                            $total = $total + $pv;
+                        }
+
+                        $data[$key][$w1key][$wk]['Combined'] = $total;
+                        $weektotal = $weektotal + $total;
+                    }
+
                 }
 
-                $mycounter += 1;
+                $c2 += 1;
 
             }
+
+            $resourceLabel = array_unique($resourceLabel);
+
             $mycounter = 0;
+
+
+
+            $number_of_simulations = count($data);
+
+            if ( $number_of_simulations > 1 ) {
+                $data = Simulation::AverageMultipleSimulations($data);
+
+                $avg_msg = 'Average of '.$number_of_simulations.' Simulations';
+
+                $number_of_simulations = 1;
+
+            }
+
+            foreach ($data as $key0 => $sim) {
+
+                $dataSeriesLabel[$key0]=[];
+                $dataSeriesLabelPie[$key0]=[];
+
+                foreach ($sim as $key => $week) {
+
+                    foreach ($week as $wk => $wv) {
+
+                        if(!isset($dataSeriesLabel[$key0][$wk]))
+                            $dataSeriesLabel[$key0][$wk]=[];
+
+                        if(!isset($dataSeriesLabelPie[$key0][$wk]))
+                            $dataSeriesLabelPie[$key0][$wk]=[];                    
+
+                        foreach ($wv as $pk => $pv) {
+
+                            if(!isset($dataSeriesLabel[$key0][$wk][$pk]))
+                                $dataSeriesLabel[$key0][$wk][$pk]=[];
+
+                            if(!isset($dataSeriesLabelPie[$key0][$wk][$pk]))
+                                $dataSeriesLabelPie[$key0][$wk][$pk]=['init'=>null,'final'=>null];
+
+                            if ($mycounter==0) {
+                                $dataSeriesLabelPie[$key0][$wk][$pk]['init'] = $pv;
+                            }
+
+                            // Job::dump($numberofweeks);
+                            if ($mycounter==$numberofweeks-1) {
+                                $dataSeriesLabelPie[$key0][$wk][$pk]['final'] = $pv;
+                            }
+
+
+                            if(!in_array($pk, $populationLabel))
+                                array_push($populationLabel, $pk);
+
+                            array_push($dataSeriesLabel[$key0][$wk][$pk], $pv);
+                        }
+
+                        
+                    }
+
+                    $mycounter += 1;
+
+                }
+                $mycounter = 0;
+            }
+
+            // Job::dump($number_of_simulations);
+
+            return view('simulations.view')
+            ->with('dataSeriesLabel',json_encode($dataSeriesLabel))
+            ->with('dataSeriesLabelPie',json_encode($dataSeriesLabelPie))
+            ->with('resourceLabel',json_encode($resourceLabel))
+            ->with('populationLabel',json_encode($populationLabel))
+            ->with('weekLabel',json_encode($weekLabel))
+            ->with('populationLabelview',$populationLabel)
+            ->with('layout',$this->layout)
+            ->with('numberofweeks',$numberofweeks)
+            ->with('avg_msg',$avg_msg)
+            ->with('simnumber',$number_of_simulations);
+
+        } else {
+            return Redirect::route('index');
         }
 
 
-        // Job::dump($dataSeriesLabelPie);
-        // Job::dump($dataSeriesLabel);
-
-        return view('simulations.view')
-        ->with('dataSeriesLabel',json_encode($dataSeriesLabel))
-        ->with('dataSeriesLabelPie',json_encode($dataSeriesLabelPie))
-        ->with('resourceLabel',json_encode($resourceLabel))
-        ->with('populationLabel',json_encode($populationLabel))
-        ->with('weekLabel',json_encode($weekLabel))
-        ->with('populationLabelview',$populationLabel)
-        ->with('layout',$this->layout)
-        ->with('sim',$sim)
-        ->with('numberofweeks',$numberofweeks)
-        ->with('simnumber',count($data));
 
     }
 

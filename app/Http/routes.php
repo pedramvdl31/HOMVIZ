@@ -28,10 +28,6 @@ Route::group(['middleware' => 'beforeFilter'], function () {
 
 		Route::post('/simulations/progress-update',  ['uses' => 'SimulationsController@postprogressUpdate']);
 
-
-
-
-
 	});
 
 });

@@ -6,7 +6,7 @@
   <script src="/AdminLTE-3.0.0/plugins/chart.js/Chart.min.js?v1"></script>
   <script src="https://unpkg.com/chartjs-plugin-colorschemes"></script>
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-  <script src="/assets/js/simulations/view.js?26"></script>
+  <script src="/assets/js/simulations/view.js?28"></script>
 @stop
 
 @section('content')
@@ -68,7 +68,19 @@
                 <div class="card-header">
                   <div class="card-title">
 
-                    <h5><strong>Simulation {{$i}}</strong></h5>
+                    <h5>
+                      
+                      @if(isset($avg_msg))
+                          
+                        {{$avg_msg}}
+
+                      @else
+
+                        Simulation {{$i}}
+
+                      @endif
+                    
+                    </h5>
                     
                   </div>
 
