@@ -45,11 +45,7 @@
   <!-- Content Header (Page header) -->
   <div class="content-header">
     <div class="container-fluid">
-      <div class="row mb-2">
-        <div class="col-sm-6">
-          <h1 class="m-0 text-dark">Simulation Result</h1>
-        </div><!-- /.col -->
-      </div><!-- /.row -->
+
     </div><!-- /.container-fluid -->
   </div>
 
@@ -60,11 +56,70 @@
 
         <div class="row">
 
+
+          <div class="col-md-12">
+              <div class="card card-outline card-primary callout callout-info">
+                <div class="card-header">
+                  <div class="card-title">
+                    <h5>Simulation Details</h5>
+                  </div>
+                  <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="card-body">
+
+                    <strong>Name</strong>
+                    <p>{{$sim_info['name']}}</p>
+                    
+                    <strong>Simulation city</strong>
+                    <p>{{$sim_info['city']}}</p>
+                    
+                    <strong>Number of weeks</strong>
+                    <p>{{$sim_info['numberofweeks']}}</p>
+                    
+                    <strong>Number of simulations</strong>
+                    <p>{{$sim_info['numberofsims']}}</p>
+                    
+                    <strong>Population type and count</strong>
+                    <ul>
+                      @foreach($sim_info['populattioncontent'] as $popckey => $popcval)
+
+                        <li>{{$popckey}}: {{$popcval}}</li>
+  
+                      @endforeach
+                    </ul>
+
+                    <strong>Resources</strong>
+                    <ul>
+                      @foreach($sim_info['listofresources'] as $reslistval)
+
+                        <li>{{$reslistval}}</li>
+  
+                      @endforeach
+                    </ul>
+
+                    <strong>States</strong>
+                    <ul>
+                      @foreach($sim_info['listofstates'] as $statelistval)
+
+                        <li>{{$statelistval}}</li>
+  
+                      @endforeach
+                    </ul>
+
+
+                </div>
+              </div>
+          </div>
+
+
           @for ($i = 1; $i <= $simnumber; $i++)
 
 
             <div class="col-md-12">
-              <div class="card card-outline card-primary">
+              <div class="card card-outline card-primary callout callout-success">
                 <div class="card-header">
                   <div class="card-title">
 
@@ -84,10 +139,6 @@
                     
                   </div>
 
-                  <div class="card-tools">
-                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
-                    </button>
-                  </div>
                   <!-- /.card-tools -->
                 </div>
                 <!-- /.card-header -->

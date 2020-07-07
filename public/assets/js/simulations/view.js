@@ -72,10 +72,17 @@ $(document).ready(function(){
 
       $.each( dataSeriesLabel['simulation_'+i], function( key, value ) {
 
+        var newlabel = ''
+        if (key === 'Rehabilitation') {
+          newlabel = 'Addiction / Rehabilitation Center'
+        } else {
+          newlabel = key
+        }
+
         count = count + 1
 
         let line = {
-                      label               : key,
+                      label               : newlabel,
                       pointRadius          : false,
                       backgroundColor     : 'transparent',
                       data                : dataSeriesLabel['simulation_'+i][key][popoluation]
@@ -176,12 +183,9 @@ $(document).ready(function(){
           }
         };
 
-        config.data.labels = resourceLabel;
-
+        var newLabelArray = []
         
         $.each( resourceLabel, function( key2, value2 ) {
-
-          
 
           if (z==0) {
             config.options.title.text = 'Initial '+popoluation2+' Population'
@@ -191,7 +195,18 @@ $(document).ready(function(){
             config.data.datasets[0].data.push(dataSeriesLabelPie['simulation_'+i2][value2][popoluation2]['final'])
           }
 
+          let newVal = ''
+          if (value2 === 'Rehabilitation') {
+            newVal = 'Addiction / Rehabilitation Center'
+          } else {
+            newVal = value2
+          }
+
+          newLabelArray.push(newVal);
+
         });
+
+        config.data.labels = newLabelArray;
 
         var ctx = document.getElementById('chart-area-'+z+'-'+(i2+1)+'-'+index2);
         window.myPolarArea = Chart.PolarArea(ctx, config);
@@ -202,7 +217,6 @@ $(document).ready(function(){
     });
 
   }
-
 
 
 
@@ -222,12 +236,19 @@ $(document).ready(function(){
 
       $.each( resourceLabel, function( key2, value2 ) {
 
+          let newVal = ''
+          if (value2 === 'Rehabilitation') {
+            newVal = 'Addiction / Rehabilitation Center'
+          } else {
+            newVal = value2
+          }
+
         config.data.datasets.push({data:[ 
                                             dataSeriesLabelPie['simulation_'+i2][value2][popoluation2]['init'],
                                             dataSeriesLabelPie['simulation_'+i2][value2][popoluation2]['final'],
                                         ],
                                   maxBarThickness:50,
-                                  label: [value2]})
+                                  label: [newVal]})
 
       });
 

@@ -181,30 +181,11 @@ class SimulationsController extends Controller
 
     }
 
-    public function getTest()
-    {
-
-        $serverkey = env("SERVER_KEY");
-        $url = 'http://andr.fish:3114/api/v1/simulation/result';
-        $opts = [
-            "http" => [
-                "method" => "POST",
-                "header" => "key: ".$serverkey."\r\n" .
-                    "simulation_id: 32\r\n"
-            ]
-        ];
-        $context = stream_context_create($opts);
-        $file = file_get_contents($url, false, $context);
-        $res = json_decode($file,1);
-        if (isset($res['result'])) {
-            Job::dump($res);
-        }
-        
-
-    }
-
     public function postAdd()
     {
+
+        // Job::dump(Input::all());
+
         $resources = Input::get('resources');
         $subresources = Input::get('subresources');
         $states = Input::get('states');
@@ -283,11 +264,10 @@ class SimulationsController extends Controller
         $output['states'] = $states;
         $output['transitionProbability'] = $transitionProbability;
 
-        // Job::dump(json_encode($output));
-
         $sim = new Simulation();
         $sim->user_id = Auth::user()->id;
         $sim->data = json_encode($output);
+        $sim->population_content = json_encode(Input::get('populationTypeCount'));
         $sim->save();
 
         return Redirect::route('index');
@@ -307,9 +287,20 @@ class SimulationsController extends Controller
     public function getView($sim_id=null)
     {
 
+        $sim_info = [];
+
         $sim = Simulation::find($sim_id);
 
         if (isset($sim->result) && !empty($sim->result)) {
+
+            $metadata = json_decode($sim->data, true);
+            $sim_info['name'] = $metadata['simulation_name'];
+            $sim_info['city'] = $metadata['simulation_location'];
+            $sim_info['numberofweeks'] = $metadata['numberofweeks'];
+            $sim_info['numberofsims'] = $metadata['numberofsims'];
+            $sim_info['populattioncontent'] = json_decode($sim->population_content,true);
+            $phpdate = strtotime( $sim->created_at );
+            $sim_info['creatorname'] = date( 'Y-m-d H:i:s', $phpdate );
 
             $data = json_decode($sim->result, true);
 
@@ -327,7 +318,6 @@ class SimulationsController extends Controller
             foreach ($data as $key => $sim) {
 
                 foreach ($sim as $w1key => $week) {
-
 
                     if ($c2==0) {
                         array_push($weekLabel, 'Week '.$numberofweeks);
@@ -359,8 +349,6 @@ class SimulationsController extends Controller
             $resourceLabel = array_unique($resourceLabel);
 
             $mycounter = 0;
-
-
 
             $number_of_simulations = count($data);
 
@@ -421,7 +409,38 @@ class SimulationsController extends Controller
                 $mycounter = 0;
             }
 
-            // Job::dump($number_of_simulations);
+
+            //Get more info to show in details section
+            $sim_info['listofresources'] = [];
+            if (isset($metadata['resources'])) {
+
+                foreach ($metadata['resources'] as $resval) {
+                    
+                    if (isset($resval['name-for-show'])) {
+
+                        array_push($sim_info['listofresources'], $resval['name-for-show']);
+
+                    }
+
+                }
+
+            }
+
+            $sim_info['listofstates'] = [];
+            if (isset($metadata['states'])) {
+
+                foreach ($metadata['states'] as $stateval) {
+                
+                    array_push($sim_info['listofstates'], $stateval['name-for-show']);
+
+                }
+
+            }
+
+
+            // Job::dump($metadata);
+
+            // Job::dump($sim_info);
 
             return view('simulations.view')
             ->with('dataSeriesLabel',json_encode($dataSeriesLabel))
@@ -433,6 +452,7 @@ class SimulationsController extends Controller
             ->with('layout',$this->layout)
             ->with('numberofweeks',$numberofweeks)
             ->with('avg_msg',$avg_msg)
+            ->with('sim_info',$sim_info)
             ->with('simnumber',$number_of_simulations);
 
         } else {

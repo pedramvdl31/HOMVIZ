@@ -167,7 +167,20 @@ $(document).ready(function(){
 
     var elem = document.getElementById("resselect");
     var id = elem.options[elem.selectedIndex].id;
+
     let name = elem.options[elem.selectedIndex].value;
+    let nameForShow = '';
+
+    if (id=='Rehabilitation') {
+
+      nameForShow = 'Addiction / Rehabilitation Center'
+      name = 'Rehabilitation'
+
+    } else {
+
+      nameForShow = name
+
+    }
 
     if (id != 'title'){
 
@@ -192,7 +205,7 @@ $(document).ready(function(){
       window.resources.push(obj)
 
       let tooltipClass = "tooltip-"+rowID
-      let row = MakeResourcesRowColumnHTML(rowID,tooltipClass,type,name)
+      let row = MakeResourcesRowColumnHTML(rowID,tooltipClass,type,name,nameForShow)
 
       $("#restable tbody").append(row)
 
@@ -311,7 +324,6 @@ $(document).ready(function(){
     window.resources.splice( window.resources.indexOf(rowID), 1 );
 
     removeAllPopoverOfID(rowID)
-
     
     //ALL SUB-ROWS
     $(document).find('tr[parentID='+rowID+']').each(function( index ) {
@@ -1165,12 +1177,16 @@ function HandleStepsOnNextBtnClick(){
 
 }
 
-function MakeResourcesRowColumnHTML(rowID,tooltipClass,type,name){
+function MakeResourcesRowColumnHTML(rowID,tooltipClass,type,name,nameForShow){
   let rowCount = $("#restable tbody tr").length
 
   let tr = '<tr id="'+rowID+'" class="mainrow" count="'+rowCount+'" type="'+type+'" name="'+name+'">';
-  let td0 = '<td kind="name">'+name+'</td>';
-  let td1 = '<td kind="nameinput"><input type="text" class="form-control" name="resources['+rowID+'][name]" value="'+name+'"><small class="text-danger hide">* duplication name is not allowed</small></td>';
+  let td0 = '<td kind="name">'+nameForShow+'</td>';
+
+  let td1 = '<td kind="nameinput"><input type="text" class="form-control" name="resources['+rowID+'][name-for-show]" value="'+nameForShow+'">'+
+            '<input type="hidden" class="form-control" name="resources['+rowID+'][name]" value="'+name+'">'+
+            '<small class="text-danger hide">* duplication name is not allowed</small></td>';
+  
   let td3 = '<td kind="props">'+makeResourcesPropretiesTD(rowID,tooltipClass)+'</td>'
   let td4 = '<td kind="action"><a data-toggle="tooltip" data-placement="top" title="Add Sub Resources" class="divideRes pointer '+tooltipClass+'"><i class="text-primary fas fa-layer-group"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;<a data-toggle="tooltip" data-placement="top" title="Delete Row" class="pointer removeResRow '+tooltipClass+'"><i class="text-danger fas fa-minus-square"></i></a></td>'
 
@@ -1206,7 +1222,11 @@ function MakeStatesRowColumnHTML(rowID,tooltipClass,type,name){
   let rowCount = $("#statetable tbody tr").length
   let tr = '<tr id="'+rowID+'" class="mainrow" count="'+rowCount+'" type="'+type+'" name="'+name+'">';
   let td0 = '<td>'+name+'</td>';
-  let td1 = '<td><input type="text" class="form-control" name="states['+rowID+'][name]" value="'+name+'"><small class="text-danger hide">* duplication name is not allowed</small></td>';
+
+  let td1 = '<td><input type="text" class="form-control" name="states['+rowID+'][name-for-show]" value="'+name+'">'+
+            '<input type="hidden" class="form-control" name="states['+rowID+'][name]" value="'+name+'">'+
+            '<small class="text-danger hide">* duplication name is not allowed</small></td>';
+
   let td3 = '<td>'+makeStatesPropretiesTD(rowID,tooltipClass)+'</td>'
   let td4 = '<td><a data-toggle="tooltip" data-placement="top" title="Add Sub State" class="divideState pointer '+tooltipClass+'"><i class="text-primary fas fa-layer-group"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;<a data-toggle="tooltip" data-placement="top" title="Delete Row" class="pointer removeStateRow '+tooltipClass+'"><i class="text-danger fas fa-minus-square"></i></a></td>'
   let row =   tr+
