@@ -14,11 +14,16 @@ z-index: 1;
 }
 #map{
 width: 100%;
-height: 450px;
+height: 350px;
 }
 #map2 {
 width: 100%;
 height: 100px;
+}
+.text-link{
+  color: #007bff !important;
+  text-decoration: none !important;
+  background-color: transparent !important;
 }
 thead tr{
 	background-color: gray;
@@ -108,6 +113,9 @@ opacity: 0;
 right: 0;
 top: 0;
 }
+.mb0{
+  margin-bottom: 0 !important;
+}
 .hide{
 display: none;
 }
@@ -118,7 +126,7 @@ display: block;
 border: 4px solid #585858;
 }
 .a-tag{
-color: #0056b3 !important;
+color: #007bff !important;
 cursor: pointer;
 }
 
