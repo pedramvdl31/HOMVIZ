@@ -111,7 +111,7 @@
 														<div class="form-group">
 										                	<label for="inputName">Simulation Name&nbsp;<a data-toggle="tooltip" data-placement="top" title="Name your simulation. This element is for your recollection and does not affect the outcome of your simulation." class="divideRes pointer general-info"><i class="text-info fas fa-info-circle"></i></a>&nbsp;</label>
 										                	<div id="locationField"></div>
-										                	<input name="simulation_name" id="simulation-name" type="text" class="form-control border-primary" placeholder="Simulation 1">
+										                	<input name="simulation_name" id="simulation-name" type="text" class="form-control border-primary no-special-chars" placeholder="Simulation 1" value='' onpaste="return false" >
 										              	</div>
 									              	</div>
 								              	</div>
@@ -430,17 +430,17 @@
 
 												<div class="form-group">
 								                	<label for="inputName">Created by&nbsp;<a data-toggle="tooltip" data-placement="right" title="This element is for your recollection and does not affect the outcome of your simulation." class="divideRes pointer general-info"><i class="text-info fas fa-info-circle"></i></a>&nbsp;</label>
-								                	<input placeholder="Creator's first name" type="text" autocomplete="off" name="creatorname"  id="cname" class="form-control">
+								                	<input placeholder="Creator's first name" type="text" autocomplete="off" name="creatorname"  id="cname" class="form-control no-special-chars">
 								              	</div>
 
 												<div class="form-group">
 								                	<label for="inputName">Number of weeks&nbsp;<a data-toggle="tooltip" data-placement="right" title="The total number of weeks to run the simulation." class="divideRes pointer general-info"><i class="text-info fas fa-info-circle"></i></a>&nbsp;</label>
-								                	<input type="number" min="1" max="999" autocomplete="off" name="numberofweeks" id="simweeks" value="12" class="form-control">
+								                	<input type="number" min="1" max="999" step="1" autocomplete="off" name="numberofweeks" id="simweeks" value="12" class="form-control">
 								              	</div>
 
 												<div class="form-group">
 								                	<label for="inputName">Number of simulations&nbsp;<a data-toggle="tooltip" data-placement="right" title="The total number of separate simulation to run. In the end, the simulations' results will be averaged." class="divideRes pointer general-info"><i class="text-info fas fa-info-circle"></i></a>&nbsp;</label>
-								                	<input type="number" min="1" max="999"  autocomplete="off" name="numberofsims" type="text" value="1" id="simnum" class="form-control">
+								                	<input type="number" min="1" max="999" step="1" autocomplete="off" name="numberofsims" type="text" value="1" id="simnum" class="form-control">
 								              	</div>
 
 								            </div>

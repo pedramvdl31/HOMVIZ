@@ -108,7 +108,8 @@ $(document).ready(function(){
         },
         title: {
           display: true,
-          text: popoluation+' Population'
+          text: popoluation+' Population',
+          fontSize:18
         },
         plugins: {
           colorschemes: {
@@ -173,6 +174,7 @@ $(document).ready(function(){
               display: true,
               text: '',
               position: 'top',
+              fontSize:18
             },
             plugins: {
               colorschemes: {
@@ -266,7 +268,8 @@ $(document).ready(function(){
               },
               title: {
                 display: true,
-                text: ''
+                text: '',
+                fontSize:18
               },
               scale: {
                 ticks: {

@@ -6,7 +6,7 @@
   <script src="/AdminLTE-3.0.0/plugins/chart.js/Chart.min.js?v1"></script>
   <script src="https://unpkg.com/chartjs-plugin-colorschemes"></script>
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-  <script src="/assets/js/simulations/view.js?28"></script>
+  <script src="/assets/js/simulations/view.js?29"></script>
 @stop
 
 @section('content')
@@ -158,9 +158,15 @@
                           </div>
                           <div class="card-body">
                             @foreach($populationLabelview as $kpop => $pop)
+
+                              @if($kpop!=0)
+                                <hr>
+                              @endif
+
                               <div class="chart" style="margin-bottom: 25px">
                                 <canvas id="lineChart-{{$i}}-{{$kpop}}" style="height:250px; min-height:450px"></canvas>
                               </div>
+
                             @endforeach
                           </div>
                         </div>
@@ -182,17 +188,26 @@
 
                               <div class="row radarcharts radarpie">
                                 <div class="col-md-12">
-                                  @foreach($populationLabelview as $kpop => $pop)
-                                    <div class="col-md-6" style="float: left">
-                                      <div class="chart" style="margin-bottom: 25px">
-                                        <canvas id="chart-area-0-{{$i}}-{{$kpop}}" class="chartjs" style="display: block; width: 100%; height: 485px;"></canvas>
+                                  @foreach($populationLabelview as $kpop2 => $pop)
+
+
+                                    @if($kpop2!=0)
+                                      <hr>
+                                    @endif
+
+                                    <div class="row">
+                                      <div class="col-md-6" style="float: left">
+                                        <div class="chart" style="margin-bottom: 25px">
+                                          <canvas id="chart-area-0-{{$i}}-{{$kpop2}}" class="chartjs" style="display: block; width: 100%; height: 485px;"></canvas>
+                                        </div>
+                                      </div>
+                                      <div class="col-md-6" style="float: left">
+                                        <div class="chart" style="margin-bottom: 25px">
+                                          <canvas id="chart-area-1-{{$i}}-{{$kpop2}}" class="chartjs" style="display: block; width: 100%; height: 485px;"></canvas>
+                                        </div>
                                       </div>
                                     </div>
-                                    <div class="col-md-6" style="float: left">
-                                      <div class="chart" style="margin-bottom: 25px">
-                                        <canvas id="chart-area-1-{{$i}}-{{$kpop}}" class="chartjs" style="display: block; width: 100%; height: 485px;"></canvas>
-                                      </div>
-                                    </div>
+
                                   @endforeach
                                 </div>
                               </div>
@@ -215,11 +230,19 @@
                           <div class="card-body">
                             <div class="row barcharts radarpie">
                               <div class="col-md-12">
-                                @foreach($populationLabelview as $kpop => $pop)
+                                @foreach($populationLabelview as $kpop3 => $pop3)
+
+
+                                  @if($kpop3!=0)
+                                    <hr>
+                                  @endif
+
                                   <div class="chart" style="margin-bottom: 25px">
-                                    <canvas id="chart-bar-{{$i}}-{{$kpop}}" class="chartjs" style="display: block; width: 100%; height: 385px;"></canvas>
+                                    <canvas id="chart-bar-{{$i}}-{{$kpop3}}" class="chartjs" style="display: block; width: 100%; height: 385px;"></canvas>
                                   </div>
+
                                 @endforeach
+
                               </div>
                             </div>
                           </div>

@@ -5,6 +5,7 @@ window.resources = []
 window.tableFlagstate = 0
 window.currentstep = 0
 window.popovers = {}
+window.totalPopulation = {}
 
 //validation
 window.loc = 0
@@ -17,6 +18,13 @@ window.debug = 0
 $('.general-info').tooltip();
 
 $(document).ready(function(){
+
+  const general_Toast = Swal.mixin({
+    toast: true,
+    position: 'center',
+    showConfirmButton: true,
+    animation:true
+  });
 
   $("#mcontent").css("display","block")
 
@@ -108,6 +116,163 @@ $(document).ready(function(){
 
   }, 1500)
 
+
+  // STEP 1
+  // document.getElementById("simulation-name").onkeypress = function(event) {
+
+  //   console.log($(this).val())
+
+  //   if (/[`_!@#$%^&*()+\-=\[\]{};':"\\|.<>\/?~]/.test(this.value)) {
+
+  //     event.preventDefault();
+
+  //   }
+
+  // };
+
+  $(document).on("keypress",".no-special-chars",function() {
+
+      var regex = new RegExp("^[ a-zA-Z0-9]+$");
+      var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+      if (!regex.test(key)) {
+         event.preventDefault();
+         return false;
+      }
+
+  });
+
+
+  $(document).on("keypress",".pop-input-validation, .maxlength-input-validation, .capacity-input-validation",function(event) {
+
+      var regex = new RegExp("^[0-9]+$");
+      var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+
+      if (!regex.test(key)) {
+         event.preventDefault();
+         return false;
+      }
+
+      if ($(this).val()<1 && String.fromCharCode(event.keyCode)<1) {
+        $(this).val(1)
+         event.preventDefault();
+         return false;
+      }
+
+      if ($(this).val()+String.fromCharCode(event.keyCode)>100000) {
+        $(this).val(100000)
+         event.preventDefault();
+         return false;
+      }
+
+  });
+
+  $(document).on("blur",".pop-input-validation,maxlength-input-validation, .capacity-input-validation",function(event) {
+
+      if ($(this).val()=='') {
+        $(this).val(1)
+      }
+
+  });
+
+  $(document).on("keypress",".initpop-input-validation",function(event) {
+
+      var regex = new RegExp("^[0-9]+$");
+      var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+
+      if (!regex.test(key)) {
+         event.preventDefault();
+         return false;
+      }
+
+      if ($(this).val()<=0 && String.fromCharCode(event.keyCode)<1) {
+        $(this).val(0)
+         event.preventDefault();
+         return false;
+      }
+
+      if ($(this).val()+String.fromCharCode(event.keyCode)>100000) {
+        $(this).val(100000)
+         event.preventDefault();
+         return false;
+      }
+
+
+      if ($(this).val()==0) {
+        $(this).val(String.fromCharCode(event.keyCode))
+         event.preventDefault();
+         return false;
+      }
+
+  });
+
+  $(document).on("blur",".initpop-input-validation",function(event) {
+
+      if ($(this).val()=='') {
+        $(this).val(0)
+      }
+
+  });
+
+  $(document).on("keypress","#simweeks",function(event) {
+
+      var regex = new RegExp("^[0-9]+$");
+      var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+
+      if (!regex.test(key)) {
+         event.preventDefault();
+         return false;
+      }
+
+      if ($(this).val()<=0 && String.fromCharCode(event.keyCode)<1) {
+        $(this).val(1)
+         event.preventDefault();
+         return false;
+      }
+
+      if ($(this).val()+String.fromCharCode(event.keyCode)>520) {
+        $(this).val(520)
+         event.preventDefault();
+         return false;
+      }
+
+      if ($(this).val()==0) {
+        $(this).val(String.fromCharCode(event.keyCode))
+         event.preventDefault();
+         return false;
+      }
+
+  });
+
+  $(document).on("keypress","#simnum",function(event) {
+
+      var regex = new RegExp("^[0-9]+$");
+      var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+
+      if (!regex.test(key)) {
+         event.preventDefault();
+         return false;
+      }
+
+      if ($(this).val()<=0 && String.fromCharCode(event.keyCode)<1) {
+        $(this).val(1)
+         event.preventDefault();
+         return false;
+      }
+
+      if ($(this).val()+String.fromCharCode(event.keyCode) > 10) {
+        $(this).val(10)
+         event.preventDefault();
+         return false;
+      }
+
+      if ($(this).val()==0) {
+        $(this).val(String.fromCharCode(event.keyCode))
+         event.preventDefault();
+         return false;
+      }
+
+  });
+
   //*********************************
   //**************************STEP 2
 
@@ -162,7 +327,7 @@ $(document).ready(function(){
 
             tableRow +=   '<tr>'+
                         '<td style="font-weight: 900">'+value+'</td>'+
-                        '<td class="ttd"><input type="number" id="population-'+value+'" min="1" step="1" onkeypress="return event.charCode >= 48 && event.charCode <= 57" class="form-control pop-total-nums" name="populationTypeCount['+value+']" style="width:100px; height:100%;" value="1">'+
+                        '<td class="ttd"><input type="number" id="population-'+value+'" min="1" max="100000" step="1" class="form-control pop-total-nums pop-input-validation" name="populationTypeCount['+value+']" style="width:100px; height:100%;" value="1">'+
                         '</td></tr>';
 
           });
@@ -198,11 +363,7 @@ $(document).ready(function(){
   });
 
 
-  $(document).on("click","#removepopulationtable",function() {
 
-
-
-  });
 
 
   //********************************
@@ -268,9 +429,78 @@ $(document).ready(function(){
 
   })
 
+  
+  $(document).on("click",".dismisspopover",function(e,data) {
+    $('.popover-all').popover('hide');
+  })
+
   $(document).on("click",".closepop",function(e,data) {
 
     let id = $(this).attr('id')
+    let mainId =  id.substr(5);
+
+    if (id.substring(0, 4)=='cpop') {
+
+      console.log('here1')
+
+      let currentCap = parseInt($(this).parents('.popover-content').first().find('.capacity-inputs').val())
+
+      if (currentCap!=-1) {
+
+        console.log('here2')
+
+        console.log(mainId)
+
+        if(typeof window.totalPopulation[mainId] !== 'undefined') {
+
+            console.log('here3')
+            console.log(window.totalPopulation[mainId])
+            console.log(currentCap)
+
+            if (window.totalPopulation[mainId]>currentCap) {
+              
+              general_Toast.fire({
+                title: 'Error',
+                text: "Capacity cannot be less than the initial population counts.",
+                icon: 'error'
+                })
+
+              return false
+
+            }
+
+        } else {
+
+          general_Toast.fire({
+            title: 'Error',
+            text: "Initial population counts must be set first.",
+            icon: 'error'
+            })
+
+          return false
+
+        }
+
+      }
+
+    } else if(id.substring(0, 4)=='ipop') {
+
+      console.log('h1')
+
+        let allInputs = $(this).parents('.popover-content').first().find('.initpop-input')
+
+        let total = 0
+
+        $('.initpop-input-'+mainId).each(function (i) {
+            total += parseInt($(this).val())
+        });
+
+        console.log('h2')
+        console.log(total)
+
+        window.totalPopulation[mainId] = total
+
+    }
 
     let html = $(this).parents('.popover-content').first().clone();
 
@@ -278,9 +508,7 @@ $(document).ready(function(){
       window.popovers[id] = html
     }
 
-
     let type = $(this).attr('type')
-
 
     // Allowed pop is changed, change init pop table
     if (type == 'ap') {
@@ -308,10 +536,16 @@ $(document).ready(function(){
 
 
   $(document).on("change",".capacities-infinite",function(e,data) {
+
+    let _this_id = $(this).attr('thisid')
+
     if(this.checked) {
-      $(this).parents('td').first().find('.capacity-inputs').first().val('-1');
+      $(this).parents('td').first().find('.capacity-inputs').first().val('-1').attr('disabled','true');
+      let _inpt = '<input id="inf-cap-'+_this_id+'" type="hidden" name="capacity[resource]['+_this_id+']" value="-1">'
+      $(this).parents('td').first().append(_inpt)
     } else {
-      $(this).parents('td').first().find('.capacity-inputs').first().val('0');
+      $(this).parents('td').first().find('.capacity-inputs').first().val('1').removeAttr('disabled');
+      $('#inf-cap-'+_this_id).remove()
     }
   });
 
@@ -899,7 +1133,7 @@ function addApopHTML(ThisID,rowID,_type){
 
   });
 
-  html +=   '</tbody></table></div><div style="width:100%"><a type="ap" id="'+ThisID+'" class="closepop a-tag">Save and Close</a></div>';
+  html +=   '</tbody></table></div><div style="width:100%"><a type="ap" id="'+ThisID+'" class="closepop btn btn-xs btn-primary text-white pointer">Save and Close</a><a class="dismisspopover btn btn-xs btn-danger text-white poitner" style="float:right;">Dismiss</a></div>';
 
 
   if(typeof window.popovers[ThisID] === 'undefined') {
@@ -929,12 +1163,13 @@ function addIpopHTML(ThisID,rowID,_type){
 
   });
 
-  html +=   '</tbody></table></div><div style="width:100%"><a id="'+ThisID+'" class="closepop a-tag">Save and Close</a></div>';
+  html +=   '</tbody></table></div><div style="width:100%"><a id="'+ThisID+'" class="closepop btn btn-xs btn-primary text-white pointer">Save and Close</a><a class="dismisspopover btn btn-xs btn-danger text-white poitner" style="float:right;">Dismiss</a></div>';
 
 
   if(typeof window.popovers[ThisID] === 'undefined') {
     window.popovers[ThisID] = html
   }
+
 
   $(document).find('#'+ThisID).on('shown.bs.popover', function () {
 
@@ -954,11 +1189,11 @@ function addCpopHTML(ThisID,rowID,_type){
           '<table id="'+ThisID+'" class="table table-bordered"><tbody>';
 
   html += '<tr><td class="pop" style="font-weight: 900">Capacity</td>'+
-          '<td class="pop" ><input class="capacity-inputs" name="capacity['+_type+']['+rowID+']" style="width:100px; height:100%;" placeholder="#" value="0">'+
-          '<br><label class="checkbox-inline"><input class="capacities-infinite" name="capacityCheckBox['+_type+']['+rowID+']" class="infinitx" type="checkbox"> Infinite</label>'+
+          '<td class="pop" ><input class="capacity-inputs capacity-input-validation" name="capacity['+_type+']['+rowID+']" style="width:100px; height:100%;" placeholder="#" value="1" type="number" min="1" max="100000" step="1">'+
+          '<br><label class="checkbox-inline"><input thisid="'+rowID+'" class="capacities-infinite" name="capacityCheckBox['+_type+']['+rowID+']" class="infinitx" type="checkbox"> Infinite</label>'+
           '</td></tr>';
 
-  html +=   '</tbody></table></div><div style="width:100%"><a id="'+ThisID+'" class="closepop a-tag">Save and Close</a></div>';
+  html +=   '</tbody></table></div><div style="width:100%"><a id="'+ThisID+'" class="closepop btn btn-xs btn-primary text-white pointer">Save and Close</a><a class="dismisspopover btn btn-xs btn-danger text-white poitner" style="float:right;">Dismiss</a></div>';
 
 
   if(typeof window.popovers[ThisID] === 'undefined') {
@@ -983,9 +1218,9 @@ function addMpopHTML(ThisID,rowID,_type){
           '<table id="'+ThisID+'" class="table table-bordered"><tbody>';
 
   html += '<tr><td class="pop" style="font-weight: 900">Maximum Length of Stay (weeks)</td>'+
-            '<td class="pop"><input name="maximumlengthofstay['+_type+']['+rowID+']" value="7" style="width:100px; height:100%;" placeholder="#"></td></tr>';
+            '<td class="pop"><input class="maxlength-input-validation" type="number" min="1" max="1000" step="1" name="maximumlengthofstay['+_type+']['+rowID+']" value="7" style="width:100px; height:100%;" placeholder="#"></td></tr>';
 
-  html +=   '</tbody></table></div><div style="width:100%"><a id="'+ThisID+'" class="closepop a-tag">Save and Close</a></div>';
+  html +=   '</tbody></table></div><div style="width:100%"><a id="'+ThisID+'" class="closepop btn btn-xs btn-primary text-white pointer">Save and Close</a><a class="dismisspopover btn btn-xs btn-danger text-white poitner" style="float:right;">Dismiss</a></div>';
 
 
   if(typeof window.popovers[ThisID] === 'undefined') {
@@ -1018,7 +1253,7 @@ function updateIpopHTML(populationArray,rootID,_type){
 
   });
 
-  html +=   '</tbody></table></div><div style="width:100%"><a id="'+ThisID+'" class="closepop a-tag">Save and Close</a></div>';
+  html +=   '</tbody></table></div><div style="width:100%"><a id="'+ThisID+'" class="closepop btn btn-xs btn-primary text-white pointer">Save and Close</a><a class="dismisspopover btn btn-xs btn-danger text-white poitner" style="float:right;">Dismiss</a></div>';
 
 
   if(typeof window.popovers[ThisID] !== 'undefined') {
@@ -1039,7 +1274,7 @@ function updateIpopHTML(populationArray,rootID,_type){
 
 function ReturnIpopTR(value,rowID,_type){
   let html = '<tr name="'+value+'"><td class="pop" style="font-weight: 900">'+value+'</td>'+
-            '<td class="pop"><input value="0" name="initialPopulation['+_type+']['+rowID+']['+value+']" style="width:100px; height:100%;" placeholder="#"></td></tr>';
+            '<td class="pop"><input class="initpop-input-validation initpop-input-'+rowID+'" type="number" min="0" max="100000" step="1" value="0" name="initialPopulation['+_type+']['+rowID+']['+value+']" style="width:100px; height:100%;" placeholder="#"></td></tr>';
   return html;
 }
 
@@ -1234,7 +1469,7 @@ function MakeResourcesRowColumnHTML(rowID,tooltipClass,type,name,nameForShow){
   let tr = '<tr id="'+rowID+'" class="mainrow" count="'+rowCount+'" type="'+type+'" name="'+name+'">';
   let td0 = '<td kind="name">'+nameForShow+'</td>';
 
-  let td1 = '<td kind="nameinput"><input type="text" class="form-control" name="resources['+rowID+'][name-for-show]" value="'+nameForShow+'">'+
+  let td1 = '<td kind="nameinput"><input type="text" class="form-control no-special-chars" name="resources['+rowID+'][name-for-show]" value="'+nameForShow+'">'+
             '<input type="hidden" class="form-control" name="resources['+rowID+'][name]" value="'+name+'">'+
             '<small class="text-danger hide">* duplication name is not allowed</small></td>';
   
@@ -1261,7 +1496,7 @@ function MakeSUBResourcesRowColumnHTML(rowID,parentID,subRowCount,tooltipClass,p
 
   let tr = '<tr id="'+rowID+'" parentID="'+parentID+'" class="sub '+_class+'" count="'+subRowCount+'">'
   let td0 = '<td>Sub '+parentName+'</td>';
-  let td1 = '<td><input type="text" class="form-control" name="subresources['+parentID+']['+rowID+'][name]" placeholder="Sub '+parentName+'"><small class="text-danger hide">* duplication name is not allowed</small></td>'
+  let td1 = '<td><input type="text" class="form-control no-special-chars" name="subresources['+parentID+']['+rowID+'][name]" placeholder="Sub '+parentName+'"><small class="text-danger hide">* duplication name is not allowed</small></td>'
   let td4 = '<td><a class="text-danger pointer removeResSubRow">Delete row&nbsp;</a></td>'
   let td3 = '<td>'+makeResourcesPropretiesTD(rowID,tooltipClass)+'</td>'
   let row =   tr+
@@ -1278,7 +1513,7 @@ function MakeStatesRowColumnHTML(rowID,tooltipClass,type,name){
   let tr = '<tr id="'+rowID+'" class="mainrow" count="'+rowCount+'" type="'+type+'" name="'+name+'">';
   let td0 = '<td>'+name+'</td>';
 
-  let td1 = '<td><input type="text" class="form-control" name="states['+rowID+'][name-for-show]" value="'+name+'">'+
+  let td1 = '<td><input type="text" class="form-control no-special-chars" name="states['+rowID+'][name-for-show]" value="'+name+'">'+
             '<input type="hidden" class="form-control" name="states['+rowID+'][name]" value="'+name+'">'+
             '<small class="text-danger hide">* duplication name is not allowed</small></td>';
 
@@ -1300,7 +1535,7 @@ function MakeSUBStatesRowColumnHTML(rowID,parentID,subRowCount,tooltipClass,pare
 
   let tr = '<tr id="'+rowID+'" parentID="'+parentID+'" class="sub '+_class+'" count="'+subRowCount+'">'
   let td0 = '<td>Sub '+parentName+'</td>';
-  let td1 = '<td><input type="text" class="form-control" name="substates['+parentID+']['+rowID+'][name]" placeholder="Name (unique)"><small class="text-danger hide">* duplication name is not allowed</small></td>'
+  let td1 = '<td><input type="text" class="form-control no-special-chars" name="substates['+parentID+']['+rowID+'][name]" placeholder="Name (unique)"><small class="text-danger hide">* duplication name is not allowed</small></td>'
   let td4 = '<td><a data-toggle="tooltip" data-placement="top" title="Delete Row" class="pointer removeStateSubRow '+tooltipClass+'"><i class="text-danger fas fa-minus-square"></i></a></td>'
   let td3 = '<td>'+makeStatesPropretiesTD(rowID,tooltipClass)+'</td>'
   let row =   tr+
@@ -1363,7 +1598,7 @@ function MakeTransitionalPropTable(){
 
     $.each( arr, function( k1, v2 ) {
 
-      html += '<td><input name="TransitionProbability['+v1+']['+v2+']" id="'+v1+'-'+v2+'" type="text" class="form-control transitioninput" placeholder="0 to 1"></td>';
+      html += '<td><input name="TransitionProbability['+v1+']['+v2+']" id="'+v1+'-'+v2+'" type="text" class="form-control transitioninput no-special-chars" placeholder="0 to 1"></td>';
 
     });
 
