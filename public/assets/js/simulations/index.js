@@ -26,11 +26,26 @@ $(document).ready(function(){
     animation:true
   });
 
+  window.info_Toast = Swal.mixin({
+    toast: true,
+    position: 'center',
+    showConfirmButton: true,
+    animation:true
+  });
+
+  window.Toast = Swal.mixin({
+    toast: true,
+    position: 'center',
+    showConfirmButton: true,
+    animation:true
+  });
+
   $("#mcontent").css("display","block")
 
   $('#smartwizard').smartWizard({
     selected: 0,
     theme: 'arrows',
+    showStepURLhash: false,
     transitionEffect:'fade',
     toolbarSettings: {
       showNextButton: false, // show/hide a Next button
@@ -53,19 +68,36 @@ $(document).ready(function(){
 
     $('#next').text('Next Step')
 
-    if (window.currentstep==5) {
-
-      $('#next').text('Run Simulation')
-
-    }
-
     if (window.currentstep==1) {
 
       $('#prev').attr('disabled','true')
+      
+      step1HandleErrors()
 
-    } else {
+    } else if (window.currentstep==2) {
 
-      $('#prev').removeAttr('disabled','true')
+      $('#prev').removeAttr('disabled')
+
+      step2HandleErrors()
+
+    } else if (window.currentstep==3) {
+
+      $('#prev').removeAttr('disabled')
+
+      step3HandleErrors()
+
+    } else if (window.currentstep==4) {
+
+      $('#prev').removeAttr('disabled')
+
+      step4HandleErrors()
+
+    } else if (window.currentstep==5) {
+
+      $('#prev').removeAttr('disabled')
+      $('#next').text('Run Simulation')
+
+      step5HandleErrors()
 
     }
 
@@ -117,19 +149,6 @@ $(document).ready(function(){
   }, 1500)
 
 
-  // STEP 1
-  // document.getElementById("simulation-name").onkeypress = function(event) {
-
-  //   console.log($(this).val())
-
-  //   if (/[`_!@#$%^&*()+\-=\[\]{};':"\\|.<>\/?~]/.test(this.value)) {
-
-  //     event.preventDefault();
-
-  //   }
-
-  // };
-
   $(document).on("keypress",".no-special-chars",function() {
 
       var regex = new RegExp("^[ a-zA-Z0-9]+$");
@@ -141,6 +160,11 @@ $(document).ready(function(){
 
   });
 
+  // STEP 1
+
+  $('#simulation-name').on('keyup blur', function(e) {
+    step1HandleErrors()
+  })
 
   $(document).on("keypress",".pop-input-validation, .maxlength-input-validation, .capacity-input-validation",function(event) {
 
@@ -273,6 +297,10 @@ $(document).ready(function(){
 
   });
 
+  $('#cname, #simweeks, #simnum').on('keyup blur', function(e) {
+    step5HandleErrors()
+  })
+
   //*********************************
   //**************************STEP 2
 
@@ -360,6 +388,8 @@ $(document).ready(function(){
 
     }
 
+    step2HandleErrors()
+
   });
 
 
@@ -427,6 +457,8 @@ $(document).ready(function(){
 
     }
 
+    step3HandleErrors()
+
   })
 
   
@@ -439,6 +471,8 @@ $(document).ready(function(){
     let id = $(this).attr('id')
     let mainId =  id.substr(5);
 
+    console.log(id)
+
     if (id.substring(0, 4)=='cpop') {
 
       console.log('here1')
@@ -447,15 +481,7 @@ $(document).ready(function(){
 
       if (currentCap!=-1) {
 
-        console.log('here2')
-
-        console.log(mainId)
-
         if(typeof window.totalPopulation[mainId] !== 'undefined') {
-
-            console.log('here3')
-            console.log(window.totalPopulation[mainId])
-            console.log(currentCap)
 
             if (window.totalPopulation[mainId]>currentCap) {
               
@@ -463,7 +489,7 @@ $(document).ready(function(){
                 title: 'Error',
                 text: "Capacity cannot be less than the initial population counts.",
                 icon: 'error'
-                })
+              })
 
               return false
 
@@ -485,8 +511,6 @@ $(document).ready(function(){
 
     } else if(id.substring(0, 4)=='ipop') {
 
-      console.log('h1')
-
         let allInputs = $(this).parents('.popover-content').first().find('.initpop-input')
 
         let total = 0
@@ -502,7 +526,7 @@ $(document).ready(function(){
 
     }
 
-    let html = $(this).parents('.popover-content').first().clone();
+    let html = $(this).parents('.popover-content').first().find('div').first().clone();
 
     if(typeof window.popovers[id] !== 'undefined') {
       window.popovers[id] = html
@@ -530,6 +554,12 @@ $(document).ready(function(){
 
     }
 
+    let notset_elem = $(document).find('li a[id="'+id+'"]').parents('li').first().find('.not-set')
+
+    notset_elem.attr('title','check').attr('data-original-title','check')
+    notset_elem.find('i').removeClass('fa-times-circle').removeClass('text-danger').addClass('fa-check-circle').addClass('text-success')
+    notset_elem.removeClass('not-set').addClass('set')
+
     $('.popover-all').popover('hide');
 
   });
@@ -556,7 +586,7 @@ $(document).ready(function(){
     let parentName = elem.attr('name')
 
     //Remove Propreties Column
-    elem.find('td').eq(2).html('')
+    elem.find('td').eq(3).html('')
 
     let rowcount = elem.attr('count')
 
@@ -628,9 +658,11 @@ $(document).ready(function(){
 
     if (rowCount==0) {
 
-      $("#restable tbody").append('<tr><td></td><td></td><td></td><td></td></tr>')
+      $("#restable tbody").append('<tr><td></td><td></td><td></td><td></td><td></td></tr>')
       
     }
+
+    step3HandleErrors()
 
   })
 
@@ -704,59 +736,7 @@ $(document).ready(function(){
 
     }
 
-  })
-
-  $(document).on("click",".divideState",function(e,data) {
-
-    let elem = $(this).parents('tr').first()
-
-    let parentName = elem.attr('name')
-
-    //Remove Propreties Column
-    elem.find('td').eq(2).html('')
-
-    let rowcount = elem.attr('count')
-
-    let type = elem.attr('type');
-
-    let parentID = elem.attr('id')
-    removeAllPopoverOfID(parentID)
-
-    let subRowCount = $(document).find('tr[parentID='+parentID+']').length
-
-    let rowID = makeid(5)
-    var myEle = document.getElementById(rowID);
-    while(myEle){
-      rowID = makeid(5)
-      myEle = document.getElementById(rowID);
-    }
-
-    var obj = {};
-    obj[rowID] = 'name';
-    
-    let tooltipClass= "tooltip-"+rowID
-
-    let row = MakeSUBStatesRowColumnHTML(rowID,parentID,subRowCount,tooltipClass,parentName)
-
-    if (subRowCount==0) {
-
-      elem.addClass('parentrow')
-
-      $(row).insertAfter(elem);
-
-    } else {
-
-      let childElem = $(document).find('tr[parentID='+parentID+']').last()
-
-      childElem.addClass('nthsub')
-
-      $(row).insertAfter(childElem);
-
-    }
-
-    $('.'+tooltipClass).tooltip();
-
-    activatePopUpWindows(rowID,type)
+    step4HandleErrors()
 
   })
 
@@ -790,6 +770,8 @@ $(document).ready(function(){
       $("#statetable tbody").append('<tr><td></td><td></td><td></td><td></td></tr>')
       
     }
+
+    step4HandleErrors()
 
   })
 
@@ -861,9 +843,30 @@ $(document).ready(function(){
 
   //LAST STEP
 
-  $('#runsimulation').on('click', function(e){
+  $(document).on('click','.show-info', function(){
 
-  })
+    let message = $(this).find('span').first().attr('msg')
+
+
+    if (message === 'undefined' || message === undefined) {
+      if ($(this).hasClass('apop-info')) {
+        message = 'The population type that is allowed to enter this resource/subresource'
+      } else if($(this).hasClass('initpop-info')){
+        message = 'The number of individuals that reside in this resource/subresource at the beginning of the simulation'
+      } else if($(this).hasClass('maxl-info')){
+        message = 'The population type that is allowed to enter this resource/subresource'
+      } else if($(this).hasClass('cap-info')){
+        message = 'The total number of individuals that can stay at this resource/subresource at any given time'
+      }
+    }
+
+    window.info_Toast.fire({
+      title: 'Info',
+      text: message,
+      icon: 'info',
+    })
+
+  });
 
 })
 
@@ -884,19 +887,39 @@ function validateAllSteps(){
 
 function checkStep1(){
 
-  let output = false
+  let output = {'flag':false,'message':''}
 
   if (window.loc == 1 && $('#simulation-name').val()) {
 
-    $('#loc-overview').text('Complete').addClass('text-success').removeClass('text-danger')
+    let simname = $('#simulation-name').val();
 
-    $('#loc-div').removeClass('hide')
+    if (NoSpecialCharacter(simname)) {
 
-    $('#simname-side').text( $('#simulation-name').val() )
-    $('#cityname-side').text( $('#autocomplete').val() )
+      $('#loc-overview').text('Complete').addClass('text-success').removeClass('text-danger')
 
-    output = true
+      $('#loc-div').removeClass('hide')
 
+      $('#simname-side').text( simname )
+      $('#cityname-side').text( $('#autocomplete').val() )
+
+      output['flag'] = true
+
+      return output
+
+    } else {
+
+      output['message'] = 'Simulation name cannot contain special characters'
+
+      $('#loc-overview').text('Incomplete').addClass('text-danger').removeClass('text-success')
+
+      $('#loc-div').addClass('hide')
+
+      $('#simname-side').text('')
+      $('#cityname-side').text('')
+
+      return output
+
+    }
 
   } else {
 
@@ -907,9 +930,139 @@ function checkStep1(){
     $('#simname-side').text('')
     $('#cityname-side').text('')
 
+    output['message'] = 'Simulation name and the city name are required'
+
+    return output
+
+  }
+  
+}
+
+function step1HandleErrors(){
+
+  let simname = $('#simulation-name').val();
+
+  let nameValidated = false
+  let cityValidated = false
+
+  if (simname=="" || !NoSpecialCharacter(simname)) {
+    $('#simname-error').css('display','block')
+    nameValidated = false
+  } else {
+    $('#simname-error').css('display','none')
+    nameValidated = true
   }
 
-  return output
+  if (window.loc != 1) {
+    $('#cityname-error').css('display','block')
+    cityValidated = false
+  } else {
+    $('#cityname-error').css('display','none')
+    cityValidated = true
+  }
+
+  if (nameValidated && cityValidated) {
+    $('#next').removeAttr('disabled')
+  } else {
+    $('#next').attr('disabled','true')
+  }
+  
+}
+
+
+function step2HandleErrors(){
+
+  let typesInput = false
+
+  if (window.populationType.length >= 1) {
+
+    typesInput = true
+
+  }
+
+  if (typesInput) {
+    $('#next').removeAttr('disabled')
+  } else {
+    $('#next').attr('disabled','true')
+  }
+  
+}
+function step3HandleErrors(){
+
+  let resourcesSet = false
+
+  if (window.resources.length >= 1) {
+
+    resourcesSet = true
+
+  }
+
+  if (resourcesSet) {
+    $('#next').removeAttr('disabled')
+  } else {
+    $('#next').attr('disabled','true')
+  }
+  
+}
+function step4HandleErrors(){
+
+  let statesSet = false
+
+  if (window.states.length >= 1) {
+
+    statesSet = true
+
+  }
+
+  if (statesSet) {
+    $('#next').removeAttr('disabled')
+  } else {
+    $('#next').attr('disabled','true')
+  }
+  
+}
+function step5HandleErrors(){
+
+
+  let nameVal = $('#cname').val() 
+  let weeksVal = $('#simweeks').val()
+  let simnumVal = $('#simnum').val()
+
+  let personNameInput = false
+  let weeksInput = false
+  let simNumInput = false
+
+  if (nameVal=="" || !NoSpecialCharacter(nameVal)) {
+    $('#personname-error').css('display','block')
+    personNameInput = false
+  } else {
+    $('#personname-error').css('display','none')
+    personNameInput = true
+  }
+
+  if (weeksVal=="" || !NoSpecialCharacter(weeksVal)) {
+    $('#weeks-error').css('display','block')
+    weeksInput = false
+  } else {
+    $('#weeks-error').css('display','none')
+    weeksInput = true
+  }
+
+  if (simnumVal=="" || !NoSpecialCharacter(simnumVal)) {
+    $('#simnum-error').css('display','block')
+    simNumInput = false
+  } else {
+    $('#simnum-error').css('display','none')
+    simNumInput = true
+  }
+
+  if (personNameInput && weeksInput && simNumInput) {
+    $('#parameters-overview').text('Complete').addClass('text-success').removeClass('text-danger')
+    $('#next').removeAttr('disabled')
+  } else {
+    $('#parameters-overview').text('Incomplete').addClass('text-danger').removeClass('text-success')
+    $('#next').attr('disabled','true')
+  }
   
 }
 
@@ -953,15 +1106,28 @@ function checkStep2(){
 
 function checkStep3(){
 
-  let output = false
+  let output = {'flag':false,'message':''}
 
   if (window.resources.length >= 1) {
 
-    $('#resources-overview').text('Complete').addClass('text-success').removeClass('text-danger')
+    let unsetRows = $(document).find('#restable').find('.not-set').length
 
-    output = true
+    if (unsetRows!=0) {
+
+      output['message'] = "1 or more properties are not set!"
+
+    } else {
+
+      $('#resources-overview').text('Complete').addClass('text-success').removeClass('text-danger')
+      output['flag'] = true
+
+    }
+
+
 
   } else {
+
+    output['message'] = "At least 1 resource is required!"
 
     $('#resources-overview').text('Incomplete').addClass('text-danger').removeClass('text-success')
 
@@ -973,16 +1139,26 @@ function checkStep3(){
 
 function checkStep4(){
 
-  let output = false
+  let output = {'flag':false,'message':''}
 
   if (window.states.length >= 1) {
 
-    output = true
+    let unsetRows = $(document).find('#statetable').find('.not-set').length
 
-    $('#states-overview').text('Complete').addClass('text-success').removeClass('text-danger')
+    if (unsetRows!=0) {
 
+      output['message'] = "1 or more properties are not set!"
+
+    } else {
+
+      $('#states-overview').text('Complete').addClass('text-success').removeClass('text-danger')
+      output['flag'] = true
+
+    }
 
   } else {
+
+    output['message'] = "At least 1 additional states is required!"
 
     $('#states-overview').text('Incomplete').addClass('text-danger').removeClass('text-success')
 
@@ -1073,14 +1249,14 @@ function activatePopUpWindows(rowID,type){
   let mpopID = 'mpop-'+rowID
   let cpopID = 'cpop-'+rowID
 
-  $(document).find('#'+apopID).popover({html:true,title: "Allowed Population Type"}).click(function(e) {
+  $(document).find('#'+apopID).popover({html:true,title: "Allowed Population Type <a class='show-info pointer apop-info'><span></span><i class='text-info fas fa-info-circle'></i></a> <a class='dismisspopover close' data-dismiss='alert'>&times;</a>"}).click(function(e) {
       $('.popover').not(this).hide();
       $(this).data("bs.popover").inState.click = false;
       $(this).popover('show');
       e.preventDefault();
   });
 
-  $(document).find('#'+ipopID).popover({html:true,title: "Initial Population Count"}).click(function(e) {
+  $(document).find('#'+ipopID).popover({html:true,title: "Initial Population Count <a class='show-info pointer initpop-info'><span></span><i class='text-info fas fa-info-circle'></i></a> <a class='dismisspopover close' data-dismiss='alert'>&times;</a>"}).click(function(e) {
       $('.popover').not(this).hide();
       $(this).data("bs.popover").inState.click = false;
       $(this).popover('show');
@@ -1092,14 +1268,14 @@ function activatePopUpWindows(rowID,type){
 
     _type = 'resource'
 
-    $(document).find('#'+mpopID).popover({html:true,title: "Maximum Length of Stay"}).click(function(e) {
+    $(document).find('#'+mpopID).popover({html:true,title: "Maximum Length of Stay <a class='show-info pointer maxl-info'><span></span><i class='text-info fas fa-info-circle'></i></a> <a class='dismisspopover close' data-dismiss='alert'>&times;</a>"}).click(function(e) {
         $('.popover').not(this).hide();
         $(this).data("bs.popover").inState.click = false;
         $(this).popover('show');
         e.preventDefault();
     });
 
-    $(document).find('#'+cpopID).popover({html:true,title: "Capacity"}).click(function(e) {
+    $(document).find('#'+cpopID).popover({html:true,title: "Capacity <a class='show-info pointer cap-info'><span></span><i class='text-info fas fa-info-circle'></i></a> <a class='dismisspopover close' data-dismiss='alert'>&times;</a>"}).click(function(e) {
         $('.popover').not(this).hide();
         $(this).data("bs.popover").inState.click = false;
         $(this).popover('show');
@@ -1117,7 +1293,7 @@ function activatePopUpWindows(rowID,type){
 
 function addApopHTML(ThisID,rowID,_type){
 
-  let html = '<div class="table-responsive">'+
+  let html = '<div><div class="table-responsive">'+
      '<table id="'+ThisID+'" class="table table-bordered">'+
         '<thead>'+
           '<tr>'+
@@ -1133,7 +1309,7 @@ function addApopHTML(ThisID,rowID,_type){
 
   });
 
-  html +=   '</tbody></table></div><div style="width:100%"><a type="ap" id="'+ThisID+'" class="closepop btn btn-xs btn-primary text-white pointer">Save and Close</a><a class="dismisspopover btn btn-xs btn-danger text-white poitner" style="float:right;">Dismiss</a></div>';
+  html +=   '</tbody></table></div><div style="width:100%"><a type="ap" id="'+ThisID+'" class="closepop btn btn-xs btn-primary text-white pointer">Save and Close</a></div></div>';
 
 
   if(typeof window.popovers[ThisID] === 'undefined') {
@@ -1154,7 +1330,7 @@ function addApopHTML(ThisID,rowID,_type){
 
 function addIpopHTML(ThisID,rowID,_type){
 
-  let html = '<div class="table-responsive">'+
+  let html = '<div><div class="table-responsive">'+
      '<table id="'+ThisID+'" class="table table-bordered"><tbody>';
 
   $.each(window.populationType, function( k1, value ) {
@@ -1163,7 +1339,7 @@ function addIpopHTML(ThisID,rowID,_type){
 
   });
 
-  html +=   '</tbody></table></div><div style="width:100%"><a id="'+ThisID+'" class="closepop btn btn-xs btn-primary text-white pointer">Save and Close</a><a class="dismisspopover btn btn-xs btn-danger text-white poitner" style="float:right;">Dismiss</a></div>';
+  html += '</tbody></table></div><div style="width:100%"><a id="'+ThisID+'" class="closepop btn btn-xs btn-primary text-white pointer">Save and Close</a></div></div>';
 
 
   if(typeof window.popovers[ThisID] === 'undefined') {
@@ -1185,7 +1361,7 @@ function addIpopHTML(ThisID,rowID,_type){
 
 function addCpopHTML(ThisID,rowID,_type){
 
-  let html =  '<div class="table-responsive">'+
+  let html =  '<div><div class="table-responsive">'+
           '<table id="'+ThisID+'" class="table table-bordered"><tbody>';
 
   html += '<tr><td class="pop" style="font-weight: 900">Capacity</td>'+
@@ -1193,7 +1369,7 @@ function addCpopHTML(ThisID,rowID,_type){
           '<br><label class="checkbox-inline"><input thisid="'+rowID+'" class="capacities-infinite" name="capacityCheckBox['+_type+']['+rowID+']" class="infinitx" type="checkbox"> Infinite</label>'+
           '</td></tr>';
 
-  html +=   '</tbody></table></div><div style="width:100%"><a id="'+ThisID+'" class="closepop btn btn-xs btn-primary text-white pointer">Save and Close</a><a class="dismisspopover btn btn-xs btn-danger text-white poitner" style="float:right;">Dismiss</a></div>';
+  html +=   '</tbody></table></div><div style="width:100%"><a id="'+ThisID+'" class="closepop btn btn-xs btn-primary text-white pointer">Save and Close</a></div></div>';
 
 
   if(typeof window.popovers[ThisID] === 'undefined') {
@@ -1214,13 +1390,13 @@ function addCpopHTML(ThisID,rowID,_type){
 
 function addMpopHTML(ThisID,rowID,_type){
 
-  let html =  '<div class="table-responsive">'+
+  let html =  '<div><div class="table-responsive">'+
           '<table id="'+ThisID+'" class="table table-bordered"><tbody>';
 
   html += '<tr><td class="pop" style="font-weight: 900">Maximum Length of Stay (weeks)</td>'+
             '<td class="pop"><input class="maxlength-input-validation" type="number" min="1" max="1000" step="1" name="maximumlengthofstay['+_type+']['+rowID+']" value="7" style="width:100px; height:100%;" placeholder="#"></td></tr>';
 
-  html +=   '</tbody></table></div><div style="width:100%"><a id="'+ThisID+'" class="closepop btn btn-xs btn-primary text-white pointer">Save and Close</a><a class="dismisspopover btn btn-xs btn-danger text-white poitner" style="float:right;">Dismiss</a></div>';
+  html +=   '</tbody></table></div><div style="width:100%"><a id="'+ThisID+'" class="closepop btn btn-xs btn-primary text-white pointer">Save and Close</a></div></div>';
 
 
   if(typeof window.popovers[ThisID] === 'undefined') {
@@ -1244,7 +1420,7 @@ function updateIpopHTML(populationArray,rootID,_type){
 
   let ThisID = 'ipop-'+rootID
 
-  let html = '<div class="table-responsive">'+
+  let html = '<div><div class="table-responsive">'+
      '<table id="'+ThisID+'" class="table table-bordered"><tbody>';
 
   $.each(populationArray, function( k1, value ) {
@@ -1253,7 +1429,7 @@ function updateIpopHTML(populationArray,rootID,_type){
 
   });
 
-  html +=   '</tbody></table></div><div style="width:100%"><a id="'+ThisID+'" class="closepop btn btn-xs btn-primary text-white pointer">Save and Close</a><a class="dismisspopover btn btn-xs btn-danger text-white poitner" style="float:right;">Dismiss</a></div>';
+  html +=   '</tbody></table></div><div style="width:100%"><a id="'+ThisID+'" class="closepop btn btn-xs btn-primary text-white pointer">Save and Close</a></div></div>';
 
 
   if(typeof window.popovers[ThisID] !== 'undefined') {
@@ -1280,43 +1456,37 @@ function ReturnIpopTR(value,rowID,_type){
 
 function makeResourcesPropretiesTD(rowID,tooltipClass){
   let html =  '<ul class="mb0"><li><a id="apop-'+rowID+'" class="a-tag popover-all" data-placement="bottom" data-toggle="popover">Allowed Population Type</a>'+
-              '&nbsp;<a data-toggle="tooltip" data-placement="top" title="The population type that is allowed to enter this resource/subresource" class="pointer '+tooltipClass+'"><i class="text-info fas fa-info-circle"></i></a>'+
+              '&nbsp;<a data-toggle="tooltip" data-placement="top" title="Not set" class="not-set pointer '+tooltipClass+'"><i class="text-danger fas fa-times-circle"></i></a>'+
               '</li>'+
 
               '<li><a id="ipop-'+rowID+'" class="a-tag popover-all" data-placement="bottom" data-toggle="popover">Initial Population Count</a>'+
-              '&nbsp;<a data-toggle="tooltip" data-placement="top" title="The number of individuals that reside in this resource/subresource at the beginning of the simulation" class="pointer '+tooltipClass+'"><i class="text-info fas fa-info-circle"></i></a>'+
+              '&nbsp;<a data-toggle="tooltip" data-placement="top" title="Not set" class="not-set pointer '+tooltipClass+'"><i class="text-danger fas fa-times-circle"></i></a>'+
               '</li>'+
 
               '<li><a id="mpop-'+rowID+'" class="a-tag popover-all" data-placement="bottom" data-toggle="popover">Maximum Length of Stay</a>'+
-              '&nbsp;<a data-toggle="tooltip" data-placement="top" title="The maximum number of weeks in which one individual can continuously stay in this resource/subresource" class="pointer '+tooltipClass+'"><i class="text-info fas fa-info-circle"></i></a>'+
+              '&nbsp;<a data-toggle="tooltip" data-placement="top" title="Not set" class="not-set pointer '+tooltipClass+'"><i class="text-danger fas fa-times-circle"></i></a>'+
               '</li>'+
 
               '<li><a id="cpop-'+rowID+'" class="a-tag popover-all" data-placement="bottom" data-toggle="popover">Capacity</a>'+
-              '&nbsp;<a data-toggle="tooltip" data-placement="top" title="The total number of individuals that can stay at this resource/subresource at any given time" class="pointer '+tooltipClass+'"><i class="text-info fas fa-info-circle"></i></a></li>';
+              '&nbsp;<a data-toggle="tooltip" data-placement="top" title="Not set" class="not-set pointer '+tooltipClass+'"><i class="text-danger fas fa-times-circle"></i></a>'+
+              '</li>';
 
   return html
 }
 
 function makeStatesPropretiesTD(rowID,tooltipClass){
   let html =  '<ul class="mb0"><li><a id="apop-'+rowID+'" class="a-tag popover-all" data-placement="bottom" data-toggle="popover">Allowed Population Type</a>'+
-              '&nbsp;<a data-toggle="tooltip" data-placement="top" title="The population type that is allowed to enter this resource/subresource" class="pointer '+tooltipClass+'"><i class="text-info fas fa-info-circle"></i></a>'+
+              '&nbsp;<a data-toggle="tooltip" data-placement="top" title="Not set" class="not-set pointer '+tooltipClass+'"><i class="text-danger fas fa-times-circle"></i></a>'+
               '</li>'+
 
               '<li><a id="ipop-'+rowID+'" class="a-tag popover-all" data-placement="bottom" data-toggle="popover">Initial Population Count</a>'+
-              '&nbsp;<a data-toggle="tooltip" data-placement="top" title="The number of individuals that reside in this resource/subresource at the beginning of the simulation" class="pointer '+tooltipClass+'"><i class="text-info fas fa-info-circle"></i></a></li>';
+              '&nbsp;<a data-toggle="tooltip" data-placement="top" title="Not set" class="not-set pointer '+tooltipClass+'"><i class="text-danger fas fa-times-circle"></i></a>'+
+              '</li>';
 
   return html
 }
 
 function HandleStepsOnNextBtnClick(){
-
-  const Toast = Swal.mixin({
-    toast: true,
-    position: 'center',
-    showConfirmButton: false,
-    animation:true,
-    timer: 2500
-  });
 
   let step = window.currentstep
 
@@ -1325,13 +1495,15 @@ function HandleStepsOnNextBtnClick(){
     //LOCATION
     case 1:
 
-      if (checkStep1()) {
+      let output = checkStep1();
+
+      if (output['flag']) {
         $('#smartwizard').smartWizard("next")
       } else {
-        Toast.fire({
+        window.Toast.fire({
         title: 'Error',
-        text: "Simulation name and the city name are required!",
-        icon: 'warning'
+        text: output['message'],
+        icon: 'error',
         })
       }
 
@@ -1344,12 +1516,9 @@ function HandleStepsOnNextBtnClick(){
         $('#smartwizard').smartWizard("next")
       } else {
         Toast.fire({
-        title: 'Error',
-        text: "Population type is required!",
-        icon: 'warning',
-          showConfirmButton: true,
-          confirmButtonColor: '#3085d6',
-          confirmButtonText: 'Okay'
+          title: 'Error',
+          text: "Population type is required!",
+          icon: 'warning'
         })
       }
 
@@ -1358,16 +1527,15 @@ function HandleStepsOnNextBtnClick(){
     //RESOURCES
     case 3:
 
-      if (checkStep3()) {
+      let validate = checkStep3()
+
+      if (validate['flag']===true) {
         $('#smartwizard').smartWizard("next")
       } else {
         Toast.fire({
-        title: 'Error',
-        text: "At least 1 resource is required!",
-        icon: 'warning',
-          showConfirmButton: true,
-          confirmButtonColor: '#3085d6',
-          confirmButtonText: 'Okay'
+          title: 'Error',
+          text: validate['message'],
+          icon: 'warning'
         })
       }
 
@@ -1376,40 +1544,19 @@ function HandleStepsOnNextBtnClick(){
     //STATES
     case 4:
 
-      if (checkStep4()) {
-        MakeTransitionalPropTable()
+      let stateValidate = checkStep4()
+
+      if (stateValidate['flag']===true) {
         $('#smartwizard').smartWizard("next")
       } else {
         Toast.fire({
-        title: 'Error',
-        text: "At least 1 state is required!",
-        icon: 'warning',
-          showConfirmButton: true,
-          confirmButtonColor: '#3085d6',
-          confirmButtonText: 'Okay'
+          title: 'Error',
+          text: stateValidate['message'],
+          icon: 'warning'
         })
       }
 
     break;
-
-    //TRANSITIONS
-    // case 5:
-
-    //   // if (checkStep5()) {
-    //   if (true) {
-    //     $('#smartwizard').smartWizard("next")
-    //   } else {
-    //     Toast.fire({
-    //     title: 'Error',
-    //     text: "Transition Probability is required!",
-    //     icon: 'warning',
-    //       showConfirmButton: true,
-    //       confirmButtonColor: '#3085d6',
-    //       confirmButtonText: 'Okay'
-    //     })
-    //   }
-
-    // break;
 
     //PRAMETERS
     case 5:
@@ -1429,20 +1576,10 @@ function HandleStepsOnNextBtnClick(){
 
         } else {
 
-          const Toast = Swal.mixin({
-            toast: true,
-            position: 'center',
-            showConfirmButton: false,
-            animation:false
-          });
-
           Toast.fire({
-          title: 'Error',
-          text: "One or more steps are incomplete!",
-          icon: 'warning',
-            showConfirmButton: true,
-            confirmButtonColor: '#3085d6',
-            confirmButtonText: 'Okay'
+            title: 'Error',
+            text: "One or more steps are incomplete!",
+            icon: 'warning'
           })
 
         }
@@ -1451,10 +1588,7 @@ function HandleStepsOnNextBtnClick(){
         Toast.fire({
         title: 'Error',
         text: "All parameters are required!",
-        icon: 'warning',
-        showConfirmButton: true,
-        confirmButtonColor: '#3085d6',
-        confirmButtonText: 'Okay'
+        icon: 'warning'
         })
       }
 
@@ -1473,16 +1607,20 @@ function MakeResourcesRowColumnHTML(rowID,tooltipClass,type,name,nameForShow){
             '<input type="hidden" class="form-control" name="resources['+rowID+'][name]" value="'+name+'">'+
             '<small class="text-danger hide">* duplication name is not allowed</small></td>';
   
+  let td2 = '<td kind="action">'+
+            '<a class="text-link divideRes pointer">Add sub-element&nbsp;<a class="show-info pointer"><span msg="This feature divides this resource into multiple resources"></span><i class="text-info fas fa-info-circle"></i></a></a>'+
+            '</td>'
+
   let td3 = '<td kind="props">'+makeResourcesPropretiesTD(rowID,tooltipClass)+'</td>'
 
   let td4 = '<td kind="action">'+
-            '<a class="text-link divideRes pointer">Add sub-element&nbsp;<i data-toggle="tooltip" data-placement="top" title="This feature divides this resource into multiple resources." class="text-info fas fa-info-circle '+tooltipClass+'"></i></a>,&nbsp;'+
             '<a class="text-danger pointer removeResRow">Delete row</a>'+
             '</td>'
 
   let row =   tr+
               td0+
               td1+
+              td2+
               td3+
               td4+
               '</tr>';
@@ -1497,11 +1635,13 @@ function MakeSUBResourcesRowColumnHTML(rowID,parentID,subRowCount,tooltipClass,p
   let tr = '<tr id="'+rowID+'" parentID="'+parentID+'" class="sub '+_class+'" count="'+subRowCount+'">'
   let td0 = '<td>Sub '+parentName+'</td>';
   let td1 = '<td><input type="text" class="form-control no-special-chars" name="subresources['+parentID+']['+rowID+'][name]" placeholder="Sub '+parentName+'"><small class="text-danger hide">* duplication name is not allowed</small></td>'
-  let td4 = '<td><a class="text-danger pointer removeResSubRow">Delete row&nbsp;</a></td>'
+  let td2 = '<td></td>'
   let td3 = '<td>'+makeResourcesPropretiesTD(rowID,tooltipClass)+'</td>'
+  let td4 = '<td><a class="text-danger pointer removeResSubRow">Delete row&nbsp;</a></td>'
   let row =   tr+
               td0+
               td1+
+              td2+
               td3+
               td4+
               '</tr>';
@@ -1528,24 +1668,6 @@ function MakeStatesRowColumnHTML(rowID,tooltipClass,type,name){
   return row;
 }
 
-function MakeSUBStatesRowColumnHTML(rowID,parentID,subRowCount,tooltipClass,parentName){
-  let _class = ""
-  if (subRowCount!=0) 
-    _class = 'nthsub'
-
-  let tr = '<tr id="'+rowID+'" parentID="'+parentID+'" class="sub '+_class+'" count="'+subRowCount+'">'
-  let td0 = '<td>Sub '+parentName+'</td>';
-  let td1 = '<td><input type="text" class="form-control no-special-chars" name="substates['+parentID+']['+rowID+'][name]" placeholder="Name (unique)"><small class="text-danger hide">* duplication name is not allowed</small></td>'
-  let td4 = '<td><a data-toggle="tooltip" data-placement="top" title="Delete Row" class="pointer removeStateSubRow '+tooltipClass+'"><i class="text-danger fas fa-minus-square"></i></a></td>'
-  let td3 = '<td>'+makeStatesPropretiesTD(rowID,tooltipClass)+'</td>'
-  let row =   tr+
-              td0+
-              td1+
-              td3+
-              td4+
-              '</tr>';
-  return row;
-}
 
 function MakeTransitionalPropTable(){
 
@@ -1636,4 +1758,15 @@ function removeAllPopoverOfID(rowID){
   delete window.popovers[ipopID]
   delete window.popovers[mpopID]
   delete window.popovers[cpopID]
+}
+
+function NoSpecialCharacter(str){
+
+    var regex = new RegExp("^[ a-zA-Z0-9]+$");
+    if (!regex.test(str) ) {
+      return false;
+    } else {
+      return true;
+    }
+
 }

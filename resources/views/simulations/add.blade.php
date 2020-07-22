@@ -16,7 +16,6 @@
 
 @section('content')
 
-
 	<style>
 		
 		td.titles{
@@ -46,6 +45,93 @@
 		    border-color: #5cb85c !important;
 		    color: #fff !important;
 		    background: #5cb85c !important;
+		}
+
+		.dismisspopover{
+			cursor: pointer;
+		}
+
+		.swal2-popup {
+		    position: relative !important;
+		    box-sizing: border-box !important;
+		    flex-direction: column !important;
+		    justify-content: center !important;
+		    width: 32em !important;
+		    max-width: 100% !important;
+		    padding: 1.25em !important;
+		    border: none !important;
+		    border-radius: .3125em !important;
+		    background: #fff !important;
+		    font-family: inherit !important;
+		    font-size: 1rem !important;
+		}
+
+		.swal2-header {
+		    display: flex !important;
+		    flex-direction: column !important;
+		    align-items: center !important;
+		    padding: 0 1.8em !important;
+		}
+		.swal2-title {
+		    position: relative !important;
+		    max-width: 100% !important;
+		    margin: 0 0 .4em !important;
+		    padding: 0 !important;
+		    color: #595959 !important;
+		    font-size: 1.875em !important;
+		    font-weight: 600 !important;
+		    text-align: center !important;
+		    text-transform: none !important;
+		    word-wrap: break-word !important;
+		}
+		.swal2-content {
+		    z-index: 1 !important;
+		    justify-content: center !important;
+		    margin: 0 !important;
+		    padding: 0 1.6em !important;
+		    color: #545454 !important;
+		    font-size: 1.125em !important;
+		    font-weight: 400 !important;
+		    line-height: normal !important;
+		    text-align: center !important;
+		    word-wrap: break-word !important;
+		}
+		[class^=swal2] {
+		    -webkit-tap-highlight-color: transparent !important;
+		}
+		.swal2-actions {
+		    display: flex !important;
+		    z-index: 1 !important;
+		    flex-wrap: wrap !important;
+		    align-items: center !important;
+		    justify-content: center !important;
+		    width: 100% !important;
+		    margin: 1.25em auto 0 !important;
+		}
+		.swal2-styled.swal2-confirm {
+		    border: 0 !important;
+		    border-radius: .25em !important;
+		    background: initial !important;
+		    background-color: #3085d6 !important;
+		    color: #fff !important;
+		    font-size: 1.0625em !important;
+		}
+		.swal2-styled:not([disabled]) {
+		    cursor: pointer !important;
+		}
+		.swal2-styled.swal2-cancel {
+		    border: 0 !important;
+		    border-radius: .25em !important;
+		    background: initial !important;
+		    background-color: #aaa !important;
+		    color: #fff !important;
+		    font-size: 1.0625em !important;
+		}
+		.swal2-styled {
+		    margin: .3125em !important;
+		    padding: .625em 2em !important;
+		    box-shadow: none !important;
+		    font-weight: 500 !important;
 		}
 
 	</style>
@@ -109,9 +195,17 @@
 							                	<div class="row">
 								                	<div class="col-md-6">
 														<div class="form-group">
-										                	<label for="inputName">Simulation Name&nbsp;<a data-toggle="tooltip" data-placement="top" title="Name your simulation. This element is for your recollection and does not affect the outcome of your simulation." class="divideRes pointer general-info"><i class="text-info fas fa-info-circle"></i></a>&nbsp;</label>
+										                	<label for="inputName">Simulation Name&nbsp;
+
+															<a class='show-info pointer'>
+															<span msg="Name your simulation. This element is for your recollection and does not affect the outcome of your simulation."></span>
+															<i class='text-info fas fa-info-circle'></i>
+															</a>
+
+										                	&nbsp;</label>
 										                	<div id="locationField"></div>
-										                	<input name="simulation_name" id="simulation-name" type="text" class="form-control border-primary no-special-chars" placeholder="Simulation 1" value='' onpaste="return false" >
+										                	<input name="simulation_name" id="simulation-name" type="text" class="form-control border-primary" placeholder="Simulation 1" value='' onpaste="return false" >
+										                	<span class="text-danger" id="simname-error">Simulation name is required. No special characters are permitted.</span>
 										              	</div>
 									              	</div>
 								              	</div>
@@ -121,9 +215,17 @@
 							                	<div class="row">
 								                	<div class="col-md-6">
 														<div class="form-group">
-										                	<label for="inputName">Enter the name of a city in Canada&nbsp;<a data-toggle="tooltip" data-placement="top" title="Select the city that your data is representing. This element is for your recollection and does not affect the outcome of your simulation." class="divideRes pointer general-info"><i class="text-info fas fa-info-circle"></i></a>&nbsp;</label>
+										                	<label for="inputName">Enter a name and select a city from the dropdown list&nbsp;
+
+																<a class='show-info pointer'>
+																<span msg="Select the city that your data is representing. This element is for your recollection and does not affect the outcome of your simulation."></span>
+																<i class='text-info fas fa-info-circle'></i>
+																</a>
+
+										                	&nbsp;</label>
 										                	<div id="locationField"></div>
 										                	<input autocomplete="off" id="autocomplete" placeholder="City name" name="simulation_location" type="text" class="form-control border-primary">
+										                	<span class="text-danger" id="cityname-error">City name is required.</span>
 											            </div>
 									              	</div>
 								              	</div>
@@ -200,7 +302,11 @@
 											        } else {
 											          document.getElementById('autocomplete').placeholder = 'City name';
 											        }
+
 											        window.loc=1;
+											      
+											        step1HandleErrors();
+
 											      }
 
 											      function clearMarkers() {
@@ -251,7 +357,14 @@
 												<div class="form-group">
 								                	<label for="inputName">Population group for simulation (comma separated)</label>
 								                	<br>
-								                	<p>Set your population type/types and click on the <span class="text-primary">Generate table</span> button to create a population table&nbsp;<a data-toggle="tooltip" data-placement="right" title="Population types can be based on your labeling system. For example, you can use Male, Female, and Other. In the later stage, you can use this population types to customize your simulation." class="divideRes pointer general-info"><i class="text-info fas fa-info-circle"></i></a>&nbsp;</p>
+								                	<p>Set your population type/types and click on the <span class="text-primary">Generate table</span> button to create a population table&nbsp;
+
+													<a class='show-info pointer'>
+													<span msg="The name of population types can be based on your labeling system. For example, you can use Male, Female, and Other. In the later stages, you can use the defined population types to customize your simulation."></span>
+													<i class='text-info fas fa-info-circle'></i>
+													</a>
+
+								                	&nbsp;</p>
 									                <div class="input-group mb-3">
 													  <input placeholder="Male, Female, Other, ..." autocomplete="off" id="populationtext" type="text" class="form-control rounded-0">
 													  <span class="input-group-append">
@@ -274,7 +387,14 @@
 														<table class="table table-bordered ">
 														<thead>
 														<tr>
-														<th>Population Type</th><th>Population Count #<span id="pop-count-info" style="display: none">&nbsp;<a data-toggle="tooltip" data-placement="right" title="Enter the total population of each population type" class="pointer general-info"><i class="text-info fas fa-info-circle"></i></a>&nbsp;</span></th>
+														<th>Population Type</th><th>Population Count<span id="pop-count-info" style="display: none">&nbsp;
+
+														<a class='show-info pointer'>
+														<span msg="Enter the total population of each population type"></span>
+														<i class='text-info fas fa-info-circle'></i>
+														</a>
+
+														&nbsp;</span></th>
 														</tr>
 														</thead>
 														<tbody>
@@ -302,10 +422,12 @@
 
 												<div class="form-group">
 
-								                	<label for="inputName">Select between the provided resources</label>
-								                	<br>
-								                	<small>Places and amenities provided by various services to individuals.</small>
-								                	
+								                	<label for="inputName">Select between the provided resources&nbsp;
+														<a class='show-info pointer'>
+														<span msg="Places and amenities provided by various services to individuals."></span>
+														<i class='text-info fas fa-info-circle'></i>
+														</a>
+													&nbsp;</label>
 												  	<div class="form-inline">
 													  	<select class="form-control col-md-4" id="resselect">
 													  		<option selected disabled id="title">Select One</option>
@@ -329,16 +451,16 @@
 												<div id="resource_table">
 
 													<div class="table-responsive row-scroll" style="border: 1px solid gray;">
-														<table class="table table-bordered staterestable" id="restable" style="margin-bottom: 0">
+														<table class="table table-bordered" id="restable" style="margin-bottom: 0">
 															<thead>
 																<tr>
 
-																	<th>Type</th><th>Name</th><th>Properties</th><th>Action</th>
+																	<th>Type</th><th>Name</th><th>Action</th><th>Properties</th><th>Delete</th>
 
 																</tr>
 															</thead>
 															<tbody>
-																<tr><td></td><td></td><td></td><td></td></tr>
+																<tr><td></td><td></td><td></td><td></td><td></td></tr>
 															</tbody>
 														</table>
 													</div>
@@ -360,9 +482,13 @@
 
 												<div class="form-group">
 
-								                	<label for="inputName">Select between the provided states</label>
+								                	<label for="inputName">Select between the provided additional states&nbsp;
+														<a class='show-info pointer'>
+														<span msg="Particular condition of individuals such as the state of Homelessness"></span>
+														<i class='text-info fas fa-info-circle'></i>
+														</a>
+								                	&nbsp;</label>
 								                	<br>
-								                	<small>State: Particular condition of individuals such as the state of Homelessness.</small>
 								                	
 												  	<div class="form-inline">
 													  	<select class="form-control col-md-4" id="stateselect">
@@ -386,7 +512,7 @@
 												<div id="state_table">
 
 													<div class="table-responsive row-scroll" style="border: 1px solid gray;">
-														<table class="table table-bordered staterestable" id="statetable" style="margin-bottom: 0">
+														<table class="table table-bordered" id="statetable" style="margin-bottom: 0">
 															<thead>
 																<tr>
 
@@ -429,18 +555,36 @@
 							                <div class="col-md-4">
 
 												<div class="form-group">
-								                	<label for="inputName">Created by&nbsp;<a data-toggle="tooltip" data-placement="right" title="This element is for your recollection and does not affect the outcome of your simulation." class="divideRes pointer general-info"><i class="text-info fas fa-info-circle"></i></a>&nbsp;</label>
-								                	<input placeholder="Creator's first name" type="text" autocomplete="off" name="creatorname"  id="cname" class="form-control no-special-chars">
+								                	<label for="inputName">Created by&nbsp;
+							                			<a class='show-info pointer'>
+														<span msg="This element is for your recollection and does not affect the outcome of your simulation."></span>
+														<i class='text-info fas fa-info-circle'></i>
+														</a>
+								                	&nbsp;</label>
+								                	<input placeholder="Creator's first name" type="text" autocomplete="off" name="creatorname"  id="cname" class="form-control">
+								                	<span class="text-danger" id="personname-error">This input is required. No special characters are permitted.</span>
 								              	</div>
 
 												<div class="form-group">
-								                	<label for="inputName">Number of weeks&nbsp;<a data-toggle="tooltip" data-placement="right" title="The total number of weeks to run the simulation." class="divideRes pointer general-info"><i class="text-info fas fa-info-circle"></i></a>&nbsp;</label>
-								                	<input type="number" min="1" max="999" step="1" autocomplete="off" name="numberofweeks" id="simweeks" value="12" class="form-control">
+								                	<label for="inputName">Number of weeks&nbsp;
+							                			<a class='show-info pointer'>
+														<span msg="The total number of weeks to run the simulation."></span>
+														<i class='text-info fas fa-info-circle'></i>
+														</a>
+								                	&nbsp;</label>
+								                	<input type="number" min="1" max="999" step="1" autocomplete="off" name="numberofweeks" id="simweeks" class="form-control">
+								                	<span class="text-danger" id="weeks-error">This input is required. Currently the input must be a numeric value between 1 to 520.</span>
 								              	</div>
 
 												<div class="form-group">
-								                	<label for="inputName">Number of simulations&nbsp;<a data-toggle="tooltip" data-placement="right" title="The total number of separate simulation to run. In the end, the simulations' results will be averaged." class="divideRes pointer general-info"><i class="text-info fas fa-info-circle"></i></a>&nbsp;</label>
-								                	<input type="number" min="1" max="999" step="1" autocomplete="off" name="numberofsims" type="text" value="1" id="simnum" class="form-control">
+								                	<label for="inputName">Number of simulations&nbsp;
+							                			<a class='show-info pointer'>
+														<span msg="The total number of separate simulation to run. In the end, the simulations"></span>
+														<i class='text-info fas fa-info-circle'></i>
+														</a>
+								                	&nbsp;</label>
+								                	<input type="number" min="1" max="999" step="1" autocomplete="off" name="numberofsims" type="text" id="simnum" class="form-control">
+								                	<span class="text-danger" id="simnum-error">This input is required. Currently the input must be a numeric value between 1 to 10.</span>
 								              	</div>
 
 								            </div>
