@@ -405,7 +405,7 @@ $(document).ready(function(){
 
         window.general_Toast.fire({
           title: 'Are you sure?',
-          text: "It seems like you have add resources or states to your simulation. Reseting this table will remove resourses and states. You won't be able to revert this!",
+          text: "It seems like you have added resources (step 3) or states (step 4) to your simulation. Reseting this table will remove resourses and states. You won't be able to revert this!",
           icon: 'warning',
           showCancelButton: true,
           confirmButtonColor: '#3085d6',
