@@ -120,50 +120,29 @@ class Simulation extends Model
 
 		foreach ($data['simulation_0'] as $weekname => $weekdata) {
 
-			// Job::dump($weekname);
-
 			$output['simulation_0'][$weekname] = [];
 
 			foreach ($weekdata as $resourcename => $resoruces) {
-
-				// Job::dump($resourcename);
 
 				$output['simulation_0'][$weekname][$resourcename] = [];
 
 				foreach ($resoruces as $gendername => $genderdata) {
 
-					// Job::dump($gendername.' '.$weekname);
 					$total = 0;
 
 					for ($i=0; $i < $number_of_simulatons; $i++) { 
 						$total = $total + $data['simulation_'.$i][$weekname][$resourcename][$gendername];
-						// Job::dump('one by one -> '.$data['simulation_'.$i][$weekname][$resourcename][$gendername]);
-						// Job::dump('total -> '.$total);
 					}
 
 					$avg = $total / $number_of_simulatons;
 
 					$output['simulation_0'][$weekname][$resourcename][$gendername] = (int)$avg;
 
-				// 	Job::dump('average -> '.$avg);
-
-
-				// Job::dump('+++++++++++++++++++++++');
-				// Job::dump('+++++++++++++++++++++++');
-
-
 				}
-
-				// Job::dump('**************************');
-				// Job::dump('**************************');
-			
 
 			}
 
-
 		}
-
-		// Job::dump($output);
 
    		return $output;
 

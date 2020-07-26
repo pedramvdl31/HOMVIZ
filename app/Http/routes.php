@@ -22,11 +22,10 @@ Route::group(['middleware' => 'beforeFilter'], function () {
 
 		Route::get('/', ['as'=>'index','uses'=>'HomeController@getHomepage']);
 		Route::get('/simulations/add',  ['as'=>'simulation_add', 'uses' => 'SimulationsController@getAdd']);
-		Route::get('/simulations/delete/{simid}',  ['as'=>'simulation_delete', 'uses' => 'SimulationsController@getDelete']);
 		Route::post('/simulations/add',  ['uses' => 'SimulationsController@postAdd']);
 		Route::get('/simulations/view/{id}',  ['as'=>'simulation_view', 'uses' => 'SimulationsController@getView']);
-
 		Route::post('/simulations/progress-update',  ['uses' => 'SimulationsController@postprogressUpdate']);
+		Route::post('/simulations/delete',  ['uses' => 'SimulationsController@postDelete']);
 
 	});
 

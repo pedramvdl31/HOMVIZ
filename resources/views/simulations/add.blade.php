@@ -11,7 +11,7 @@
 	<script src="/assets/js/sweetalert2.min.js?1"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/xlsx.full.min.js"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/jszip.js"></script>
-	<script src="/assets/js/simulations/index.js?119"></script>
+	<script src="/assets/js/simulations/index.js?120"></script>
 @stop
 
 @section('content')
@@ -120,18 +120,35 @@
 		    cursor: pointer !important;
 		}
 		.swal2-styled.swal2-cancel {
-		    border: 0 !important;
-		    border-radius: .25em !important;
-		    background: initial !important;
-		    background-color: #aaa !important;
-		    color: #fff !important;
-		    font-size: 1.0625em !important;
+		    border: 0;
+		    border-radius: .25em;
+		    background: initial;
+		    background-color: #aaa;
+		    color: #fff;
+		    font-size: 1.0625em;
 		}
 		.swal2-styled {
 		    margin: .3125em !important;
 		    padding: .625em 2em !important;
 		    box-shadow: none !important;
 		    font-weight: 500 !important;
+		}
+		.swal2-icon {
+		    position: relative;
+		    box-sizing: content-box;
+		    justify-content: center;
+		    width: 5em;
+		    height: 5em;
+		    margin: 1.25em auto 1.875em;
+		    border: .25em solid transparent;
+		    border-radius: 50%;
+		    font-family: inherit;
+		    line-height: 5em;
+		    cursor: default;
+		    -webkit-user-select: none;
+		    -moz-user-select: none;
+		    -ms-user-select: none;
+		    user-select: none;
 		}
 
 	</style>

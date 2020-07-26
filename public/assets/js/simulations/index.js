@@ -7,6 +7,9 @@ window.currentstep = 0
 window.popovers = {}
 window.totalPopulation = {}
 
+window.TypePopulation = {}
+window.TotalInitPopulation = {}
+
 //validation
 window.loc = 0
 window.stateset = 0
@@ -19,7 +22,7 @@ $('.general-info').tooltip();
 
 $(document).ready(function(){
 
-  const general_Toast = Swal.mixin({
+  window.general_Toast = Swal.mixin({
     toast: true,
     position: 'center',
     showConfirmButton: true,
@@ -64,6 +67,12 @@ $(document).ready(function(){
 
   $("#smartwizard").on("showStep", function(e, anchorObject, stepNumber, stepDirection) {
 
+    window.scroll({
+    top: 0, 
+    left: 0, 
+    behavior: 'auto'
+    });
+
     window.currentstep = stepNumber + 1
 
     $('#next').text('Next Step')
@@ -83,6 +92,8 @@ $(document).ready(function(){
     } else if (window.currentstep==3) {
 
       $('#prev').removeAttr('disabled')
+
+      $('.pop-total-nums').attr('readonly','true')
 
       step3HandleErrors()
 
@@ -317,6 +328,7 @@ $(document).ready(function(){
 
   $('#populationbtn').on('click', function(e) {
 
+    let elem = $(this)
 
     if ($(this).hasClass('btn-primary')) {
 
@@ -351,12 +363,15 @@ $(document).ready(function(){
 
             value = escape(value.trim())
 
-            window.populationType.push(value)
+            if (value!='') {
 
-            tableRow +=   '<tr>'+
-                        '<td style="font-weight: 900">'+value+'</td>'+
-                        '<td class="ttd"><input type="number" id="population-'+value+'" min="1" max="100000" step="1" class="form-control pop-total-nums pop-input-validation" name="populationTypeCount['+value+']" style="width:100px; height:100%;" value="1">'+
-                        '</td></tr>';
+              window.populationType.push(value)
+
+              tableRow +=   '<tr>'+
+                          '<td style="font-weight: 900">'+value+'</td>'+
+                          '<td class="ttd"><input type="number" popfullname="'+value+'" id="population-'+value+'" min="1" max="100000" step="1" class="form-control pop-total-nums pop-input-validation pop-num-input" name="populationTypeCount['+value+']" style="width:100px; height:100%;" value="1">'+
+                          '</td></tr>';
+            }
 
           });
 
@@ -374,17 +389,50 @@ $(document).ready(function(){
 
     } else {
 
-      let popTableTbody = $('#_table #populationtable tbody')
-      popTableTbody.html("<tr><td></td><td></td></tr>")
+      let resStateFlag = false
 
-      window.populationType = []
+      if (window.states.length>0 || window.resources.length>0) {
 
-      $('#populationbtn').removeAttr('disabled')
-      $('#pop-count-info').css('display','none')
+        resStateFlag = true
 
-      $(this).text('Generate table')
-      $(this).removeClass('btn-danger').addClass('btn-primary')
-      $('#populationtext').removeAttr('disabled')
+      }
+
+      if (!resStateFlag) {
+
+        resetPopulationStep(elem)
+
+      } else {
+
+        window.general_Toast.fire({
+          title: 'Are you sure?',
+          text: "It seems like you have add resources or states to your simulation. Reseting this table will remove resourses and states. You won't be able to revert this!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, reset it!'
+        }).then((result) => {
+          if (result.value) {
+
+            resetPopulationStep(elem)
+            window.states = []
+            window.resources = []
+
+            window.popovers = {}
+            window.totalPopulation = {}
+            window.TypePopulation = {}
+            window.TotalInitPopulation = {}
+
+            $("#restable tbody").html('<tr><td></td><td></td><td></td><td></td><td></td></tr>')
+            $("#statetable tbody").html('<tr><td></td><td></td><td></td><td></td></tr>')
+
+            $('#resources-overview').text('Incomplete').addClass('text-danger').removeClass('text-success')
+            $('#states-overview').text('Incomplete').addClass('text-danger').removeClass('text-success')
+
+          }
+        })
+
+      }
 
     }
 
@@ -451,6 +499,7 @@ $(document).ready(function(){
 
       $("#restable tbody").append(row)
 
+      //Activate
       $('.'+tooltipClass).tooltip();
 
       activatePopUpWindows(rowID,type)
@@ -470,12 +519,9 @@ $(document).ready(function(){
 
     let id = $(this).attr('id')
     let mainId =  id.substr(5);
-
-    console.log(id)
+    let rowID = $(this).attr('rowid')
 
     if (id.substring(0, 4)=='cpop') {
-
-      console.log('here1')
 
       let currentCap = parseInt($(this).parents('.popover-content').first().find('.capacity-inputs').val())
 
@@ -485,11 +531,13 @@ $(document).ready(function(){
 
             if (window.totalPopulation[mainId]>currentCap) {
               
-              general_Toast.fire({
+              window.general_Toast.fire({
                 title: 'Error',
                 text: "Capacity cannot be less than the initial population counts.",
                 icon: 'error'
               })
+
+              UnsetCapacity(mainId)
 
               return false
 
@@ -497,7 +545,7 @@ $(document).ready(function(){
 
         } else {
 
-          general_Toast.fire({
+          window.general_Toast.fire({
             title: 'Error',
             text: "Initial population counts must be set first.",
             icon: 'error'
@@ -511,18 +559,44 @@ $(document).ready(function(){
 
     } else if(id.substring(0, 4)=='ipop') {
 
-        let allInputs = $(this).parents('.popover-content').first().find('.initpop-input')
+        let initPopInputs = $(this).parents('.popover-content').first().find('table').first().find('tr')
 
-        let total = 0
+        let poparray = {}
 
-        $('.initpop-input-'+mainId).each(function (i) {
-            total += parseInt($(this).val())
+        initPopInputs.each(function() {
+
+          let _name = $(this).attr('name')
+          let _val = $(this).find('.initpop-input').val()
+
+          poparray[_name]=_val
+
         });
 
-        console.log('h2')
-        console.log(total)
+        let popCountValidation = validatePopulationCounts(poparray,mainId)
 
-        window.totalPopulation[mainId] = total
+        if (popCountValidation===true) {
+
+          window.TotalInitPopulation[rowID] = poparray
+
+          let total = 0
+          $('.initpop-input-'+mainId).each(function (i) {
+              total += parseInt($(this).val())
+          });
+          window.totalPopulation[mainId] = total
+
+        } else {
+
+          window.Toast.fire({
+            title: 'Error',
+            text: popCountValidation,
+            icon: 'error',
+          })
+
+          return false
+
+        }
+
+        UnsetCapacity(mainId)
 
     }
 
@@ -556,7 +630,7 @@ $(document).ready(function(){
 
     let notset_elem = $(document).find('li a[id="'+id+'"]').parents('li').first().find('.not-set')
 
-    notset_elem.attr('title','check').attr('data-original-title','check')
+    notset_elem.attr('title','Set').attr('data-original-title','Set')
     notset_elem.find('i').removeClass('fa-times-circle').removeClass('text-danger').addClass('fa-check-circle').addClass('text-success')
     notset_elem.removeClass('not-set').addClass('set')
 
@@ -570,13 +644,11 @@ $(document).ready(function(){
     let _this_id = $(this).attr('thisid')
 
     if(this.checked) {
-      $(this).parents('td').first().find('.capacity-inputs').first().val('-1').attr('disabled','true');
-      let _inpt = '<input id="inf-cap-'+_this_id+'" type="hidden" name="capacity[resource]['+_this_id+']" value="-1">'
-      $(this).parents('td').first().append(_inpt)
+      $(this).parents('td').first().find('.capacity-inputs').first().val('-1').attr('readonly','true');
     } else {
-      $(this).parents('td').first().find('.capacity-inputs').first().val('1').removeAttr('disabled');
-      $('#inf-cap-'+_this_id).remove()
+      $(this).parents('td').first().find('.capacity-inputs').first().val('1').removeAttr('readonly');
     }
+
   });
 
   $(document).on("click",".divideRes",function(e,data) {
@@ -595,6 +667,7 @@ $(document).ready(function(){
     let parentID = elem.attr('id')
 
     removeAllPopoverOfID(parentID)
+    removeTotalInitKey(parentID)
 
     let subRowCount = $(document).find('tr[parentID='+parentID+']').length
 
@@ -638,6 +711,8 @@ $(document).ready(function(){
 
     window.resources.splice( window.resources.indexOf(rowID), 1 );
 
+    removeTotalInitKey(rowID)
+
     removeAllPopoverOfID(rowID)
     
     //ALL SUB-ROWS
@@ -646,6 +721,7 @@ $(document).ready(function(){
       let rowid = $(this).attr('id')
 
       removeAllPopoverOfID(rowid)
+      removeTotalInitKey(rowid)
       
       $(this).remove()
 
@@ -672,6 +748,8 @@ $(document).ready(function(){
     let rowID = elem.attr('id')
     let parentID = elem.attr('parentID')
 
+    removeTotalInitKey(rowID)
+
     removeAllPopoverOfID(rowID)
 
     elem.remove()
@@ -684,7 +762,7 @@ $(document).ready(function(){
       let type = parentElem.attr('type')
       let td3 = makeResourcesPropretiesTD(parentID)
       parentElem.removeClass('parentrow')
-      parentElem.find('td').eq(2).html(td3)
+      parentElem.find('td').eq(3).html(td3)
       activatePopUpWindows(parentID,type)
     }
 
@@ -745,6 +823,8 @@ $(document).ready(function(){
     let elem = $(this).parents('tr').first();
     let rowID = elem.attr('id')
 
+    removeTotalInitKey(rowID)
+
     window.states.splice( window.states.indexOf(rowID), 1 );
 
     removeAllPopoverOfID(rowID)
@@ -755,6 +835,7 @@ $(document).ready(function(){
       let rowid = $(this).attr('id')
 
       removeAllPopoverOfID(rowid)
+      removeTotalInitKey(rowid)
       
       $(this).remove()
 
@@ -781,6 +862,8 @@ $(document).ready(function(){
     let elem = $(this).parents('tr').first();
     let rowID = elem.attr('id')
     let parentID = elem.attr('parentID')
+
+    removeTotalInitKey(rowID)
 
     removeAllPopoverOfID(rowID)
 
@@ -987,6 +1070,7 @@ function step2HandleErrors(){
   }
   
 }
+
 function step3HandleErrors(){
 
   let resourcesSet = false
@@ -1004,6 +1088,7 @@ function step3HandleErrors(){
   }
   
 }
+
 function step4HandleErrors(){
 
   let statesSet = false
@@ -1114,7 +1199,7 @@ function checkStep3(){
 
     if (unsetRows!=0) {
 
-      output['message'] = "1 or more properties are not set!"
+      output['message'] = "One or more properties are not set!"
 
     } else {
 
@@ -1147,7 +1232,7 @@ function checkStep4(){
 
     if (unsetRows!=0) {
 
-      output['message'] = "1 or more properties are not set!"
+      output['message'] = "One or more properties are not set!"
 
     } else {
 
@@ -1309,7 +1394,7 @@ function addApopHTML(ThisID,rowID,_type){
 
   });
 
-  html +=   '</tbody></table></div><div style="width:100%"><a type="ap" id="'+ThisID+'" class="closepop btn btn-xs btn-primary text-white pointer">Save and Close</a></div></div>';
+  html +=   '</tbody></table></div><div style="width:100%"><a rowid="'+rowID+'" type="ap" id="'+ThisID+'" class="closepop btn btn-xs btn-primary text-white pointer">Save and Close</a></div></div>';
 
 
   if(typeof window.popovers[ThisID] === 'undefined') {
@@ -1339,7 +1424,7 @@ function addIpopHTML(ThisID,rowID,_type){
 
   });
 
-  html += '</tbody></table></div><div style="width:100%"><a id="'+ThisID+'" class="closepop btn btn-xs btn-primary text-white pointer">Save and Close</a></div></div>';
+  html += '</tbody></table></div><div style="width:100%"><a rowid="'+rowID+'" id="'+ThisID+'" class="closepop btn btn-xs btn-primary text-white pointer">Save and Close</a></div></div>';
 
 
   if(typeof window.popovers[ThisID] === 'undefined') {
@@ -1365,11 +1450,11 @@ function addCpopHTML(ThisID,rowID,_type){
           '<table id="'+ThisID+'" class="table table-bordered"><tbody>';
 
   html += '<tr><td class="pop" style="font-weight: 900">Capacity</td>'+
-          '<td class="pop" ><input class="capacity-inputs capacity-input-validation" name="capacity['+_type+']['+rowID+']" style="width:100px; height:100%;" placeholder="#" value="1" type="number" min="1" max="100000" step="1">'+
-          '<br><label class="checkbox-inline"><input thisid="'+rowID+'" class="capacities-infinite" name="capacityCheckBox['+_type+']['+rowID+']" class="infinitx" type="checkbox"> Infinite</label>'+
+          '<td class="pop" ><input class="capacity-inputs capacity-input-validation" name="capacity['+_type+']['+rowID+']" style="width:100px; height:100%;" placeholder="#" value="-1" readonly="true" type="number" min="1" max="100000" step="1">'+
+          '<br><label class="checkbox-inline"><input checked thisid="'+rowID+'" class="capacities-infinite" name="capacityCheckBox['+_type+']['+rowID+']" type="checkbox"> Infinite</label>'+
           '</td></tr>';
 
-  html +=   '</tbody></table></div><div style="width:100%"><a id="'+ThisID+'" class="closepop btn btn-xs btn-primary text-white pointer">Save and Close</a></div></div>';
+  html +=   '</tbody></table></div><div style="width:100%"><a rowid="'+rowID+'" id="'+ThisID+'" class="closepop btn btn-xs btn-primary text-white pointer">Save and Close</a></div></div>';
 
 
   if(typeof window.popovers[ThisID] === 'undefined') {
@@ -1396,7 +1481,7 @@ function addMpopHTML(ThisID,rowID,_type){
   html += '<tr><td class="pop" style="font-weight: 900">Maximum Length of Stay (weeks)</td>'+
             '<td class="pop"><input class="maxlength-input-validation" type="number" min="1" max="1000" step="1" name="maximumlengthofstay['+_type+']['+rowID+']" value="7" style="width:100px; height:100%;" placeholder="#"></td></tr>';
 
-  html +=   '</tbody></table></div><div style="width:100%"><a id="'+ThisID+'" class="closepop btn btn-xs btn-primary text-white pointer">Save and Close</a></div></div>';
+  html +=   '</tbody></table></div><div style="width:100%"><a rowid="'+rowID+'" id="'+ThisID+'" class="closepop btn btn-xs btn-primary text-white pointer">Save and Close</a></div></div>';
 
 
   if(typeof window.popovers[ThisID] === 'undefined') {
@@ -1429,7 +1514,7 @@ function updateIpopHTML(populationArray,rootID,_type){
 
   });
 
-  html +=   '</tbody></table></div><div style="width:100%"><a id="'+ThisID+'" class="closepop btn btn-xs btn-primary text-white pointer">Save and Close</a></div></div>';
+  html +=   '</tbody></table></div><div style="width:100%"><a rowid="'+rootID+'" id="'+ThisID+'" class="closepop btn btn-xs btn-primary text-white pointer">Save and Close</a></div></div>';
 
 
   if(typeof window.popovers[ThisID] !== 'undefined') {
@@ -1450,7 +1535,7 @@ function updateIpopHTML(populationArray,rootID,_type){
 
 function ReturnIpopTR(value,rowID,_type){
   let html = '<tr name="'+value+'"><td class="pop" style="font-weight: 900">'+value+'</td>'+
-            '<td class="pop"><input class="initpop-input-validation initpop-input-'+rowID+'" type="number" min="0" max="100000" step="1" value="0" name="initialPopulation['+_type+']['+rowID+']['+value+']" style="width:100px; height:100%;" placeholder="#"></td></tr>';
+            '<td class="pop"><input class="initpop-input initpop-input-validation initpop-input-'+rowID+'" type="number" min="0" max="100000" step="1" value="0" name="initialPopulation['+_type+']['+rowID+']['+value+']" style="width:100px; height:100%;" placeholder="#"></td></tr>';
   return html;
 }
 
@@ -1467,8 +1552,8 @@ function makeResourcesPropretiesTD(rowID,tooltipClass){
               '&nbsp;<a data-toggle="tooltip" data-placement="top" title="Not set" class="not-set pointer '+tooltipClass+'"><i class="text-danger fas fa-times-circle"></i></a>'+
               '</li>'+
 
-              '<li><a id="cpop-'+rowID+'" class="a-tag popover-all" data-placement="bottom" data-toggle="popover">Capacity</a>'+
-              '&nbsp;<a data-toggle="tooltip" data-placement="top" title="Not set" class="not-set pointer '+tooltipClass+'"><i class="text-danger fas fa-times-circle"></i></a>'+
+              '<li name="cpop-'+rowID+'"><a id="cpop-'+rowID+'" class="a-tag popover-all" data-placement="bottom" data-toggle="popover">Capacity</a>'+
+              '&nbsp;<a data-toggle="tooltip" data-placement="top" title="Not set" class="_icon not-set pointer '+tooltipClass+'"><i class="text-danger fas fa-times-circle"></i></a>'+
               '</li>';
 
   return html
@@ -1511,6 +1596,8 @@ function HandleStepsOnNextBtnClick(){
 
     //POPULATION
     case 2:
+
+      storeTypePopulation()
 
       if (checkStep2()) {
         $('#smartwizard').smartWizard("next")
@@ -1769,4 +1856,121 @@ function NoSpecialCharacter(str){
       return true;
     }
 
+}
+
+function storeTypePopulation(){
+
+  window.TypePopulation = {}
+
+  let popinput = $(document).find('.pop-num-input')
+
+  popinput.each(function() {
+
+    let _name = $(this).attr('popfullname')
+    let _val = $(this).val()
+
+    window.TypePopulation[_name] = _val
+
+  });
+    
+}
+
+function validatePopulationCounts(popArray,rowID){
+
+  let totalArray = {}
+
+  $.each(popArray, function( k1, v1 ) {
+
+    let typeTotal = 0
+
+    $.each(window.TotalInitPopulation, function( k2, v2 ) {
+
+        if (rowID!=k2) {
+
+          if (v2[k1] != undefined) {
+
+            typeTotal = typeTotal + parseInt(v2[k1])
+
+          }
+
+        }
+
+    })
+
+    totalArray[k1] = parseInt(v1) + typeTotal
+
+  });
+
+  let errorArray = {}
+  let f = false
+
+  console.log(totalArray)
+
+  $.each(totalArray, function( k3, v3 ) {
+
+    if (window.TypePopulation[k3] != undefined) {
+
+      if (v3>window.TypePopulation[k3]) {
+
+        errorArray[k3] = []
+
+        errorArray[k3]['current'] = v3
+        errorArray[k3]['total'] = window.TypePopulation[k3]
+
+        f = true
+
+      }
+
+    }
+
+  })
+
+  if (f) {
+
+    let errorMsg = 'Total population count (set in step 2) cannot be less then all the initial population count combined.'
+
+    $.each(errorArray, function( k4, v4 ) {
+
+      let allInputs = $(document).find('table[id="ipop-'+rowID+'"]').first().find('tr[name="'+k4+'"]').first().find('.initpop-input').val(0)
+
+      errorMsg += ' '+k4+' total population was set to '+v4['total']+', but combined inital population total for '+k4+' is '+v4['current']+'.'
+
+    })
+
+    return errorMsg
+
+  }
+
+  return true
+
+}
+
+function removeTotalInitKey(rowID){
+
+  delete window.TotalInitPopulation[rowID]
+  console.log(window.TotalInitPopulation)
+
+}
+    
+function UnsetCapacity(rowID){
+
+  let thisTooltip = $(document).find('li[name="cpop-'+rowID+'"').first().find('._icon').first()
+
+  thisTooltip.removeClass('set').addClass('not-set').attr('title','Not set').attr('data-original-title','Not set')
+  thisTooltip.find('i').first().removeClass('fa-check-circle').removeClass('text-success').addClass('fa-times-circle').addClass('text-danger')
+
+}
+
+function resetPopulationStep(elem){
+  let popTableTbody = $('#_table #populationtable tbody')
+  popTableTbody.html("<tr><td></td><td></td></tr>")
+
+  window.populationType = []
+
+  $('#populationbtn').removeAttr('disabled')
+  $('#pop-count-info').css('display','none')
+
+  elem.text('Generate table')
+  elem.removeClass('btn-danger').addClass('btn-primary')
+  $('#populationtext').removeAttr('disabled')
 }

@@ -1,8 +1,10 @@
 @extends($layout)
 @section('stylesheets')
+<link rel="stylesheet" href="/assets/css/sweetalert2.min.css?1">
 @stop
 @section('scripts')
-<script src="/assets/js/index.js?8"></script>
+<script src="/assets/js/sweetalert2.min.js?1"></script>
+<script src="/assets/js/index.js?9"></script>
 @stop
 
 @section('content')
@@ -11,6 +13,114 @@
     
     i.fas.fa-trash.deletesubresource {
       color: #ff3a3a;
+    }
+    .swal2-popup {
+        position: relative !important;
+        box-sizing: border-box !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+        width: 32em !important;
+        max-width: 100% !important;
+        padding: 1.25em !important;
+        border: none !important;
+        border-radius: .3125em !important;
+        background: #fff !important;
+        font-family: inherit !important;
+        font-size: 1rem !important;
+    }
+
+    .swal2-icon {
+    position: relative;
+    box-sizing: content-box;
+    justify-content: center;
+    width: 5em;
+    height: 5em;
+    margin: 1.25em auto 1.875em;
+    border: .25em solid transparent;
+    border-radius: 50%;
+    font-family: inherit;
+    line-height: 5em;
+    cursor: default;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    }
+
+    .swal2-header {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        padding: 0 1.8em !important;
+    }
+    .swal2-title {
+        position: relative !important;
+        max-width: 100% !important;
+        margin: 0 0 .4em !important;
+        padding: 0 !important;
+        color: #595959 !important;
+        font-size: 1.875em !important;
+        font-weight: 600 !important;
+        text-align: center !important;
+        text-transform: none !important;
+        word-wrap: break-word !important;
+    }
+    .swal2-content {
+        z-index: 1 !important;
+        justify-content: center !important;
+        margin: 0 !important;
+        padding: 0 1.6em !important;
+        color: #545454 !important;
+        font-size: 1.125em !important;
+        font-weight: 400 !important;
+        line-height: normal !important;
+        text-align: center !important;
+        word-wrap: break-word !important;
+    }
+    [class^=swal2] {
+        -webkit-tap-highlight-color: transparent !important;
+    }
+    .swal2-actions {
+        display: flex !important;
+        z-index: 1 !important;
+        flex-wrap: wrap !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 100% !important;
+        margin: 1.25em auto 0 !important;
+    }
+    .swal2-styled.swal2-confirm {
+        border: 0 !important;
+        border-radius: .25em !important;
+        background: initial !important;
+        background-color: #3085d6 !important;
+        color: #fff !important;
+        font-size: 1.0625em !important;
+    }
+    .swal2-styled:not([disabled]) {
+        cursor: pointer !important;
+    }
+    .swal2-styled.swal2-cancel {
+        border: 0 !important;
+        border-radius: .25em !important;
+        background: initial;
+        background-color: #aaa;
+        color: #fff !important;
+        font-size: 1.0625em !important;
+    }
+    .swal2-styled {
+        margin: .3125em !important;
+        padding: .625em 2em !important;
+        box-shadow: none !important;
+        font-weight: 500 !important;
+    }
+    .swal2-styled.swal2-cancel {
+        border: 0;
+        border-radius: .25em;
+        background: initial;
+        background-color: #aaa;
+        color: #fff;
+        font-size: 1.0625em;
     }
 
   </style>
@@ -116,7 +226,7 @@
 
                               <div class="text-left" style="float: left;">
                                 
-                                <a href="/simulations/delete/{{$val->id}}" class="btn btn-sm btn-danger">
+                                <a sim_id="{{$val->id}}" class="text-white btn btn-sm btn-danger delete-simulation">
                                     Delete
                                 </a>
 

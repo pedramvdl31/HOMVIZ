@@ -274,13 +274,22 @@ class SimulationsController extends Controller
 
     }
 
-    public function getDelete($sim_id=null)
+    public function postDelete()
     {
 
-        $sim = Simulation::find($sim_id);
-        $sim->delete();
+        $status = 400;
+        $sim_id = Input::get('sim_id');
+        $sim = Simulation::where('id',$sim_id)->where('user_id',Auth::user()->id)->first();
 
-        return Redirect::route('index');
+        if (isset($sim) && !empty($sim)) {
+            if ($sim->delete()) {
+                $status = 200;
+            }
+        }
+
+        return Response::json(array(
+        'status' => $status
+        ));
 
     }
 
@@ -353,13 +362,14 @@ class SimulationsController extends Controller
             $number_of_simulations = count($data);
 
             if ( $number_of_simulations > 1 ) {
-                $data = Simulation::AverageMultipleSimulations($data);
 
+                $data = Simulation::AverageMultipleSimulations($data);
                 $avg_msg = 'Average of '.$number_of_simulations.' Simulations';
 
                 $number_of_simulations = 1;
 
             }
+
 
             foreach ($data as $key0 => $sim) {
 
@@ -388,7 +398,6 @@ class SimulationsController extends Controller
                                 $dataSeriesLabelPie[$key0][$wk][$pk]['init'] = $pv;
                             }
 
-                            // Job::dump($numberofweeks);
                             if ($mycounter==$numberofweeks-1) {
                                 $dataSeriesLabelPie[$key0][$wk][$pk]['final'] = $pv;
                             }
@@ -436,11 +445,6 @@ class SimulationsController extends Controller
                 }
 
             }
-
-
-            // Job::dump($metadata);
-
-            // Job::dump($sim_info);
 
             return view('simulations.view')
             ->with('dataSeriesLabel',json_encode($dataSeriesLabel))
