@@ -25,7 +25,6 @@ $(document).ready(function(){
       }).then((result) => {
         if (result.value) {
 
-
           var token = $('input[name=_token]').attr('value');
 
           $.ajax({

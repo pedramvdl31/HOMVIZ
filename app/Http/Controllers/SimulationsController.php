@@ -124,7 +124,7 @@ class SimulationsController extends Controller
                         $s->result = $res['result'];
                         $s->save();
                         $output[$simulation->id]['progress']=100;
-                        $output[$simulation->id]['statushtml']='<span class="badge badge-info">Completed</span>';
+                        $output[$simulation->id]['statushtml']='<span class="badge badge-success">Completed</span>';
                     }
 
                 } else {
@@ -168,7 +168,7 @@ class SimulationsController extends Controller
             } elseif ($simulation->status==1) {
                 $output[$simulation->id]['progress']=100;
                 $output[$simulation->id]['status']=1;
-                $output[$simulation->id]['statushtml']='<span class="badge badge-info">Completed</span>';
+                $output[$simulation->id]['statushtml']='<span class="badge badge-success">Completed</span>';
                 
             }
 

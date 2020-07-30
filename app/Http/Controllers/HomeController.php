@@ -47,9 +47,9 @@ class HomeController extends Controller
             $sv->numberofsims = $d->numberofsims;
             $sv->creatorname = $d->creatorname;
             
-            $sv->statusMessage = '<span class="badge badge-success">Submitted</span>';
+            $sv->statusMessage = '<span class="badge badge-default">Submitted</span>';
             if ($sv->status==1) {
-               $sv->statusMessage = '<span class="badge badge-info">Completed</span>';
+               $sv->statusMessage = '<span class="badge badge-success">Completed</span>';
             } else if($sv->status==2) {
                $sv->statusMessage = '<span class="badge badge-info">Processing</span>';
             }

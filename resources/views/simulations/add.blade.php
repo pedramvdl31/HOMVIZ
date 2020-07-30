@@ -221,8 +221,8 @@
 
 										                	&nbsp;</label>
 										                	<div id="locationField"></div>
-										                	<input name="simulation_name" id="simulation-name" type="text" class="form-control border-primary" placeholder="Simulation 1" value='' onpaste="return false" >
-										                	<span class="text-danger" id="simname-error">Simulation name is required. No special characters are permitted.</span>
+										                	<input name="simulation_name" id="simulation-name" type="text" class="form-control border-primary" placeholder="Simulation 1" value='' onpaste="return false" maxlength="20">
+										                	<span class="text-danger" id="simname-error">The simulation name is required. No special characters are permitted.</span>
 										              	</div>
 									              	</div>
 								              	</div>
@@ -242,7 +242,7 @@
 										                	&nbsp;</label>
 										                	<div id="locationField"></div>
 										                	<input autocomplete="off" id="autocomplete" placeholder="City name" name="simulation_location" type="text" class="form-control border-primary">
-										                	<span class="text-danger" id="cityname-error">City name is required.</span>
+										                	<span class="text-danger" id="cityname-error">The city name is required.</span>
 											            </div>
 									              	</div>
 								              	</div>
@@ -453,7 +453,7 @@
 															<option id="TransitionalHousing" type="res">Transitional Housing</option>
 															<option id="Rehabilitation" type="res">Addiction / Rehabilitation Center</option>	
 										                </select>
-												    	<button id="resourcebtn" type="button" class="btn btn-info btn-flat" style="margin-left: 10px">Add</button>
+												    	<button id="resourcebtn" type="button" class="btn btn-primary btn-flat" style="margin-left: 10px">Add</button>
 												    </div>
 
 								              	</div>
@@ -501,7 +501,7 @@
 
 								                	<label for="inputName">Select between the provided additional states&nbsp;
 														<a class='show-info pointer'>
-														<span msg="Particular condition of individuals such as the state of Homelessness"></span>
+														<span msg="the particular condition of individuals such as the state of Homelessness"></span>
 														<i class='text-info fas fa-info-circle'></i>
 														</a>
 								                	&nbsp;</label>
@@ -514,7 +514,7 @@
 															<option id="NotHomeless" type="state">Not Homeless</option>
 															<option id="Street" type="state">Street</option>
 										                </select>
-												    	<button id="statebtn" type="button" class="btn btn-info btn-flat" style="margin-left: 10px">Add</button>
+												    	<button id="statebtn" type="button" class="btn btn-primary btn-flat" style="margin-left: 10px">Add</button>
 												    </div>
 
 								              	</div>
@@ -578,7 +578,7 @@
 														<i class='text-info fas fa-info-circle'></i>
 														</a>
 								                	&nbsp;</label>
-								                	<input placeholder="Creator's first name" type="text" autocomplete="off" name="creatorname"  id="cname" class="form-control">
+								                	<input placeholder="Creator's first name" type="text" autocomplete="off" name="creatorname"  id="cname" class="form-control" maxlength="20">
 								                	<span class="text-danger" id="personname-error">This input is required. No special characters are permitted.</span>
 								              	</div>
 
@@ -590,18 +590,18 @@
 														</a>
 								                	&nbsp;</label>
 								                	<input type="number" min="1" max="999" step="1" autocomplete="off" name="numberofweeks" id="simweeks" class="form-control">
-								                	<span class="text-danger" id="weeks-error">This input is required. Currently the input must be a numeric value between 1 to 520.</span>
+								                	<span class="text-danger" id="weeks-error">This input is required. Currently, the input must be a numeric value between 1 to 520.</span>
 								              	</div>
 
 												<div class="form-group">
 								                	<label for="inputName">Number of simulations&nbsp;
 							                			<a class='show-info pointer'>
-														<span msg="The total number of separate simulation to run. In the end, the simulations"></span>
+														<span msg="The total number of separate simulation to run. In the end, the results of simulations will be averaged"></span>
 														<i class='text-info fas fa-info-circle'></i>
 														</a>
 								                	&nbsp;</label>
 								                	<input type="number" min="1" max="999" step="1" autocomplete="off" name="numberofsims" type="text" id="simnum" class="form-control">
-								                	<span class="text-danger" id="simnum-error">This input is required. Currently the input must be a numeric value between 1 to 10.</span>
+								                	<span class="text-danger" id="simnum-error">This input is required. Currently, the input must be a numeric value between 1 to 10.</span>
 								              	</div>
 
 								            </div>
