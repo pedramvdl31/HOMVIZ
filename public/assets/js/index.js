@@ -106,18 +106,24 @@ function update(){
                 let this_job = $('.jobs[id='+index+']')
                 this_job.find('.result-btn').removeClass('disabled').attr('href','/simulations/view/'+index)
                 setTimeout(function(){
-                  this_job.find('.siminfo').first().remove();
-                },3000)
+                  this_job.find('.progresscolumn').html('-')
+                },1000)
              }
 
               let progress = parseFloat(data['output'][index]['progress']);
-              progress =  progress.toFixed(2)
+              progress =  progress.toFixed(0)
 
               if (progress==100.00) progress = 100
 
-              elem.find('.progress-bar').first().css('width', progress+'%').attr('aria-valuenow',progress).html(progress+'%')
+              let _sname = 'Simulation 1'
+              if (typeof data['output'][index]['simulationname'] !== 'undefined' && data['output'][index]['simulationname'] != undefined) {
 
-              elem.find('.simname').first().text(data['output'][index]['simulationname']);
+                _sname = data['output'][index]['simulationname']
+
+              }
+              
+
+              elem.find('.progress-bar').first().css('width', progress+'%').attr('aria-valuenow',progress).html(_sname+', '+progress+'%')
 
             });
 

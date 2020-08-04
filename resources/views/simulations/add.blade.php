@@ -150,7 +150,18 @@
 		    -ms-user-select: none;
 		    user-select: none;
 		}
+		option:disabled {
+		    color: #d0d0d0 !important;
+			text-decoration: line-through;
+		}
+		.disabled {
+		    color:gray !important;
+		    cursor: no-drop;
+		}
 
+		.text-left{
+			text-align: left !important;
+		}
 	</style>
 
 	<!-- Content Wrapper. Contains page content -->
@@ -215,14 +226,14 @@
 										                	<label for="inputName">Simulation Name&nbsp;
 
 															<a class='show-info pointer'>
-															<span msg="Name your simulation. This element is for your recollection and does not affect the outcome of your simulation."></span>
+															<span msg="Name your simulation. This is for your recollection and does not affect the outcome of your simulation."></span>
 															<i class='text-info fas fa-info-circle'></i>
 															</a>
 
 										                	&nbsp;</label>
 										                	<div id="locationField"></div>
 										                	<input name="simulation_name" id="simulation-name" type="text" class="form-control border-primary" placeholder="Simulation 1" value='' onpaste="return false" maxlength="20">
-										                	<span class="text-danger" id="simname-error">The simulation name is required. No special characters are permitted.</span>
+										                	<span class="text-danger" id="simname-error">Simulation name is required. No special characters are permitted.</span>
 										              	</div>
 									              	</div>
 								              	</div>
@@ -235,14 +246,14 @@
 										                	<label for="inputName">Enter a name and select a city from the dropdown list&nbsp;
 
 																<a class='show-info pointer'>
-																<span msg="Select the city that your data is representing. This element is for your recollection and does not affect the outcome of your simulation."></span>
+																<span msg="Select the city that your data is representing. This is for your recollection and does not affect the outcome of your simulation."></span>
 																<i class='text-info fas fa-info-circle'></i>
 																</a>
 
 										                	&nbsp;</label>
 										                	<div id="locationField"></div>
 										                	<input autocomplete="off" id="autocomplete" placeholder="City name" name="simulation_location" type="text" class="form-control border-primary">
-										                	<span class="text-danger" id="cityname-error">The city name is required.</span>
+										                	<span class="text-danger" id="cityname-error">City name is required.</span>
 											            </div>
 									              	</div>
 								              	</div>
@@ -371,6 +382,83 @@
 					                	<div class="row">
 
 							                <div class="col-md-12">
+
+												<div class="form-group">
+
+								                	<label for="inputName">Select population type&nbsp;
+													<!-- <a class='show-info pointer'>
+													<span msg="The name of population types can be based on your labeling system. For example, you can use Male, Female, and Other. In the later stages, you can use the defined population types to customize your simulation."></span>
+													<i class='text-info fas fa-info-circle'></i>
+													</a> -->
+								                	&nbsp;</label>
+								                	<br>
+								                	
+												  	<div class="form-inline">
+													  	<select class="form-control col-md-6" id="populationselect">
+													  		<option selected disabled id="title" value="0">Select One</option>
+															<option id="u30hl1m" >under 30, homeless less than 1 year, male</option>
+															<option id="u30hm1m" >under 30, homeless more than 1 year, male</option>
+															<option id="u30hl1f" >under 30, homeless less than 1 year, female</option>
+															<option id="u30hm1f" >under 30, homeless more than 1 year, female</option>
+															<option id="b30t50hl1m" >30-50 years, homeless less than 1 year, male</option>
+															<option id="b30t50hm1m" >30-50 years, homeless more than 1 year, male</option>
+															<option id="b30t50hl1f" >30-50 years, homeless less than 1 year, female</option>
+															<option id="b30t50hm1f" >30-50 years, homeless more than 1 year, female</option>
+															<option id="g50hl1m" >greater than 50 years, homeless less than 1 year, male</option>
+															<option id="g50hm1m" >greater than 50 years, homeless more than 1 year, male</option>
+															<option id="g50hl1f" >greater than 50 years, homeless less than 1 year, female</option>
+															<option id="g50hm1f" >greater than 50 years, homeless more than 1 year, female</option>
+										                </select>
+												    	<button id="populationbtn" type="button" class="btn btn-primary btn-flat" style="margin-left: 10px">Add</button>
+												    </div>
+
+								              	</div>
+								            </div>
+
+										</div>
+
+										<div class="row">
+
+											<div class="col-lg-12" style="margin-bottom: 50px;">
+
+												<div id="populationtable">
+
+													<div class="table-responsive row-scroll" style="border: 1px solid gray;">
+														<table class="table table-bordered" style="margin-bottom: 0">
+															<thead>
+																<tr>
+
+																	<th>Name</th>
+																	<th>Population count<span id="pop-count-info">&nbsp;
+																	<a class='show-info pointer'>
+																	<span msg="Enter the total population of each population type."></span>
+																	<i class='text-info fas fa-info-circle'></i>
+																	</a>
+																	&nbsp;</span></th>
+																	<th>Action</th>
+
+																</tr>
+															</thead>
+															<tbody>
+																<tr><td></td><td></td><td></td></tr>
+															</tbody>
+														</table>
+													</div>
+
+												</div>
+
+											</div>
+
+										</div>
+
+					                </div>
+
+
+					<!--                 <div id="step-2" class="">
+
+					                	<div class="row">
+
+							                <div class="col-md-12">
 												<div class="form-group">
 								                	<label for="inputName">Population group for simulation (comma separated)</label>
 								                	<br>
@@ -429,7 +517,7 @@
 
 										</div>
 
-					                </div>
+					                </div> -->
 
 					                <div id="step-3" class="">
 
@@ -490,7 +578,6 @@
 
 					                </div>
 
-
 					                <div id="step-4" class="">
 
 					                	<div class="row">
@@ -501,7 +588,7 @@
 
 								                	<label for="inputName">Select between the provided additional states&nbsp;
 														<a class='show-info pointer'>
-														<span msg="the particular condition of individuals such as the state of Homelessness"></span>
+														<span msg="the particular condition of individuals such as the state of homelessness."></span>
 														<i class='text-info fas fa-info-circle'></i>
 														</a>
 								                	&nbsp;</label>
@@ -574,7 +661,7 @@
 												<div class="form-group">
 								                	<label for="inputName">Created by&nbsp;
 							                			<a class='show-info pointer'>
-														<span msg="This element is for your recollection and does not affect the outcome of your simulation."></span>
+														<span msg="This is for your recollection and does not affect the outcome of your simulation."></span>
 														<i class='text-info fas fa-info-circle'></i>
 														</a>
 								                	&nbsp;</label>
@@ -589,19 +676,19 @@
 														<i class='text-info fas fa-info-circle'></i>
 														</a>
 								                	&nbsp;</label>
-								                	<input type="number" min="1" max="999" step="1" autocomplete="off" name="numberofweeks" id="simweeks" class="form-control">
-								                	<span class="text-danger" id="weeks-error">This input is required. Currently, the input must be a numeric value between 1 to 520.</span>
+								                	<input type="number" min="1" max="520" step="1" autocomplete="off" name="numberofweeks" id="simweeks" class="form-control">
+								                	<span class="text-danger" id="weeks-error">This input is required. The value must be a numeric value between 1 to 520.</span>
 								              	</div>
 
 												<div class="form-group">
 								                	<label for="inputName">Number of simulations&nbsp;
 							                			<a class='show-info pointer'>
-														<span msg="The total number of separate simulation to run. In the end, the results of simulations will be averaged"></span>
+														<span msg="The total number of separate simulation runs. In the end, the results of the simulations will be averaged."></span>
 														<i class='text-info fas fa-info-circle'></i>
 														</a>
 								                	&nbsp;</label>
-								                	<input type="number" min="1" max="999" step="1" autocomplete="off" name="numberofsims" type="text" id="simnum" class="form-control">
-								                	<span class="text-danger" id="simnum-error">This input is required. Currently, the input must be a numeric value between 1 to 10.</span>
+								                	<input type="number" min="1" max="10" step="1" autocomplete="off" name="numberofsims" type="text" id="simnum" class="form-control">
+								                	<span class="text-danger" id="simnum-error">This input is required. The value must be a numeric value between 1 to 10.</span>
 								              	</div>
 
 								            </div>
@@ -632,8 +719,8 @@
 					
 					<div class="card card-primary card-outline" style="height: 100%">
 
-						<div class="card-header" style="height: 73px;">
-							<h3 class="card-title" style="padding-top: 10px;">
+						<div class="card-header" style="height: 73px;background:#f5f5f5;border: 1px solid #ddd;">
+							<h3 class="card-title" style="line-height: 48px;">
 								<strong>Overview</strong>
 							</h3>
 						</div>
@@ -654,7 +741,7 @@
 							<div class="row">
 								<p><strong>Step 2:</strong> <span id="population-overview" class="text-danger">Incomplete</span></p>
 								
-								<div class="table-responsive table-bordered row-scroll" id="population-info-table" style="max-height: 300px;overflow: auto;display: none;margin-top: 10px">
+								<div class="table-responsive table-bordered row-scroll" id="population-info-table" style="max-height: 162px;overflow: auto;display: none;margin-top: 10px">
 									<table class="table" style="margin-bottom: 0">
 										<thead>
 											<tr>

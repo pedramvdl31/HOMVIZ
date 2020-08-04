@@ -4,7 +4,7 @@
 @stop
 @section('scripts')
 <script src="/assets/js/sweetalert2.min.js?1"></script>
-<script src="/assets/js/index.js?9"></script>
+<script src="/assets/js/index.js?10"></script>
 @stop
 
 @section('content')
@@ -122,7 +122,9 @@
         color: #fff;
         font-size: 1.0625em;
     }
-
+    .progress{
+      height: 1.1rem !important;
+    }
   </style>
 
   <!-- Content Wrapper. Contains page content -->
@@ -151,7 +153,7 @@
               <div class="card-header">
 
                 <div class="card-title">
-                  Current Simulations
+                  Simulations
                 </div>
 
               </div>
@@ -182,21 +184,6 @@
 
                               </div>
 
-                              @if($val->status!=1)
-
-                                <div class="row">
-                                  <div class="col-12">
-                                    <div class="siminfo">
-                                      <p class="simname"></p>
-                                      <div class="progress">
-                                        <div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                            
-                              @endif
-
                             </div>
                             <!-- /.card-header -->
                             <div class="card-body" style="">
@@ -206,6 +193,33 @@
                                   <p><b>Number of simulation: </b> {{$val->numberofsims}}</p>
                                   <p><b>Created at: </b> {{$val->created_at}}</p>
                                   <p class="status"><b>Status: </b> <span class="statushtml">{!!$val->statusMessage!!}</span></p>
+
+                                  <div class="row">
+                                    
+                                    <div class="col-2"><p class="progressrow"><b>Progress:</b></p></div>
+
+
+                                    <div class="col-10 progresscolumn">
+                                      
+
+                                    @if($val->status!=1)
+
+                                      <div class="progress" style="margin-top: 5px;">
+                                        <div class="progress-bar" role="progressbar" style="width: 0%;font-size: 20px" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+                                      </div>
+
+                                    @else
+
+                                    -
+
+                                    @endif
+
+
+                                    </div>                            
+  
+
+                                  </div>
+
                             </div>
 
                           <style>

@@ -86,7 +86,7 @@
                     <ul>
                       @foreach($sim_info['populattioncontent'] as $popckey => $popcval)
 
-                        <li>{{$popckey}}: {{$popcval}}</li>
+                        <li>{{App\Simulation::populationIDtoName($popckey)}}: {{$popcval}}</li>
   
                       @endforeach
                     </ul>

@@ -18,8 +18,8 @@ class CreateSimulationsTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('serverID',false)->nullable();
             $table->unsignedInteger('user_id',false);
-            $table->text('data');
-            $table->text('result');
+            $table->longText('data');
+            $table->longText('result');
             $table->tinyInteger('status')->default(0);//0:just created,1:processing,2:done
             $table->timestamps();
             $table->softDeletes();

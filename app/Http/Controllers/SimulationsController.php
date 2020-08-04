@@ -38,76 +38,57 @@ class SimulationsController extends Controller
 
     public function postprogressUpdate()
     {   
-        
-        $status = 200;
+
+        $status = 400;
         $serverkey = env("SERVER_KEY");
 
         $output = [];
 
-        $sim = Simulation::all();
+        try {
 
-        foreach ($sim as $key => $simulation) {
+            $status = 200;
 
-            $output[$simulation->id] = [];
+            $sim = Simulation::all();
 
-            if ($simulation->status==0) {
+            foreach ($sim as $key => $simulation) {
 
-                $url = 'http://andr.fish:3114/api/v1/simulation/create';
-                
-                $opts = [
-                    "http" => [
-                        "method" => "POST",
-                        "header" => "key: ".$serverkey."\r\n" .
-                            "Content-Type:'application/json'\r\n" .
-                            "data: ".$simulation->data."\r\n"
-                    ]
-                ];
+                $output[$simulation->id] = [];
 
-                $context = stream_context_create($opts);
-                $file = file_get_contents($url, false, $context);
-                $res = json_decode($file,1);
+                if ($simulation->status==0) {
 
-                if ($res['status']=='succeeded') {
-                    if (isset($res['simulation_id'])) {
-                        $s = Simulation::find($simulation->id);
-                        $s->serverID=$res['simulation_id'];
-                        $s->status = 2;
-                        $s->save();
+                    $url = 'http://andr.fish:3114/api/v1/simulation/create';
+                    
+                    $opts = [
+                        "http" => [
+                            "method" => "POST",
+                            "header" => "key: ".$serverkey."\r\n" .
+                                "Content-Type:'application/json'\r\n" .
+                                "data: ".$simulation->data."\r\n"
+                        ]
+                    ];
 
-                        $output[$simulation->id]['status']=2;
-                        $output[$simulation->id]['progress']=0;
+                    $context = stream_context_create($opts);
+                    $file = file_get_contents($url, false, $context);
+                    $res = json_decode($file,1);
 
+                    if ($res['status']=='succeeded') {
+                        if (isset($res['simulation_id'])) {
+                            $s = Simulation::find($simulation->id);
+                            $s->serverID=$res['simulation_id'];
+                            $s->status = 2;
+                            $s->save();
+
+                            $output[$simulation->id]['status']=2;
+                            $output[$simulation->id]['progress']=0;
+
+                        }
                     }
-                }
 
-            } elseif ($simulation->status==2) {
-                
-                $url = 'http://andr.fish:3114/api/v1/simulation/status';
+                } elseif ($simulation->status==2) {
+                    
+                    $url = 'http://andr.fish:3114/api/v1/simulation/status';
 
-                // Create a stream
-                $opts = [
-                    "http" => [
-                        "method" => "POST",
-                        "header" => "key: ".$serverkey."\r\n" .
-                            "simulation_id: ".$simulation->serverID."\r\n"
-                    ]
-                ];
-
-                $context = stream_context_create($opts);
-
-                // Open the file using the HTTP headers set above
-                $file = file_get_contents($url, false, $context);
-
-                $res = json_decode($file,1);
-
-                if ($res['status']=='complete') {
-
-                    $s = Simulation::find($simulation->id);
-                    $s->status = 1;
-                    $s->save();
-                    $output[$simulation->id]['status']=1;
-
-                    $url = 'http://andr.fish:3114/api/v1/simulation/result';
+                    // Create a stream
                     $opts = [
                         "http" => [
                             "method" => "POST",
@@ -117,61 +98,88 @@ class SimulationsController extends Controller
                     ];
 
                     $context = stream_context_create($opts);
+
+                    // Open the file using the HTTP headers set above
                     $file = file_get_contents($url, false, $context);
+
                     $res = json_decode($file,1);
-                    if (isset($res['result'])) {
+
+                    if ($res['status']=='complete') {
+
                         $s = Simulation::find($simulation->id);
-                        $s->result = $res['result'];
+                        $s->status = 1;
                         $s->save();
-                        $output[$simulation->id]['progress']=100;
-                        $output[$simulation->id]['statushtml']='<span class="badge badge-success">Completed</span>';
+                        $output[$simulation->id]['status']=1;
+
+                        $url = 'http://andr.fish:3114/api/v1/simulation/result';
+                        $opts = [
+                            "http" => [
+                                "method" => "POST",
+                                "header" => "key: ".$serverkey."\r\n" .
+                                    "simulation_id: ".$simulation->serverID."\r\n"
+                            ]
+                        ];
+
+                        $context = stream_context_create($opts);
+                        $file = file_get_contents($url, false, $context);
+                        $res = json_decode($file,1);
+                        if (isset($res['result'])) {
+                            $s = Simulation::find($simulation->id);
+                            $s->result = $res['result'];
+                            $s->save();
+                            $output[$simulation->id]['progress']=100;
+                            $output[$simulation->id]['statushtml']='<span class="badge badge-success">Completed</span>';
+                        }
+
+                    } else {
+
+                        if (isset($res['status'])) {
+                        
+                            $var = $res['status'];
+                            $var = str_replace(' ', '', $var);
+                            $var = explode(',', $var);
+
+                            if (isset($var[0])) {
+                                $simnum = str_replace('sim_', '', $var[0]);
+                                $simname = 'Simulation '. ( ((int)$simnum)+1  );
+                                $output[$simulation->id]['simulationname'] = $simname;
+                            }
+
+                            $first4='';
+                            if (isset($var[1])) {
+                               $first4 = substr($var[1], 0,4);
+                            }
+
+                            if ($first4=='week') {
+
+                                $d = json_decode($simulation->data,1);
+                                $numofweeks = $d['numberofweeks'];
+
+                                $weekno = substr($var[1], 5);
+                                $weekno = (int)$weekno+1;
+                                $progress = $weekno / $numofweeks * 100;
+
+                                $output[$simulation->id]['status']=2;
+                                $output[$simulation->id]['progress']=$progress;
+                                $output[$simulation->id]['statushtml']='<span class="badge badge-info">Processing</span>';
+
+                            }
+
+                        }
+
                     }
 
-                } else {
-
-                    if (isset($res['status'])) {
+                } elseif ($simulation->status==1) {
+                    $output[$simulation->id]['progress']=100;
+                    $output[$simulation->id]['status']=1;
+                    $output[$simulation->id]['statushtml']='<span class="badge badge-success">Completed</span>';
                     
-                        $var = $res['status'];
-                        $var = str_replace(' ', '', $var);
-                        $var = explode(',', $var);
-
-                        if (isset($var[0])) {
-                            $simnum = str_replace('sim_', '', $var[0]);
-                            $simname = 'Simulation '. ( ((int)$simnum)+1  );
-                            $output[$simulation->id]['simulationname'] = $simname;
-                        }
-
-                        $first4='';
-                        if (isset($var[1])) {
-                           $first4 = substr($var[1], 0,4);
-                        }
-
-                        if ($first4=='week') {
-
-                            $d = json_decode($simulation->data,1);
-                            $numofweeks = $d['numberofweeks'];
-
-                            $weekno = substr($var[1], 5);
-                            $weekno = (int)$weekno+1;
-                            $progress = $weekno / $numofweeks * 100;
-
-                            $output[$simulation->id]['status']=2;
-                            $output[$simulation->id]['progress']=$progress;
-                            $output[$simulation->id]['statushtml']='<span class="badge badge-info">Processing</span>';
-
-                        }
-
-                    }
-
                 }
 
-            } elseif ($simulation->status==1) {
-                $output[$simulation->id]['progress']=100;
-                $output[$simulation->id]['status']=1;
-                $output[$simulation->id]['statushtml']='<span class="badge badge-success">Completed</span>';
-                
             }
 
+        } catch (Throwable $e) {
+   
         }
 
         return Response::json(array(

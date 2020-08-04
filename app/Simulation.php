@@ -189,4 +189,39 @@ class Simulation extends Model
 
    }
 
+   static public function populationIDtoName($id){
+
+   	switch ($id) {
+   		case 'u30hl1m':
+   			return 'under 30, homeless less than 1 year, male';
+   		case 'u30hm1m':
+   			return 'under 30, homeless more than 1 year, male';
+   		case 'u30hl1f':
+   			return 'under 30, homeless less than 1 year, female';
+   		case 'u30hm1f':
+   			return 'under 30, homeless more than 1 year, female';
+   		case 'b30t50hl1m':
+   			return '30-50 years, homeless less than 1 year, male';
+   		case 'b30t50hm1m':
+   			return '30-50 years, homeless more than 1 year, male';
+   		case 'b30t50hl1f':
+   			return '30-50 years, homeless less than 1 year, female';
+   		case 'b30t50hm1f':
+   			return '30-50 years, homeless more than 1 year, female';
+   		case 'g50hl1m':
+   			return 'greater than 50 years, homeless less than 1 year, male';
+   		case 'g50hm1m':
+   			return 'greater than 50 years, homeless more than 1 year, male';
+   		case 'g50hl1f':
+   			return 'greater than 50 years, homeless less than 1 year, female';
+   		case 'g50hm1f':
+   			return 'greater than 50 years, homeless more than 1 year, female';
+   	}
+
+   	return false;
+
+   }
+
+
+
 }
