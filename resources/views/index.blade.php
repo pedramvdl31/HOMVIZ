@@ -4,7 +4,7 @@
 @stop
 @section('scripts')
 <script src="/assets/js/sweetalert2.min.js?1"></script>
-<script src="/assets/js/index.js?10"></script>
+<script src="/assets/js/index.js?11"></script>
 @stop
 
 @section('content')
