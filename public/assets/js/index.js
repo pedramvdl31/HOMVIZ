@@ -140,6 +140,12 @@ function update(){
         },error:function(e){
           
           console.log('ee')
+          
+          setTimeout(function(){
+      
+            update()
+          
+          }, 1000)
 
         }
 
