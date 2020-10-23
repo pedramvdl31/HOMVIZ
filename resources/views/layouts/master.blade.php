@@ -80,7 +80,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <footer class="main-footer" style="margin-left: 0">
     <!-- To the right -->
     <div class="float-right d-none d-sm-inline">
-      DATALab
+      DaTALab
     </div>
     <!-- Default to the left -->
     <strong>Copyright &copy; 2018-2021 <a href="https://www.datalab.science/">datalab.science</a>.</strong> All rights reserved.

@@ -165,7 +165,7 @@
 
                       @foreach ($sim as $k => $val)
 
-                        <div class="col-md-4 jobs" id="{{$val->id}}" status="{{$val->status}}">
+                        <div class="col-md-4 col-sm-6 jobs" id="{{$val->id}}" status="{{$val->status}}">
                           <div class="card card-outline card-primary">
                             <div class="card-header">
                               <div class="card-title" style="width: 100%">
@@ -196,10 +196,10 @@
 
                                   <div class="row">
                                     
-                                    <div class="col-2"><p class="progressrow"><b>Progress:</b></p></div>
+                                    <div class="col-3"><p class="progressrow"><b>Progress:</b></p></div>
 
 
-                                    <div class="col-10 progresscolumn">
+                                    <div class="col-9 progresscolumn">
                                       
 
                                     @if($val->status!=1)

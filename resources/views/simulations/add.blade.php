@@ -11,7 +11,7 @@
 	<script src="/assets/js/sweetalert2.min.js?1"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/xlsx.full.min.js"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/jszip.js"></script>
-	<script src="/assets/js/simulations/index.js?120"></script>
+	<script src="/assets/js/simulations/index.js?123"></script>
 @stop
 
 @section('content')
@@ -192,6 +192,8 @@
 					        	<input type="hidden" name="project_id" value="{{$project_id}}">
 					    @endif
 
+					    <input type="hidden" name="stopwatch" id="stopwatch" value="0">
+
 							
 						<!-- Popoovers are going to be here -->
 					    <div style="display: none" id="popoverhtmls"> 
@@ -206,18 +208,16 @@
 					                <li><a href="#step-1">Step 1<br /><big>Location&nbsp;&nbsp;<i class="fas fa-map-marked-alt"></i></big></a></li>
 					                <li><a href="#step-2">Step 2<br /><big>Population Group&nbsp;&nbsp;<i class="fas fa-users"></i></big></a></li>
 					                <li><a href="#step-3">Step 3<br /><big>Resources&nbsp;&nbsp;<i class="fas fa-shapes"></i></big></a></li>
-					                <li><a href="#step-4">Step 4<br /><big>States&nbsp;&nbsp;<i class="fas fa-project-diagram"></i></big></a></li>
+					                <li><a href="#step-4">Step 4<br /><big>Living Situations&nbsp;&nbsp;<i class="fas fa-project-diagram"></i></big></a></li>
 					                <!-- <li><a href="#step-5">Step 5<br /><big>Transition Probability&nbsp;&nbsp;<i class="fas fa-percent"></i></big></a></li> -->
-					                <li><a href="#step-6">Step 5<br /><big>Parameters&nbsp;&nbsp;<i class="fas fa-sliders-h"></i></big></a></li>
+					                <li><a href="#step-5">Step 5<br /><big>Parameters&nbsp;&nbsp;<i class="fas fa-sliders-h"></i></big></a></li>
 					            </ul>
 
 					            <div style="padding-top: 15px">
 
 					                <div id="step-1" class="">
 
-
 					                	<div class="row">
-
 
 							                <div class="col-md-12">
 							                	<div class="row">
@@ -529,13 +529,13 @@
 
 								                	<label for="inputName">Select between the provided resources&nbsp;
 														<a class='show-info pointer'>
-														<span msg="Places and amenities provided by various services to individuals."></span>
+														<span msg="A resource is a place or a type of facility where people experiencing homelessness can spend the night."></span>
 														<i class='text-info fas fa-info-circle'></i>
 														</a>
 													&nbsp;</label>
 												  	<div class="form-inline">
 													  	<select class="form-control col-md-4" id="resselect">
-													  		<option selected disabled id="title">Select One</option>
+													  		<option selected disabled id="title">Select</option>
 															<option id="Hospital" type="res">Hospital</option>
 															<option id="Shelter" type="res">Shelter</option>
 															<option id="TransitionalHousing" type="res">Transitional Housing</option>
@@ -586,9 +586,9 @@
 
 												<div class="form-group">
 
-								                	<label for="inputName">Select between the provided additional states&nbsp;
+								                	<label for="inputName">Select between the provided living situations&nbsp;
 														<a class='show-info pointer'>
-														<span msg="the particular condition of individuals such as the state of homelessness."></span>
+														<span msg="A particular living condition such as hidden homelessness"></span>
 														<i class='text-info fas fa-info-circle'></i>
 														</a>
 								                	&nbsp;</label>
@@ -596,7 +596,7 @@
 								                	
 												  	<div class="form-inline">
 													  	<select class="form-control col-md-4" id="stateselect">
-													  		<option selected disabled id="title">Select One</option>
+													  		<option selected disabled id="title">Select</option>
 															<option id="HiddenHomeless" type="state">Hidden Homeless</option>
 															<option id="NotHomeless" type="state">Not Homeless</option>
 															<option id="Street" type="state">Street</option>
@@ -639,20 +639,6 @@
 					                </div>
 
 					                <div id="step-5" class="">
-
-					                	<div class="row" style="margin-left: 0;margin-right: 0;">
-
-							                <div class="col-md-12">
-												
-												<div id="transitiontable"></div>
-
-								            </div>
-
-							        	</div>
-
-					                </div>
-
-					                <div id="step-6" class="">
 
 					                	<div class="row" style="margin-left: 0;margin-right: 0;">
 

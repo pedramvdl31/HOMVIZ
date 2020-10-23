@@ -18,7 +18,12 @@ window.params = 0
 //debug
 window.debug = 0
 
+var timeElapsed = 0;
+var myTimer;
+
 $('.general-info').tooltip();
+
+startTimer()
 
 $(document).ready(function(){
 
@@ -48,7 +53,7 @@ $(document).ready(function(){
   $('#smartwizard').smartWizard({
     selected: 0,
     theme: 'arrows',
-    showStepURLhash: false,
+    showStepURLhash: true,
     transitionEffect:'fade',
     toolbarSettings: {
       showNextButton: false, // show/hide a Next button
@@ -201,7 +206,25 @@ $(document).ready(function(){
 
   });
 
-  $(document).on("blur",".pop-input-validation,maxlength-input-validation, .capacity-input-validation",function(event) {
+  $(document).on("keypress",".pop-input-validation",function(event) {
+
+      var regex = new RegExp("^[0-9]+$");
+      var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+
+      if (!regex.test(key)) {
+         event.preventDefault();
+         return false;
+      }
+
+      if ($(this).val()+String.fromCharCode(event.keyCode)>100000) {
+        $(this).val(100000)
+         event.preventDefault();
+         return false;
+      }
+
+  });
+
+  $(document).on("blur","maxlength-input-validation, .capacity-input-validation",function(event) {
 
       if ($(this).val()=='') {
         $(this).val(1)
@@ -376,7 +399,7 @@ $(document).ready(function(){
 
           let pop_row =   '<tr this_id="'+id+'" class="poprows" name="'+name+'">'+
                           '<td style="font-weight: 900">'+name+'</td>'+
-                          '<td class="ttd"><input type="number" popfullname="'+name+'" id="population-'+id+'" min="1" max="100000" step="1" class="form-control pop-total-nums pop-input-validation pop-num-input" name="populationTypeCount['+id+']" style="width:100px; height:100%;" value="1"></td>'+
+                          '<td class="ttd"><input type="number" popfullname="'+name+'" id="population-'+id+'" min="1" max="100000" step="1" class="form-control pop-total-nums pop-input-validation pop-num-input" name="populationTypeCount['+id+']" style="width:100px; height:100%;"></td>'+
                           '<td><a class="text-danger pointer removePopulationRow">Delete</a></td>'
                           '</tr>';
 
@@ -454,120 +477,120 @@ $(document).ready(function(){
   });
 
 
-  $('#populationbtXXX').on('click', function(e) {
+  // $('#populationbtXXX').on('click', function(e) {
 
-    let elem = $(this)
+  //   let elem = $(this)
 
-    if ($(this).hasClass('btn-primary')) {
+  //   if ($(this).hasClass('btn-primary')) {
 
-      $('#pop-spchrter-error').css('display','none')
+  //     $('#pop-spchrter-error').css('display','none')
 
-      if ($("#populationtext").val().length != 0){
+  //     if ($("#populationtext").val().length != 0){
 
-        let input_val = $("#populationtext").val()
+  //       let input_val = $("#populationtext").val()
 
-        var format = /[`_!@#$%^&*()+\-=\[\]{};':"\\|.<>\/?~]/;
+  //       var format = /[`_!@#$%^&*()+\-=\[\]{};':"\\|.<>\/?~]/;
 
-        if ( !format.test(input_val) ) {
+  //       if ( !format.test(input_val) ) {
 
-          $(this).text('Reset table')
-          $(this).removeClass('btn-primary').addClass('btn-danger')
-          $('#populationtext').attr('disabled','true')
-          $('#populationtext').val('')
+  //         $(this).text('Reset table')
+  //         $(this).removeClass('btn-primary').addClass('btn-danger')
+  //         $('#populationtext').attr('disabled','true')
+  //         $('#populationtext').val('')
 
-          input_val = input_val.replace(/\s/g , "");
+  //         input_val = input_val.replace(/\s/g , "");
 
-          let popTableTbody = $('#_table #populationtable tbody')
-          popTableTbody.html("")
+  //         let popTableTbody = $('#_table #populationtable tbody')
+  //         popTableTbody.html("")
 
-          window.populationType = []
-          let tableRow = ''
+  //         window.populationType = []
+  //         let tableRow = ''
 
-          let input_separated = input_val.split(',')
+  //         let input_separated = input_val.split(',')
 
-          $.each( input_separated, function( k1, value ) {
+  //         $.each( input_separated, function( k1, value ) {
 
-            value = escape(value.trim())
+  //           value = escape(value.trim())
 
-            if (value!='') {
+  //           if (value!='') {
 
-              window.populationType.push(value)
+  //             window.populationType.push(value)
 
-              tableRow +=   '<tr>'+
-                          '<td style="font-weight: 900">'+value+'</td>'+
-                          '<td class="ttd"><input type="number" popfullname="'+value+'" id="population-'+value+'" min="1" max="100000" step="1" class="form-control pop-total-nums pop-input-validation pop-num-input" name="populationTypeCount['+value+']" style="width:100px; height:100%;" value="1">'+
-                          '</td></tr>';
-            }
+  //             tableRow +=   '<tr>'+
+  //                         '<td style="font-weight: 900">'+value+'</td>'+
+  //                         '<td class="ttd"><input type="number" popfullname="'+value+'" id="population-'+value+'" min="1" max="100000" step="1" class="form-control pop-total-nums pop-input-validation pop-num-input" name="populationTypeCount['+value+']" style="width:100px; height:100%;" value="1">'+
+  //                         '</td></tr>';
+  //           }
 
-          });
+  //         });
 
-          popTableTbody.append(tableRow)
+  //         popTableTbody.append(tableRow)
 
-          $('#pop-count-info').css('display','inline-block')
+  //         $('#pop-count-info').css('display','inline-block')
 
-        } else {
+  //       } else {
 
-          $('#pop-spchrter-error').css('display','block')
+  //         $('#pop-spchrter-error').css('display','block')
 
-        }
+  //       }
 
-      }
+  //     }
 
-    } else {
+  //   } else {
 
-      let resStateFlag = false
+  //     let resStateFlag = false
 
-      if (window.states.length>0 || window.resources.length>0) {
+  //     if (window.states.length>0 || window.resources.length>0) {
 
-        resStateFlag = true
+  //       resStateFlag = true
 
-      }
+  //     }
 
-      if (!resStateFlag) {
+  //     if (!resStateFlag) {
 
-        resetPopulationStep(elem)
-        step2HandleErrors()
+  //       resetPopulationStep(elem)
+  //       step2HandleErrors()
 
-      } else {
+  //     } else {
 
-        window.general_Toast.fire({
-          title: 'Are you sure?',
-          text: "It seems like you have added resources (step 3) or additional states (step 4) to your simulation. Resetting this table will remove resources and states. You won't be able to revert this.",
-          icon: 'warning',
-          showCancelButton: true,
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#d33',
-          confirmButtonText: 'Yes, reset it!'
-        }).then((result) => {
-          if (result.value) {
+  //       window.general_Toast.fire({
+  //         title: 'Are you sure?',
+  //         text: "It seems like you have added resources (step 3) or additional states (step 4) to your simulation. Resetting this table will remove resources and states. You won't be able to revert this.",
+  //         icon: 'warning',
+  //         showCancelButton: true,
+  //         confirmButtonColor: '#3085d6',
+  //         cancelButtonColor: '#d33',
+  //         confirmButtonText: 'Yes, reset it!'
+  //       }).then((result) => {
+  //         if (result.value) {
 
-            resetPopulationStep(elem)
-            window.states = []
-            window.resources = []
+  //           resetPopulationStep(elem)
+  //           window.states = []
+  //           window.resources = []
 
-            window.popovers = {}
-            window.totalPopulation = {}
-            window.TypePopulation = {}
-            window.TotalInitPopulation = {}
+  //           window.popovers = {}
+  //           window.totalPopulation = {}
+  //           window.TypePopulation = {}
+  //           window.TotalInitPopulation = {}
 
-            $("#restable tbody").html('<tr><td></td><td></td><td></td><td></td><td></td></tr>')
-            $("#statetable tbody").html('<tr><td></td><td></td><td></td><td></td></tr>')
+  //           $("#restable tbody").html('<tr><td></td><td></td><td></td><td></td><td></td></tr>')
+  //           $("#statetable tbody").html('<tr><td></td><td></td><td></td><td></td></tr>')
 
-            $('#resources-overview').text('Incomplete').addClass('text-danger').removeClass('text-success')
-            $('#states-overview').text('Incomplete').addClass('text-danger').removeClass('text-success')
+  //           $('#resources-overview').text('Incomplete').addClass('text-danger').removeClass('text-success')
+  //           $('#states-overview').text('Incomplete').addClass('text-danger').removeClass('text-success')
 
-            step2HandleErrors()
+  //           step2HandleErrors()
 
-          }
-        })
+  //         }
+  //       })
 
-      }
+  //     }
 
-    }
+  //   }
 
-    step2HandleErrors()
+  //   step2HandleErrors()
 
-  });
+  // });
 
 
 
@@ -1137,6 +1160,15 @@ $(document).ready(function(){
 
 })
 
+function tick(){
+  timeElapsed++;
+  $('#stopwatch').attr('value',timeElapsed)
+}
+function startTimer(){
+    //call the first setInterval
+    myTimer = setInterval(tick, 1000);
+}
+
 function validateAllSteps(){
 
   let output = false
@@ -1337,37 +1369,59 @@ function step5HandleErrors(){
 
 function checkStep2(){
 
-  let output = false
+  let output = {'flag':false,'message':''}
 
   if (window.populationType.length >= 1) {
 
-    $('#population-overview').text('Complete').addClass('text-success').removeClass('text-danger')
-
-    output = true
-
-    let infoSectionPopulationTable = ''
-    
-    let tbody = $(document).find('#populationtable tbody')
-
-    $.each( window.populationType, function( k1, value ) {
-
-      let thisPopulationVal = tbody.find('input[popfullname="'+value+'"]').first().val()
-
-      infoSectionPopulationTable += '<tr><td>'+value+'</td>'+
-              '<td>'+thisPopulationVal+'</td></tr>';
-
-    });
-
-
-
-    $('#population-info-table').css('display','block');
-    $('#population-info-table table tbody').html(infoSectionPopulationTable);
+    output['flag'] = true
 
   } else {
 
     $('#population-overview').text('Incomplete').addClass('text-danger').removeClass('text-success')
     $('#population-info-table').css('display','none');
     $('#population-info-table table tbody').html('');
+
+    output['message'] = 'At least 1 population type is required!'
+
+  }
+
+  if ( output['flag'] ) {
+
+    let popcounts = $(document).find('.pop-total-nums');
+
+    popcounts.each(function(){
+
+      if ( $(this).val() == "" ){
+
+        output['flag'] = false
+
+        output['message'] = 'Enter population counts for all the included population types!'
+
+      }
+
+    });
+
+    if (output['flag']) {
+
+      $('#population-overview').text('Complete').addClass('text-success').removeClass('text-danger')
+
+      let infoSectionPopulationTable = ''
+      
+      let tbody = $(document).find('#populationtable tbody')
+
+      $.each( window.populationType, function( k1, value ) {
+
+        let thisPopulationVal = tbody.find('input[popfullname="'+value+'"]').first().val()
+
+        infoSectionPopulationTable += '<tr><td>'+value+'</td>'+
+                '<td>'+thisPopulationVal+'</td></tr>';
+
+      });
+
+      $('#population-info-table').css('display','block');
+      $('#population-info-table table tbody').html(infoSectionPopulationTable);
+
+    }
 
   }
   
@@ -1785,12 +1839,14 @@ function HandleStepsOnNextBtnClick(){
 
       storeTypePopulation()
 
-      if (checkStep2()) {
+      let validatepop = checkStep2()
+
+      if (validatepop['flag']===true) {
         $('#smartwizard').smartWizard("next")
       } else {
         Toast.fire({
           title: 'Error',
-          text: "Population type is required!",
+          text: validatepop['message'],
           icon: 'warning'
         })
       }
@@ -2191,7 +2247,7 @@ function UnlockPopulationTypes(elem){
 function LockPopulationTypes(elem){
 
   $('.pop-total-nums').attr('readonly','true')
-  $('#populationbtn').text('Unlock popultion types').removeClass('btn-primary').addClass('btn-danger')
+  $('#populationbtn').text('Unlock population types').removeClass('btn-primary').addClass('btn-danger')
   $('.removePopulationRow').addClass('disabled')
   $('#populationselect').attr('disabled','disabled')
 

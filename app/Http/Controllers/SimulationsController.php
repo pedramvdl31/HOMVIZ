@@ -35,7 +35,6 @@ class SimulationsController extends Controller
 
     }
 
-
     public function postprogressUpdate()
     {   
 
@@ -276,6 +275,7 @@ class SimulationsController extends Controller
         $sim->user_id = Auth::user()->id;
         $sim->data = json_encode($output);
         $sim->population_content = json_encode(Input::get('populationTypeCount'));
+        $sim->stopwatch = Input::get('stopwatch');
         $sim->save();
 
         return Redirect::route('index');

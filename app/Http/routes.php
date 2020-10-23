@@ -27,6 +27,12 @@ Route::group(['middleware' => 'beforeFilter'], function () {
 		Route::post('/simulations/progress-update',  ['uses' => 'SimulationsController@postprogressUpdate']);
 		Route::post('/simulations/delete',  ['uses' => 'SimulationsController@postDelete']);
 
+		Route::get('/tutorial-video', ['uses'=>'HomeController@getTutorialVideo']);
+		Route::post('/userwatchingvideo',  ['uses' => 'HomeController@postUserWatchingTutorialVideo']);
+
+		Route::get('/questionnaire', ['uses'=>'HomeController@getQuestionnaire']);
+		Route::post('/questionnaire', ['uses'=>'HomeController@postQuestionnaire']);
+
 	});
 
 });

@@ -6,7 +6,7 @@
   <script src="/AdminLTE-3.0.0/plugins/chart.js/Chart.min.js?v1"></script>
   <script src="https://unpkg.com/chartjs-plugin-colorschemes"></script>
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-  <script src="/assets/js/simulations/view.js?29"></script>
+  <script src="/assets/js/simulations/view.js?30"></script>
 @stop
 
 @section('content')
@@ -23,9 +23,9 @@
       cursor: pointer;
     }
 
-  .btn-app .fas {
-    line-height: inherit;
-  }
+    .btn-app .fas {
+      line-height: inherit;
+    }
 
   </style>
 

@@ -154,7 +154,6 @@ $(document).ready(function(){
                 color('#1f78b4').alpha(0.5).rgbString(),
                 color('#b2df8a').alpha(0.5).rgbString(),
                 color('#33a02c').alpha(0.5).rgbString(),
-                color('#33a02c').alpha(0.5).rgbString(),
                 color('#fb9a99').alpha(0.5).rgbString(),
                 color('#e31a1c').alpha(0.5).rgbString(),
                 color('#fdbf6f').alpha(0.5).rgbString(),

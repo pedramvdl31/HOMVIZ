@@ -22,6 +22,8 @@ use App\Job;
 use App\User;
 use App\Project;
 use App\Simulation;
+use App\Userdata;
+use App\Questionnaire;
 
 class HomeController extends Controller
 {
@@ -56,6 +58,7 @@ class HomeController extends Controller
 
             $phpdate = strtotime( $sv->created_at );
             $sv->created_at = date( 'Y-m-d H:i:s', $phpdate );
+
         }
 
         return view('index')
@@ -63,5 +66,71 @@ class HomeController extends Controller
         ->with('layout',$layout_title);
 
     }
+    
 
+    public function getQuestionnaire()
+    {
+
+        $layout_title = 'layouts.master';
+
+        return view('questionnaire')
+        ->with('layout',$layout_title);
+
+    }
+
+    public function postQuestionnaire()
+    {
+
+        $questionnaire = new Questionnaire;
+
+        $questionnaire->user_id = Auth::user()->id;
+        $questionnaire->answer = json_encode(Input::get('questionnaire'));
+        $questionnaire->stopwatch = Input::get('stopwatch');
+
+        $questionnaire->save();
+
+        return Redirect::route('index');
+
+    }
+
+    public function getTutorialVideo()
+    {
+
+        $layout_title = 'layouts.master';
+
+        return view('tutorialvideo')
+        ->with('layout',$layout_title);
+
+    }
+
+    public function postUserWatchingTutorialVideo()
+    {
+        
+        $status = 400;
+        $user_session_id = Auth::user()->id;
+        $text_data = Input::get('text_data');
+
+        $userdata = Userdata::where('user_id',$user_session_id)->first();
+
+        if ($userdata === null) {
+            $userdata =  new Userdata();
+        }
+
+        $userdata->user_id = $user_session_id;
+
+        if ($text_data!="") {
+
+            $userdata->data .= $text_data.',';
+        }
+        
+        if ($userdata->save()) {
+            $status =200;
+        }
+
+        return Response::json(array(
+        'status' => $status
+        ));
+
+    }
+    
 }
