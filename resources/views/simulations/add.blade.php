@@ -11,7 +11,7 @@
 	<script src="/assets/js/sweetalert2.min.js?1"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/xlsx.full.min.js"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/jszip.js"></script>
-	<script src="/assets/js/simulations/index.js?123"></script>
+	<script src="/assets/js/simulations/index.js?9"></script>
 @stop
 
 @section('content')
@@ -644,7 +644,7 @@
 
 							                <div class="col-md-4">
 
-												<div class="form-group">
+<!-- 												<div class="form-group">
 								                	<label for="inputName">Created by&nbsp;
 							                			<a class='show-info pointer'>
 														<span msg="This is for your recollection and does not affect the outcome of your simulation."></span>
@@ -653,7 +653,7 @@
 								                	&nbsp;</label>
 								                	<input placeholder="Creator's first name" type="text" autocomplete="off" name="creatorname"  id="cname" class="form-control" maxlength="20">
 								                	<span class="text-danger" id="personname-error">This input is required. No special characters are permitted.</span>
-								              	</div>
+								              	</div> -->
 
 												<div class="form-group">
 								                	<label for="inputName">Number of weeks&nbsp;

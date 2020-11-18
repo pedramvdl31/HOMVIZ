@@ -331,7 +331,7 @@ $(document).ready(function(){
 
   });
 
-  $('#cname, #simweeks, #simnum').on('keyup blur', function(e) {
+  $('#simweeks, #simnum').on('keyup blur', function(e) {
     step5HandleErrors()
   })
 
@@ -1324,22 +1324,13 @@ function step4HandleErrors(){
 }
 function step5HandleErrors(){
 
-
-  let nameVal = $('#cname').val() 
   let weeksVal = $('#simweeks').val()
   let simnumVal = $('#simnum').val()
 
-  let personNameInput = false
   let weeksInput = false
   let simNumInput = false
 
-  if (nameVal=="" || !NoSpecialCharacter(nameVal)) {
-    $('#personname-error').css('display','block')
-    personNameInput = false
-  } else {
-    $('#personname-error').css('display','none')
-    personNameInput = true
-  }
+
 
   if (weeksVal=="" || !NoSpecialCharacter(weeksVal)) {
     $('#weeks-error').css('display','block')
@@ -1357,7 +1348,7 @@ function step5HandleErrors(){
     simNumInput = true
   }
 
-  if (personNameInput && weeksInput && simNumInput) {
+  if (weeksInput && simNumInput) {
     $('#parameters-overview').text('Complete').addClass('text-success').removeClass('text-danger')
     $('#next').removeAttr('disabled')
   } else {
@@ -1530,7 +1521,7 @@ function checkStep6(){
 
   let output = false
 
-  if ($('#simweeks').val() && $('#simnum').val() && $('#cname').val() ) {
+  if ($('#simweeks').val() && $('#simnum').val() ) {
 
     output = true
 

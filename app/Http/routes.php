@@ -12,11 +12,16 @@
 
 Route::group(['middleware' => 'beforeFilter'], function () {
 
+	Route::get('terms', ['as'=>'terms','uses'=>'HomeController@getTerms']);
+	Route::post('terms',['uses'=>'HomeController@postTerms']);
+
 	Route::get('login', ['as'=>'login','uses'=>'UsersController@getLogin']);
 	Route::post('login',['uses'=>'UsersController@postLogin']);
-	Route::get('register', ['as'=>'registration_view','uses'=>'UsersController@getRegistration']);
+	Route::get('register', ['as'=>'register','uses'=>'UsersController@getRegistration']);
 	Route::post('register', ['uses'=>'UsersController@postRegistration']);
 	Route::get('logout', ['as'=>'users_logout','uses'=>'UsersController@getLogout']);
+
+	Route::post('/check-username',  ['uses' => 'UsersController@postCheckUsername']);
 
 	Route::group(['middleware' => ['auth']], function(){
 

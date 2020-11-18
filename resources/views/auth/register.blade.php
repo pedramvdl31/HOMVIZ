@@ -4,7 +4,7 @@
 @section('scripts')
 
 
-<script type="text/javascript" src="/assets/js/users/registration.js"></script>
+<script type="text/javascript" src="/assets/js/users/registration.js?1"></script>
 
 @stop
 
@@ -31,57 +31,146 @@
   </head>
   <body class="hold-transition register-page">
   <div class="register-box">
+
+
+    @if(session()->has('message'))
+      <div class="alert alert-danger">
+          {{ session()->get('message') }}
+      </div>
+    @endif
+
+
     <div class="register-logo">
-      <a href="/"><b>Homelessness Visualization</b></a>
+      <a href="/"><b>{{env("appname")}}</b></a>
     </div>
 
     <div class="card">
       <div class="card-body register-card-body">
-        <p class="login-box-msg">Register a new membership</p>
+        <p class="login-box-msg">Registration Form</p>
 
         <form action="/register" method="post" id="myForm">
           <input type="hidden" name="_token" value="{{ csrf_token() }}">
+
           <div class="input-group mb-3">
-            <input name="name" type="text" class="form-control" placeholder="Full name" required>
+            <input name="username" type="username" class="form-control" placeholder="Username" required minlength="5" maxlength="15" id="username">
             <div class="input-group-append">
               <div class="input-group-text">
                 <span class="fas fa-user"></span>
               </div>
             </div>
           </div>
+
+          <div class="row mb-3" id="username-error" style="display: none">
+            <div class="col-12">
+              <span class="text-danger">The username already exists. Please use a different username</span>  
+            </div> 
+          </div>
+
           <div class="input-group mb-3">
-            <input name="email" type="email" class="form-control" placeholder="Email" required>
+            <input type="email" class="form-control" placeholder="Email" required="">
             <div class="input-group-append">
               <div class="input-group-text">
                 <span class="fas fa-envelope"></span>
               </div>
             </div>
           </div>
+
+
+          <div class="row">
+            <div class="col-md-12 form-group">
+
+              <select class="form-control" id="sel2" name="gender" required>
+                <option value="" selected="true" disabled="disabled">Gender</option>  
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+                <option value="ns">Prefer not to answer</option>
+              </select>
+
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12 form-group">
+              
+              <select class="form-control" id="sel3" name="age" required>
+                <option value="" selected="true" disabled="disabled">Age Group</option>  
+                <option value="18 to 20">18 - 20 years old</option>
+                <option value="21 to 25">21 - 25 years old</option>
+                <option value="26 to 30">26 - 30 years old</option>
+                <option value="31 to 45">31 - 45 years old</option>
+                <option value="46+">46+</option>
+                <option value="ns">Prefer not to answer</option>
+              </select>
+
+            </div>
+          </div>
+
+
           <div class="input-group mb-3">
-            <input name="password" type="password" class="form-control" placeholder="Password" required>
+            <input id="password" name="password" type="password" class="form-control" placeholder="Password" required pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" title="Must contain at least one  number and one uppercase and lowercase letter, and at least 8 or more characters">
             <div class="input-group-append">
               <div class="input-group-text">
                 <span class="fas fa-lock"></span>
               </div>
             </div>
           </div>
+
           <div class="input-group mb-3">
-            <input name="password_confirmation" type="password" class="form-control" placeholder="Retype password" required>
+            <input id="password_confirm" oninput="check(this)" name="password_confirmation" type="password" class="form-control" placeholder="Retype password" required>
             <div class="input-group-append">
               <div class="input-group-text">
                 <span class="fas fa-lock"></span>
               </div>
             </div>
           </div>
+
           <div class="row">
             <div class="col-8">
               <div class="icheck-primary">
-                <input type="checkbox" id="agreeTerms" name="terms" value="agree" required>
-                <label for="agreeTerms">
-                 I agree to the <a href="#">terms</a>
+                <input type="checkbox" id="showpass" onclick="myFunction()">
+                <label for="showpass">
+                  <a>Show password</a>
                 </label>
               </div>
             </div>
+          </div>
+
+
+          <script language='javascript' type='text/javascript'>
+              function check(input) {
+                  if (input.value != document.getElementById('password').value) {
+                      input.setCustomValidity('Password Must be Matching.');
+                  } else {
+                      // input is valid -- reset the error message
+                      input.setCustomValidity('');
+                  }
+              }
+              function myFunction() {
+                var x = document.getElementById("password");
+                var x_confirm = document.getElementById("password_confirm");
+                if (x.type === "password") {
+                  x.type = "text";
+                  x_confirm.type = "text";
+                } else {
+                  x.type = "password";
+                  x_confirm.type = "password";
+                }
+              }
+          </script>
+
+          <hr>
+
+          <div class="row">
+            <div class="col-8">
+              <div class="icheck-primary">
+                <input type="checkbox" id="agreeTerms" name="terms" value="agree" required checked="">
+                <label for="agreeTerms">
+                 I agree to the <a href="/terms">terms</a>
+                </label>
+              </div>
+            </div>
+
             <!-- /.col -->
             <div class="col-4">
               <button type="text" id="submit-btn" class="btn btn-primary btn-block">Register</button>
@@ -90,11 +179,14 @@
           </div>
         </form>
 
-        <a href="/login" class="text-center">I already have a membership</a>
-
       </div>
       <!-- /.form-box -->
     </div><!-- /.card -->
+
+    <div>
+      <a href="/login" class="text-center"><span class="fas fa-chevron-left"></span> Back to login</a>
+    </div>
+
   </div>
   <!-- /.register-box -->
 

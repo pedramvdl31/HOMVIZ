@@ -187,7 +187,6 @@
                             </div>
                             <!-- /.card-header -->
                             <div class="card-body" style="">
-                                  <p><b>Created by: </b> {{$val->creatorname}}</p>
                                   <p><b>Simulation Location: </b> {{$val->simulation_location}}</p>
                                   <p><b>Number of weeks: </b> {{$val->numberofweeks}}</p>
                                   <p><b>Number of simulation: </b> {{$val->numberofsims}}</p>

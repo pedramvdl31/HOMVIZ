@@ -30,30 +30,35 @@ class UsersController extends Controller
 
         $this->layout = "layouts.default";
 
+        $this->terms = session('terms');
+
     }
 
     public function getRegistration()
     {
 
-        return view('auth.register')
-        ->with('layout',$this->layout);
+        if ($this->terms == '1') {
+            return view('auth.register')
+            ->with('layout',$this->layout);
+        } else {
+            return Redirect::route('terms');
+        }
 
     }
 
     public function postRegistration()
     {
 
-        $email = Input::get('email');
-        $u = User::where('email',$email)->first();
+        $username = Input::get('username');
+        $u = User::where('username',$username)->first();
 
         if ($u===null) {
 
             $user = new User;
-            $user->name = Input::get('name');
-            $user->email = $email;
+            $user->username = $username;
             $user->password = Hash::make(Input::get('password')); 
             $user->save();
-            Auth::attempt(array('email'=> $user->email, 'password'=>Input::get('password')));
+            Auth::attempt(array('username'=> $user->username, 'password'=>Input::get('password')));
 
         } else {
 
@@ -73,13 +78,18 @@ class UsersController extends Controller
 
     public function postLogin()
     {
-        $email = Input::get('email');
+
+        $username = Input::get('username');
         $password = Input::get('password');
 
-        if (Auth::attempt(array('email'=>$email, 'password'=>$password))) {
+        $u = User::where('username',$username)->first();
+
+        if (Auth::attempt(array('username'=>$username, 'password'=>$password))) {
+
             return Redirect::route('index');
+
         } else {
-            return Redirect::route('login');
+            return redirect()->back()->with('message', "Invalid Username or Password");
         }
         
     }   
@@ -94,6 +104,30 @@ class UsersController extends Controller
     {
         Auth::logout();
         return Redirect::action('HomeController@getHomepage');
+    }
+
+    public function postCheckUsername()
+    {   
+       
+        $username = Input::get('username');
+
+        $db_username = User::where('username',$username)->first();
+        $status = 400;
+
+        if (isset($db_username)) {
+
+            $status = 0;
+
+        } else {
+
+            $status = 200;
+
+        }
+
+        return Response::json(array(
+            'status' => $status
+        ));
+
     }
 
 }

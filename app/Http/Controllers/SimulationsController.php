@@ -252,7 +252,7 @@ class SimulationsController extends Controller
         $states = Simulation::mergeStatesPropreties($states, $initialPopulation, 'initialPopulation');
 
         $transitionProbability = Input::get('TransitionProbability');
-        $creatorname = Input::get('creatorname');
+        $creatorname = 'none';
         $numberofweeks = Input::get('numberofweeks');
         $numberofsims = Input::get('numberofsims');
         $populationType = Input::get('populationType');

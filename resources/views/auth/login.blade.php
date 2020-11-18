@@ -28,6 +28,14 @@
   </head>
   <body class="hold-transition login-page" style=" height: 90vh;">
   <div class="login-box">
+
+
+    @if(session()->has('message'))
+      <div class="alert alert-danger">
+          {{ session()->get('message') }}
+      </div>
+    @endif
+    
     <div class="login-logo">
       <a href="/"><b>Homelessness Visualization</b></a>
     </div>
@@ -38,7 +46,7 @@
 
         <form action="/login" method="post">
           <div class="input-group mb-3">
-            <input name="email" type="email" class="form-control" placeholder="Email">
+            <input name="username" type="text" class="form-control" placeholder="Username">
             <div class="input-group-append">
               <div class="input-group-text">
                 <span class="fas fa-envelope"></span>
@@ -73,7 +81,7 @@
           <a href="forgot-password.html">I forgot my password</a>
         </p> -->
         <p class="mb-0">
-          <a href="/register" class="text-center">Register a new account</a>
+          <a href="/terms" class="text-center">Register a new account</a>
         </p>
       </div>
       <!-- /.login-card-body -->

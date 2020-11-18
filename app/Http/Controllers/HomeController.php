@@ -47,7 +47,6 @@ class HomeController extends Controller
             $sv->simulation_location = $d->simulation_location;
             $sv->numberofweeks = $d->numberofweeks;
             $sv->numberofsims = $d->numberofsims;
-            $sv->creatorname = $d->creatorname;
             
             $sv->statusMessage = '<span class="badge badge-default">Submitted</span>';
             if ($sv->status==1) {
@@ -90,6 +89,26 @@ class HomeController extends Controller
         $questionnaire->save();
 
         return Redirect::route('index');
+
+    }
+
+    public function getTerms()
+    {
+
+
+        $layout_title = 'layouts.master';
+
+        return view('auth.terms')
+        ->with('layout',$layout_title);
+
+    }
+
+    public function postTerms()
+    {
+
+        session(['terms' => '1']);
+
+        return Redirect::route('register');
 
     }
 
