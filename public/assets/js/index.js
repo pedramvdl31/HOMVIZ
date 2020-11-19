@@ -8,6 +8,15 @@ $(document).ready(function(){
     animation:true
   });
 
+  
+  if ( questionnaireSubmitted == 1) {
+    Swal.fire(
+      'Questionnaire submitted!',
+      'Thanks for your participation in our study. After we picked the winners using random draw we will contact you.',
+      'success'
+    )
+  }
+
 
   $('.delete-simulation').on('click', function(e) {
 

@@ -4,7 +4,7 @@
 @stop
 @section('scripts')
 <script src="/assets/js/sweetalert2.min.js?1"></script>
-<script src="/assets/js/index.js?11"></script>
+<script src="/assets/js/index.js?12"></script>
 @stop
 
 @section('content')
@@ -126,6 +126,25 @@
       height: 1.1rem !important;
     }
   </style>
+
+
+  @if(isset($questionnaireSubmitted))
+
+  <script>
+    
+    var questionnaireSubmitted = JSON.parse(<?php echo json_encode($questionnaireSubmitted); ?>);
+
+  </script>
+
+  @else
+
+  <script>
+    
+    var questionnaireSubmitted = "0";
+
+  </script>
+
+  @endif
 
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper" style="margin-left: 0">

@@ -25,7 +25,8 @@ Route::group(['middleware' => 'beforeFilter'], function () {
 
 	Route::group(['middleware' => ['auth']], function(){
 
-		Route::get('/', ['as'=>'index','uses'=>'HomeController@getHomepage']);
+		Route::get('/', ['uses'=>'HomeController@getHomepage']);
+		Route::get('/home/{q?}', ['as'=>'index','uses'=>'HomeController@getHomepage']);
 		Route::get('/simulations/add',  ['as'=>'simulation_add', 'uses' => 'SimulationsController@getAdd']);
 		Route::post('/simulations/add',  ['uses' => 'SimulationsController@postAdd']);
 		Route::get('/simulations/view/{id}',  ['as'=>'simulation_view', 'uses' => 'SimulationsController@getView']);

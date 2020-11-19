@@ -31,7 +31,7 @@ class HomeController extends Controller
 
     }
 
-        public function getHomePage()
+        public function getHomePage($q=null)
     {
 
         $layout_title = 'layouts.master';
@@ -60,9 +60,16 @@ class HomeController extends Controller
 
         }
 
-        return view('index')
-        ->with('sim',$sim)
-        ->with('layout',$layout_title);
+        if ($q=='1') {
+            return view('index')
+            ->with('sim',$sim)
+            ->with('questionnaireSubmitted','1')
+            ->with('layout',$layout_title);
+        } else {
+            return view('index')
+            ->with('sim',$sim)
+            ->with('layout',$layout_title);
+        }
 
     }
     
@@ -88,7 +95,7 @@ class HomeController extends Controller
 
         $questionnaire->save();
 
-        return Redirect::route('index');
+        return Redirect::route('index', ['q' => '1']);
 
     }
 
