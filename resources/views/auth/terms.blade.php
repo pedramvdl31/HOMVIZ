@@ -41,9 +41,9 @@
 
                   <p>Please read the following documents and check the box if you undrestand and agree </p>
 
-                  <p><a href="/assets/Infomation Letter.pdf" download>Infomation Letter.pdf</a></p>
+                  <p><a href="/assets/Infomation Letter.pdf?1" download>Infomation Letter.pdf</a></p>
 
-                  <p><a href="/assets/Consent Form.pdf" download>Consent Form.pdf</a></p>
+                  <p><a href="/assets/Consent Form.pdf?1" download>Consent Form.pdf</a></p>
 
                   <div class="icheck-primary">
                     <input type="checkbox" id="agreeTerms" name="terms" value="agree" required>
