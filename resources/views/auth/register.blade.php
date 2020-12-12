@@ -83,7 +83,7 @@
                 <option value="" selected="true" disabled="disabled">Gender</option>  
                 <option value="male">Male</option>
                 <option value="female">Female</option>
-                <option value="other">Other</option>
+                <option value="other">I don't identify as either Male or Female</option>
                 <option value="ns">Prefer not to answer</option>
               </select>
 
