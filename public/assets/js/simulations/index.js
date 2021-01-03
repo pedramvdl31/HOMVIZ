@@ -1,3 +1,9 @@
+$('body').LoadingOverlay("show", {
+    background  : "rgba(255, 255, 255, 0.8)",
+    image       : "",
+    fontawesome : "fas fa-circle-notch fa-spin"
+})
+
 window.populationType = []
 window.states = []
 window.resources = []
@@ -6,9 +12,10 @@ window.tableFlagstate = 0
 window.currentstep = 0
 window.popovers = {}
 window.totalPopulation = {}
-
 window.TypePopulation = {}
 window.TotalInitPopulation = {}
+
+window.dataSummary = []
 
 //validation
 window.loc = 0
@@ -16,7 +23,7 @@ window.stateset = 0
 window.params = 0
 
 //debug
-window.debug = 0
+window.debug = 1
 
 var timeElapsed = 0;
 var myTimer;
@@ -25,7 +32,11 @@ $('.general-info').tooltip();
 
 startTimer()
 
+
 $(document).ready(function(){
+
+  let headerHeight = $('.main-header').height() + 15
+  $('.my-sidebar').css('padding-top',headerHeight+'px')
 
   window.general_Toast = Swal.mixin({
     toast: true,
@@ -60,8 +71,8 @@ $(document).ready(function(){
       showPreviousButton: false // show/hide a Previous button
     }, 
     anchorSettings: {
-      anchorClickable: false, // Enable/Disable anchor navigation
-      enableAllAnchors: false, // Activates all anchors clickable all times
+      anchorClickable: window.debug, // Enable/Disable anchor navigation
+      enableAllAnchors: window.debug, // Activates all anchors clickable all times
       markDoneStep: true, // add done css
       enableAnchorOnDoneStep: true // Enable/Disable the done steps navigation
     },
@@ -111,59 +122,65 @@ $(document).ready(function(){
     } else if (window.currentstep==5) {
 
       $('#prev').removeAttr('disabled')
-      $('#next').removeClass('bg-gradient-primary').addClass('bg-gradient-success').text('Create Simulation')
 
       step5HandleErrors()
+
+    } else if (window.currentstep==6) {
+
+      $('#prev').removeAttr('disabled')
+      $('#next').removeClass('bg-gradient-primary').addClass('bg-gradient-success').text('Create Simulation')
+
+      step6HandleErrors()
 
     }
 
   });
 
-  //WIZARD STEP RULES
-  if (!window.debug) {
+  $('#smartwizard').smartWizard('reset');
 
-    $('#smartwizard').smartWizard('reset');
+  $('#next').on('click', function(e){
 
-    $('#next').on('click', function(e){
+    HandleStepsOnNextBtnClick()
 
-      HandleStepsOnNextBtnClick()
+  })
 
-    })
+  $('#prev').on('click', function(e){
 
-    $('#prev').on('click', function(e){
+    $('#smartwizard').smartWizard("prev")
+    
+  })
 
-      $('#smartwizard').smartWizard("prev")
-      
-    })
-
-  } else {
-
-    window.populationType = ['Male', 'Female', 'Other']
-
-    $('#next').on('click', function(e){
-
-      HandleStepsOnNextBtnClick()
-        
-    })
-
-    $('#prev').on('click', function(e){
-
-      $('#smartwizard').smartWizard("prev")
-      
-    })
-
-  }
 
   setTimeout(function(){
 
-    window.scroll({
-    top: 0, 
-    left: 0, 
-    behavior: 'auto'
-    });
+    document.location.href="#top";
+
+    setTimeout(function(){
+
+      $('body').LoadingOverlay("hide")
+      $('#myoverlay').remove()
+
+    }, 500)
 
   }, 1500)
 
+
+  $('.tutorial-link').on('click', function(e) {
+
+    let step = $(this).attr('step')
+
+    $('.video-container').addClass('hide')
+    $('#step-'+step+'-video').removeClass('hide')
+
+    ToggleVideoSlider()
+
+  })
+
+  $('#close-slider').on('click', function(e) {
+
+    ToggleVideoSlider()
+
+  })
 
   $(document).on("keypress",".no-special-chars",function() {
 
@@ -177,12 +194,11 @@ $(document).ready(function(){
   });
 
   // STEP 1
-
   $('#simulation-name').on('keyup blur', function(e) {
     step1HandleErrors()
   })
 
-  $(document).on("keypress",".pop-input-validation, .maxlength-input-validation, .capacity-input-validation",function(event) {
+  $(document).on("keypress",".pop-input-validation, .maxlength-input-validation, .capacity-input-validation, .mq-input-validation",function(event) {
 
       var regex = new RegExp("^[0-9]+$");
       var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
@@ -218,17 +234,104 @@ $(document).ready(function(){
 
       if ($(this).val()+String.fromCharCode(event.keyCode)>100000) {
         $(this).val(100000)
-         event.preventDefault();
-         return false;
+        event.preventDefault();
+        return false;
       }
 
   });
 
-  $(document).on("blur","maxlength-input-validation, .capacity-input-validation",function(event) {
+  $(document).on("keyup blur",".pop-num-input",function(event) {
 
-      if ($(this).val()=='') {
+      if ($(this).val()<1 && $(this).val()!='') {
         $(this).val(1)
+        event.preventDefault();
+        return false;
       }
+
+      if($(this).val() != '' && $(this).val() >= 1 && $(this).val()<=100000){
+        $(this).removeClass('is-invalid').addClass('is-valid')
+      } else {
+        $(this).removeClass('is-valid').addClass('is-invalid')
+      }
+
+  });
+
+  $(document).on("keyup",".res-state-name",function(event) {
+
+    let name = String(sanitizeString($(this).val()))
+
+    let duplicate_count = 0
+
+    $(document).find('.res-state-name').each(function() { 
+      let elem_name = String(sanitizeString($(this).val()))
+      if(elem_name==name) { 
+        duplicate_count = duplicate_count + 1 
+      } 
+    });
+
+    if(name != '' && duplicate_count == 1){
+      $(this).removeClass('is-invalid').addClass('is-valid')
+      $(this).parents('td').first().find('.res-state-name-error').first().removeClass('show').addClass('hide')
+    } else {
+      $(this).removeClass('is-valid').addClass('is-invalid')
+      if (duplicate_count>1 && name != '') {
+        $(this).parents('td').first().find('.res-state-name-error').first().removeClass('hide').addClass('show')
+      }
+    }
+
+  });
+
+  $(document).on("blur",".res-state-name",function(event) {
+
+    let name = String(sanitizeString($(this).val()))
+    let duplicate_count = 0
+
+    $(document).find('.res-state-name').each(function() { 
+      let elem_name = String(sanitizeString($(this).val()))
+      if(elem_name==name) { 
+        duplicate_count = duplicate_count + 1 
+      } 
+    });
+
+    if(name != '' && duplicate_count == 1){
+
+      $(this).removeClass('is-invalid').addClass('is-valid')
+      $(this).parents('td').first().find('.res-state-name-error').first().removeClass('show').addClass('hide')
+
+      //save id
+      let rowID = $(this).parents('tr').first().attr('id')
+
+      $.each( window.dataSummary, function( ds_key, ds_value ) {
+
+        if (ds_value != undefined) {
+
+          if (rowID == ds_value['id']) {
+
+            window.dataSummary[ds_key]['nameforshow'] = name
+
+          }
+
+        }
+
+      });
+
+      drawResSummay()
+      drawStateSummay()
+
+    } else {
+      $(this).removeClass('is-valid').addClass('is-invalid')
+      if (duplicate_count>1 && name != '') {
+        $(this).parents('td').first().find('.res-state-name-error').first().removeClass('hide').addClass('show')
+      }
+    }
+
+  });
+
+  $(document).on("blur","maxlength-input-validation, .capacity-input-validation, .mq-input-validation",function(event) {
+
+    if ($(this).val()=='') {
+      $(this).val(1)
+    }
 
   });
 
@@ -331,9 +434,10 @@ $(document).ready(function(){
 
   });
 
-  $('#simweeks, #simnum').on('keyup blur', function(e) {
-    step5HandleErrors()
+  $('#simweeks, #simnum, #housingp').on('keyup blur', function(e) {
+    step6HandleErrors()
   })
+  
 
   //*********************************
   //**************************STEP 2
@@ -399,7 +503,7 @@ $(document).ready(function(){
 
           let pop_row =   '<tr this_id="'+id+'" class="poprows" name="'+name+'">'+
                           '<td style="font-weight: 900">'+name+'</td>'+
-                          '<td class="ttd"><input type="number" popfullname="'+name+'" id="population-'+id+'" min="1" max="100000" step="1" class="form-control pop-total-nums pop-input-validation pop-num-input" name="populationTypeCount['+id+']" style="width:100px; height:100%;"></td>'+
+                          '<td class="ttd"><input type="number" popfullname="'+name+'" id="population-'+id+'" min="1" max="100000" step="1" class="form-control pop-total-nums pop-input-validation pop-num-input is-invalid" name="populationTypeCount['+id+']" style="width:150px; height:100%;"></td>'+
                           '<td><a class="text-danger pointer removePopulationRow">Delete</a></td>'
                           '</tr>';
 
@@ -423,7 +527,6 @@ $(document).ready(function(){
       }
 
     } else {
-
 
       let resStateFlag = false
 
@@ -456,11 +559,16 @@ $(document).ready(function(){
             window.popovers = {}
             window.TotalInitPopulation = {}
 
-            $("#restable tbody").html('<tr><td></td><td></td><td></td><td></td><td></td></tr>')
-            $("#statetable tbody").html('<tr><td></td><td></td><td></td><td></td></tr>')
+            $("#res-tbody").html('<tr><td></td><td></td><td></td><td></td><td></td></tr>')
+            $("#state-tbody").html('<tr><td></td><td></td><td></td><td></td></tr>')
 
             $('#resources-overview').text('Incomplete').addClass('text-danger').removeClass('text-success')
             $('#states-overview').text('Incomplete').addClass('text-danger').removeClass('text-success')
+
+            window.dataSummary = []
+
+            drawResSummay()
+            drawStateSummay()
 
             UnlockPopulationTypes()
 
@@ -476,126 +584,6 @@ $(document).ready(function(){
 
   });
 
-
-  // $('#populationbtXXX').on('click', function(e) {
-
-  //   let elem = $(this)
-
-  //   if ($(this).hasClass('btn-primary')) {
-
-  //     $('#pop-spchrter-error').css('display','none')
-
-  //     if ($("#populationtext").val().length != 0){
-
-  //       let input_val = $("#populationtext").val()
-
-  //       var format = /[`_!@#$%^&*()+\-=\[\]{};':"\\|.<>\/?~]/;
-
-  //       if ( !format.test(input_val) ) {
-
-  //         $(this).text('Reset table')
-  //         $(this).removeClass('btn-primary').addClass('btn-danger')
-  //         $('#populationtext').attr('disabled','true')
-  //         $('#populationtext').val('')
-
-  //         input_val = input_val.replace(/\s/g , "");
-
-  //         let popTableTbody = $('#_table #populationtable tbody')
-  //         popTableTbody.html("")
-
-  //         window.populationType = []
-  //         let tableRow = ''
-
-  //         let input_separated = input_val.split(',')
-
-  //         $.each( input_separated, function( k1, value ) {
-
-  //           value = escape(value.trim())
-
-  //           if (value!='') {
-
-  //             window.populationType.push(value)
-
-  //             tableRow +=   '<tr>'+
-  //                         '<td style="font-weight: 900">'+value+'</td>'+
-  //                         '<td class="ttd"><input type="number" popfullname="'+value+'" id="population-'+value+'" min="1" max="100000" step="1" class="form-control pop-total-nums pop-input-validation pop-num-input" name="populationTypeCount['+value+']" style="width:100px; height:100%;" value="1">'+
-  //                         '</td></tr>';
-  //           }
-
-  //         });
-
-  //         popTableTbody.append(tableRow)
-
-  //         $('#pop-count-info').css('display','inline-block')
-
-  //       } else {
-
-  //         $('#pop-spchrter-error').css('display','block')
-
-  //       }
-
-  //     }
-
-  //   } else {
-
-  //     let resStateFlag = false
-
-  //     if (window.states.length>0 || window.resources.length>0) {
-
-  //       resStateFlag = true
-
-  //     }
-
-  //     if (!resStateFlag) {
-
-  //       resetPopulationStep(elem)
-  //       step2HandleErrors()
-
-  //     } else {
-
-  //       window.general_Toast.fire({
-  //         title: 'Are you sure?',
-  //         text: "It seems like you have added resources (step 3) or additional states (step 4) to your simulation. Resetting this table will remove resources and states. You won't be able to revert this.",
-  //         icon: 'warning',
-  //         showCancelButton: true,
-  //         confirmButtonColor: '#3085d6',
-  //         cancelButtonColor: '#d33',
-  //         confirmButtonText: 'Yes, reset it!'
-  //       }).then((result) => {
-  //         if (result.value) {
-
-  //           resetPopulationStep(elem)
-  //           window.states = []
-  //           window.resources = []
-
-  //           window.popovers = {}
-  //           window.totalPopulation = {}
-  //           window.TypePopulation = {}
-  //           window.TotalInitPopulation = {}
-
-  //           $("#restable tbody").html('<tr><td></td><td></td><td></td><td></td><td></td></tr>')
-  //           $("#statetable tbody").html('<tr><td></td><td></td><td></td><td></td></tr>')
-
-  //           $('#resources-overview').text('Incomplete').addClass('text-danger').removeClass('text-success')
-  //           $('#states-overview').text('Incomplete').addClass('text-danger').removeClass('text-success')
-
-  //           step2HandleErrors()
-
-  //         }
-  //       })
-
-  //     }
-
-  //   }
-
-  //   step2HandleErrors()
-
-  // });
-
-
-
-
-
   //********************************
   //***********************STEP 2 END
 
@@ -604,34 +592,24 @@ $(document).ready(function(){
   //*********************************
   //**************************STEP 3
 
-
   $('#resourcebtn').on('click', function(e) {
 
+    $('.popover-all').popover('hide');
+
     var elem = document.getElementById("resselect");
+
     var id = elem.options[elem.selectedIndex].id;
 
-    let name = elem.options[elem.selectedIndex].value;
-    let nameForShow = '';
-
-    if (id=='Rehabilitation') {
-
-      nameForShow = 'Addiction / Rehabilitation Center'
-      name = 'Rehabilitation'
-
-    } else {
-
-      nameForShow = name
-
-    }
+    let name = nameForShow = elem.options[elem.selectedIndex].value;
 
     if (id != 'title'){
 
       let type = $('option[id='+id+']').attr('type')
 
       //is this the first row
-      let rowCount = $("#restable tbody .mainrow").length
+      let rowCount = $("#res-tbody .mainrow").length
       if (rowCount== 0) {
-        $("#restable tbody tr").remove()
+        $("#res-tbody tr").remove()
       }
 
       let rowID = makeid(5)
@@ -649,16 +627,20 @@ $(document).ready(function(){
       let tooltipClass = "tooltip-"+rowID
       let row = MakeResourcesRowColumnHTML(rowID,tooltipClass,type,name,nameForShow)
 
-      $("#restable tbody").append(row)
+      $("#res-tbody").append(row)
 
       //Activate
       $('.'+tooltipClass).tooltip();
 
       activatePopUpWindows(rowID,type)
 
+      window.dataSummary.push({ 'name':name, 'nameforshow':'', 'id':rowID, 'type':type, 'kind':'main', 'parent_id':null, properties: {'ap':[],'ip':[],'mlos':0,'cap':-1,'mq':0} })
+
     }
 
     step3HandleErrors()
+
+    drawResSummay()
 
   })
 
@@ -677,14 +659,36 @@ $(document).ready(function(){
 
     if (this_name=='apop') {
 
-      let allCheckboxes = $(this).parents('.popover-content').first().find('input[type="checkbox"]')
+      //remove previosuly set allowed population from the summary object also the initial population
+      $.each( window.dataSummary, function( ds_key1, ds_value1 ) {
+        if (ds_value1 != undefined) {
+          if (rowID == ds_value1['id']) {
+            window.dataSummary[ds_key1]['properties']['ap'] = [];
+            window.dataSummary[ds_key1]['properties']['ip'] = [];
+          }
+        }
+      });
 
+      let allCheckboxes = $(this).parents('.popover-content').first().find('input[type="checkbox"]')
       let checkboxFlag = false
 
-      allCheckboxes.each(function() {
+      allCheckboxes.each(function(v) {
+
+        //population names
+        let checkbox_name = $(this).val()
 
         if (this.checked) {
           checkboxFlag = true
+
+          //add new allowed population to the summary object
+          $.each( window.dataSummary, function( ds_key2, ds_value2 ) {
+            if (ds_value2 != undefined) {
+              if (rowID == ds_value2['id']) {
+                window.dataSummary[ds_key2]['properties']['ap'].push(checkbox_name);
+              }
+            }
+          });
+
         }
 
       });
@@ -725,7 +729,19 @@ $(document).ready(function(){
 
               return false
 
+            } else {
+
+
+              $.each( window.dataSummary, function( ds_key5, ds_value5 ) {
+                if (ds_value5 != undefined) {
+                  if (rowID == ds_value5['id']) {
+                    window.dataSummary[ds_key5]['properties']['cap'] = currentCap;
+                  }
+                }
+              });
+
             }
+
 
         } else {
 
@@ -739,14 +755,21 @@ $(document).ready(function(){
 
         }
 
+      } else {
+
+        $.each( window.dataSummary, function( ds_key5, ds_value5 ) {
+          if (ds_value5 != undefined) {
+            if (rowID == ds_value5['id']) {
+              window.dataSummary[ds_key5]['properties']['cap'] = -1;
+            }
+          }
+        });
+
       }
 
     } else if(this_name=='mpop') {
 
       let mlsInput = $(this).parents('.popover-content').first().find('input[kind="mls"]').first().val()
-
-      console.log('here')
-      console.log(mlsInput)
 
       if (mlsInput=='' || mlsInput < 1) {
 
@@ -760,6 +783,44 @@ $(document).ready(function(){
 
         return false
 
+      } else {
+
+        $.each( window.dataSummary, function( ds_key6, ds_value6 ) {
+          if (ds_value6 != undefined) {
+            if (rowID == ds_value6['id']) {
+              window.dataSummary[ds_key6]['properties']['mlos'] = mlsInput;
+            }
+          }
+        });
+
+      }
+
+    } else if(this_name=='qpop') { //monthly quota
+
+      let mqInput = $(this).parents('.popover-content').first().find('input[kind="mqinput"]').first().val()
+
+      if (mqInput=='' || mqInput < 1) {
+
+        window.general_Toast.fire({
+          title: 'Error',
+          text: "The monthly quota is required and cannot be equal to zero",
+          icon: 'error'
+        })
+
+        UnsetMQ(mainId)
+
+        return false
+
+      } else {
+
+        $.each( window.dataSummary, function( ds_keymq, ds_valuemq ) {
+          if (ds_valuemq != undefined) {
+            if (rowID == ds_valuemq['id']) {
+              window.dataSummary[ds_keymq]['properties']['mq'] = mqInput;
+            }
+          }
+        });
+
       }
 
     } else if(this_name=='ipop') {
@@ -767,6 +828,7 @@ $(document).ready(function(){
         let initPopInputs = $(this).parents('.popover-content').first().find('table').first().find('tr')
 
         let poparray = {}
+        let popSummaryArray = []
 
         initPopInputs.each(function() {
 
@@ -775,6 +837,17 @@ $(document).ready(function(){
 
           poparray[_name]=_val
 
+          popSummaryArray.push({'name':_name,'value':_val})
+
+        });
+
+        //add new ini population to the summary object
+        $.each( window.dataSummary, function( ds_key3, ds_value3 ) {
+          if (ds_value3 != undefined) {
+            if (rowID == ds_value3['id']) {
+              window.dataSummary[ds_key3]['properties']['ip']= popSummaryArray;
+            }
+          }
         });
 
         let popCountValidation = validatePopulationCounts(poparray,mainId)
@@ -843,6 +916,12 @@ $(document).ready(function(){
 
     $('.popover-all').popover('hide');
 
+    checkStep3()
+    checkStep4()
+
+    drawResSummay()
+    drawStateSummay()
+
   });
 
 
@@ -909,6 +988,26 @@ $(document).ready(function(){
 
     activatePopUpWindows(rowID,type)
 
+
+    window.dataSummary.push({ 'name':name, 'nameforshow':'', 'id':rowID, 'type':type, 'kind':'child', 'parent_id':parentID, properties: {'ap':[],'ip':[],'mlos':0,'cap':-1, 'mq':0} })
+
+    $.each( window.dataSummary, function( ds_key, ds_value ) {
+
+      if (ds_value != undefined) {
+
+        if (parentID == ds_value['id']) {
+
+          window.dataSummary[ds_key]['kind'] = 'parent'
+          window.dataSummary[ds_key]['properties'] =  {'ap':[],'ip':[],'mlos':0,'cap':-1}
+
+        }
+
+      }
+
+    });
+
+    drawResSummay()
+
   })
 
   $(document).on('click','.removeResRow', function(){
@@ -932,20 +1031,54 @@ $(document).ready(function(){
       
       $(this).remove()
 
+      $.each( window.dataSummary, function( ds_key1, ds_value1 ) {
+
+        if (ds_value1 != undefined) {
+
+          if (ds_value1['kind']=='child') {
+
+            if (rowID == ds_value1['parent_id']) {
+
+              window.dataSummary.splice(ds_key1, 1);
+
+            }
+
+          }
+
+        }
+
+      });
+
     });
 
     elem.remove()
 
     //if no more row left
-    let rowCount = $("#restable tbody .mainrow").length
+    let rowCount = $("#res-tbody .mainrow").length
 
     if (rowCount==0) {
 
-      $("#restable tbody").append('<tr><td></td><td></td><td></td><td></td><td></td></tr>')
+      $("#res-tbody").append('<tr><td></td><td></td><td></td><td></td><td></td></tr>')
       
     }
 
+    $.each( window.dataSummary, function( ds_key, ds_value ) {
+
+      if (ds_value != undefined) {
+
+        if (rowID == ds_value['id']) {
+
+          window.dataSummary.splice(ds_key, 1);
+
+        }
+
+      }
+
+    });
+
+    checkStep3()
     step3HandleErrors()
+    drawResSummay()
 
   })
 
@@ -967,11 +1100,48 @@ $(document).ready(function(){
     if (subRowCount == 0) {
       let parentElem = $(document).find('tr[id='+parentID+']')
       let type = parentElem.attr('type')
-      let td3 = makeResourcesPropretiesTD(parentID)
+
+      let name = parentElem.attr('name')
+
+      let td3 = makeResourcesPropretiesTD(parentID,null,name)
+
       parentElem.removeClass('parentrow')
       parentElem.find('td').eq(3).html(td3)
+
       activatePopUpWindows(parentID,type)
+
+      $.each( window.dataSummary, function( ds_key1, ds_value1 ) {
+
+        if (ds_value1 != undefined) {
+
+          if (parentID == ds_value1['id']) {
+
+            window.dataSummary[ds_key1]['kind'] = 'main'
+
+          }
+
+        }
+
+      });
+
     }
+
+    $.each( window.dataSummary, function( ds_key, ds_value ) {
+
+      if (ds_value != undefined) {
+
+        if (rowID == ds_value['id']) {
+
+          window.dataSummary.splice(ds_key, 1);
+
+        }
+
+      }
+
+    });
+
+    checkStep3()
+    drawResSummay()
 
   })
 
@@ -985,6 +1155,8 @@ $(document).ready(function(){
 
   $('#statebtn').on('click', function(e) {
 
+    $('.popover-all').popover('hide');
+
     var elem = document.getElementById("stateselect");
     var id = elem.options[elem.selectedIndex].id;
     let name = elem.options[elem.selectedIndex].value;
@@ -994,9 +1166,9 @@ $(document).ready(function(){
       let type = $('option[id='+id+']').attr('type')
 
       //is this the first row
-      let rowCount = $("#statetable tbody .mainrow").length
+      let rowCount = $("#state-tbody .mainrow").length
       if (rowCount== 0) {
-        $("#statetable tbody tr").remove()
+        $("#state-tbody tr").remove()
       }
 
       let rowID = makeid(5)
@@ -1013,15 +1185,18 @@ $(document).ready(function(){
       let tooltipClass = "tooltip-"+rowID
       let row = MakeStatesRowColumnHTML(rowID,tooltipClass,type,name)
 
-      $("#statetable tbody").append(row)
+      $("#state-tbody").append(row)
 
       $('.'+tooltipClass).tooltip();
 
       activatePopUpWindows(rowID,type)
 
+      window.dataSummary.push({ 'name':name, 'nameforshow':'', 'id':rowID, 'type':type, 'kind':'main', 'parent_id':null, properties: {'ap':[],'ip':{} } })
+
     }
 
     step4HandleErrors()
+    drawStateSummay()
 
   })
 
@@ -1035,63 +1210,451 @@ $(document).ready(function(){
     window.states.splice( window.states.indexOf(rowID), 1 );
 
     removeAllPopoverOfID(rowID)
-    
-    //ALL SUB-ROWS
-    $(document).find('tr[parentID='+rowID+']').each(function( index ) {
-
-      let rowid = $(this).attr('id')
-
-      removeAllPopoverOfID(rowid)
-      removeTotalInitKey(rowid)
-      
-      $(this).remove()
-
-    });
 
     elem.remove()
 
     //if no more row left
-    let rowCount = $("#statetable tbody .mainrow").length
+    let rowCount = $("#state-tbody .mainrow").length
 
     if (rowCount==0) {
 
-      $("#statetable tbody").append('<tr><td></td><td></td><td></td><td></td></tr>')
+      $("#state-tbody").append('<tr><td></td><td></td><td></td><td></td></tr>')
       
     }
 
+    $.each( window.dataSummary, function( ds_key, ds_value ) {
+
+      if (ds_value != undefined) {
+
+        if (rowID == ds_value['id']) {
+
+          window.dataSummary.splice(ds_key, 1);
+
+        }
+
+      }
+
+    });
+
+    checkStep4()
     step4HandleErrors()
+    drawStateSummay()
 
   })
 
 
-  $(document).on('click','.removeStateSubRow', function(){
 
-    let elem = $(this).parents('tr').first();
-    let rowID = elem.attr('id')
-    let parentID = elem.attr('parentID')
 
-    removeTotalInitKey(rowID)
+  //*********************************
+  //**************************STEP 4 END
 
-    removeAllPopoverOfID(rowID)
+  //*********************************
+  //**************************STEP 5
 
-    elem.remove()
 
-    //IF THIS IS THE LAST SUBROW THEN ADD PROP TD TO THE MAINROW
-    let subRowCount = $(document).find('tr[parentID='+parentID+']').length
+  $(document).on('keyup', '#policy-name-input', function() {
 
-    if (subRowCount == 0) {
-      let parentElem = $(document).find('tr[id='+parentID+']')
-      let type = parentElem.attr('type')
-      let td3 = makeStatesPropretiesTD(parentID)
-      parentElem.removeClass('parentrow')
-      parentElem.find('td').eq(2).html(td3)
-      activatePopUpWindows(parentID,type)
+    let text = String(sanitizeString($(this).val()))
+
+    if (text!='') {
+      $(this).removeClass('is-invalid').addClass('is-valid')
+    } else {
+      $(this).removeClass('is-valid').addClass('is-invalid')
     }
+
+  })
+
+  $('#policybtn').on('click', function(e) {
+
+    let text = $('#policy-name-input').val()
+    text = String(sanitizeString(text))
+
+    if (text!='') {
+
+      let rowID = makeid(5)
+      var myEle = document.getElementById(rowID);
+      while(myEle){
+        rowID = makeid(5)
+        myEle = document.getElementById(rowID);
+      }
+
+      let tooltipClass = "tooltip-"+rowID
+
+      let t = '<tr class="mainrow" id="'+rowID+'" pname="'+text+'"><td>Policy</td>'+
+              '<td>'+text+'</td>'+
+              '<td><a class="text-danger pointer edit-policy-row a-tag" this-id="'+rowID+'">Edit properties</a>&nbsp;'+
+              '<a data-toggle="tooltip" data-placement="top" title="" class="_icon not-set pointer '+tooltipClass+'" data-original-title="Not set"><i class="text-danger fas fa-times-circle"></i></a></td>'+
+              '<td><a class="text-danger pointer remove-policy-row">Delete policy</a></td></tr>'
+
+      let rowCount = $("#policy-tbody .mainrow").length
+      if (rowCount== 0) {
+        $("#policy-tbody tr").remove()
+      }
+
+      $('#policy-tbody').append(t)
+
+      $('.'+tooltipClass).tooltip();
+
+      window.dataSummary.push({ 'name':text, 'id':rowID, 'type':'policy', properties: {'mlos':{'value':null,'changed':'','quota':null},'cap':{'value':null,'changed':'','quota':null} } })
+
+    }
+
+  })
+
+  $(document).on('click', '.edit-policy-row', function() {
+
+    let flag = false
+
+    let html =  '<div class="table-responsive row-scroll" style="border: 1px solid gray;">'+
+                '<table class="table table-bordered" id="policy-edit-table" style="margin-bottom: 0">'+
+                '<thead>'+
+                '<tr>'+
+                '<th>Type</th><th>Name</th><th>Properties</th><th>Monthly quota</th>'+
+                '</tr>'+
+                '</thead>'+
+                '<tbody id="policy-edit-tbody">';
+
+    var policyId = $(this).attr('this-id')
+
+    $.each( window.dataSummary, function( ds_key, ds_value ) {
+
+      if (ds_value != undefined) {
+
+        if (ds_value['type'] == 'res') {
+
+          if (ds_value['kind'] == 'main') {
+
+            flag = true
+
+            html += '<tr id="'+policyId+'-'+ds_value['id']+'" class="mainrow">'
+
+            html += '<td rowspan="2">Resource</td>'
+
+            html += '<td rowspan="2">'+ds_value['nameforshow']+'</td>'
+
+            html += '<td class="bb0">'
+
+            let checked = ''
+            let readonly = ''
+            if (ds_value['properties']['cap']==-1) {
+              readonly = 'readonly'
+              checked = 'checked=""'
+            }
+
+            html += '<label for="inputName">Maximum length of stay</label>'+
+                    '<div class="input-group mb-3">'+
+                    '<input name="policy['+policyId+']['+ds_value['id']+'][mlos]" main-id="'+ds_value['id']+'" type="number" min="1" max="1000" step="1" autocomplete="off" class="is-valid form-control policy-input policy-mlos" original-val="'+ds_value['properties']['mlos']+'" value="'+ds_value['properties']['mlos']+'">'+
+                    '<div class="input-group-append">'+
+                    '<span class="input-group-text bg-secondary">unchanged</span>'+
+                    '</div>'+
+                    '</div>';
+
+            html += '</td>'
+
+
+            html += '<td class="bb0">'+
+                    '<label for="inputName"><span class="increase-decrease">Increase or decrease</span> the maximum length of stay monthly by</label>'+
+                    '<input name="policy['+policyId+']['+ds_value['id']+'][mlos][mq]" type="number" min="1" max="1000" step="1" autocomplete="off" class="form-control policy-input mlos-mq" readonly value="">'+
+                    '<span class="text-danger mq-error hide"></span></td>'
+
+
+            html += '<tr class="last-child-row">'
+
+            html += '<td>'
+
+            html += '<label for="inputName">Capacity</label>'+
+                    '<div class="input-group mb-3">'+
+                    '<input '+readonly+' name="policy['+policyId+']['+ds_value['id']+'][cap]" type="number" min="1" max="100000" step="1" autocomplete="off" class="form-control policy-input capacity-input-policy" value="'+ds_value['properties']['cap']+'">'+
+                    '<div class="input-group-append">'+
+                    '<span class="input-group-text bg-secondary">unchanged</span>'+
+                    '</div>'+
+                    '</div>';
+
+            html += '<label class="checkbox-inline"><input '+checked+' thisid="'+policyId+'-'+ds_value['id']+'" class="capacities-infinite-policy" type="checkbox"> Infinite</label>' 
+   
+            html += '</td>'
+
+            html += '<td>'+
+                    '<label for="inputName">Increase the capacity monthly by</label>'+
+                    '<input name="policy['+policyId+']['+ds_value['id']+'][cap][mq]" type="number" min="1" max="1000" step="1" autocomplete="off" class="form-control policy-input" value="">'+
+                    '</td>'
+
+            html += '</tr>'
+
+          } else if (ds_value['kind'] == 'parent') {
+
+            flag = true
+
+            html += '<tr id="'+policyId+'-'+ds_value['id']+'" class="mainrow parentrow">'
+
+            html += '<td>Main resource</td>'
+            html += '<td>'+ds_value['nameforshow']+'</td>'
+            html += '<td></td>'
+            html += '<td></td>'
+
+            html += '</tr>'
+
+            let childCount = 0
+            let rowCounter = 0
+            let childRowClass = ''
+
+            $.each( window.dataSummary, function( ds_key_child2, ds_value_child2 ) {
+            
+              if (ds_value_child2 != undefined) {
+
+                if (ds_value['id'] == ds_value_child2['parent_id']) {
+
+                  childCount += 1
+
+                }
+
+              }
+
+            })
+
+            $.each( window.dataSummary, function( ds_key_child2, ds_value_child2 ) {
+
+              if (ds_value_child2 != undefined) {
+
+                if (ds_value['id'] == ds_value_child2['parent_id']) {
+
+                    rowCounter += 1
+
+                    if (childCount > 1 && rowCounter < childCount) {
+
+                      childRowClass = 'child-row'
+
+                    } else{
+
+                      childRowClass = 'last-child-row'
+
+                    }
+
+                    html += '<tr id="'+policyId+'-'+ds_value_child2['id']+'" parent-id="'+ds_value_child2['parent_id']+'" class="'+childRowClass+'">'
+
+                    html += '<td rowspan="2">Sub resource</td>'
+
+                    html += '<td rowspan="2">'+ds_value_child2['nameforshow']+'</td>'
+
+                    html += '<td class="bb0">'
+
+                    let checked = ''
+                    let readonly = ''
+                    if (ds_value['properties']['cap']==-1) {
+                      readonly = 'readonly'
+                      checked = 'checked=""'
+                    }
+
+                    html += '<label for="inputName">Maximum length of stay</label>'+
+                            '<div class="input-group mb-3">'+
+                            '<input name="policy['+policyId+']['+ds_value_child2['id']+'][mlos]" main-id="'+ds_value_child2['id']+'" type="number" min="1" max="1000" step="1" autocomplete="off" class="is-valid form-control policy-input policy-mlos" original-val="'+ds_value['properties']['mlos']+'" value="'+ds_value_child2['properties']['mlos']+'">'+
+                            '<div class="input-group-append">'+
+                            '<span class="input-group-text bg-secondary">unchanged</span>'+
+                            '</div>'+
+                            '</div>';
+
+                    html += '</td>'
+
+                     html +=  '<td class="bb0">'+
+                              '<label for="inputName"><span class="increase-decrease">Increase or decrease</span> the maximum length of stay monthly by</label>'+
+                              '<input name="policy['+policyId+']['+ds_value_child2['id']+'][mlos][mq]" type="number" min="1" max="1000" step="1" autocomplete="off" readonly class="form-control policy-input mlos-mq" value="">'+
+                              '<span class="text-danger mq-error hide"></span></td>'
+
+                    html += '</tr>'
+
+                    html += '<tr class="'+childRowClass+'">'
+
+                    html += '<td class="bt0">'
+                    html += '<label for="inputName">Capacity</label>'+
+                            '<div class="input-group mb-3">'+
+                            '<input '+readonly+' name="policy['+policyId+']['+ds_value_child2['id']+'][cap]" type="number" min="1" max="100000" step="1" autocomplete="off" class="form-control policy-input capacity-input-policy" value="'+ds_value_child2['properties']['cap']+'">'+
+                            '<div class="input-group-append">'+
+                            '<span class="input-group-text bg-secondary">unchanged</span>'+
+                            '</div>'+
+                            '</div>';
+                    html += '<label class="checkbox-inline"><input '+checked+' thisid="'+policyId+'-'+ds_value_child2['id']+'" class="capacities-infinite-policy" type="checkbox"> Infinite</label>' 
+                    html += '</td>'
+
+                    html += '<td class="bt0">'+
+                            '<label for="inputName">Increase the capacity monthly by</label>'+
+                            '<input name="policy['+policyId+']['+ds_value_child2['id']+'][cap][mq]" type="number" min="1" max="1000" step="1" autocomplete="off" class="form-control policy-input" value="">'+
+                            '</td>'
+
+                    html += '</tr>'
+
+                }
+
+              }
+
+            });
+
+          }
+
+        }
+
+      }
+
+    });
+
+    html += '</tbody>'+
+            '</table>'+
+            '</div>'
+
+    $('#policy-edit-twrapper').html(html)
+
+    $('#save-close-policy-modal').attr('this-id',policyId)
+
+    $('#modal-xl-policy').removeClass('hide').addClass('show')
+
+  })
+
+  $('.close-policy-modal').on('click', function(e) {
+    $('#modal-xl-policy').removeClass('show').addClass('hide')
+  })
+
+  $('#save-close-policy-modal').on('click', function(e) {
+
+    let thisID = $(this).attr('this-id')
+
+
+    let notset_elem = $(document).find('.tooltip-'+thisID)
+
+    notset_elem.attr('title','Set').attr('data-original-title','Set')
+    notset_elem.find('i').removeClass('fa-times-circle').removeClass('text-danger').addClass('fa-check-circle').addClass('text-success')
+    notset_elem.removeClass('not-set').addClass('set')
+
+    $('#modal-xl-policy').removeClass('show').addClass('hide')
+  })
+
+  $(document).on("change",".capacities-infinite-policy",function(e,data) {
+
+    if(this.checked) {
+      $(this).parents('td').first().find('.capacity-input-policy').first().val('-1').attr('readonly','true');
+    } else {
+      $(this).parents('td').first().find('.capacity-input-policy').first().val('1').removeAttr('readonly');
+    }
+
+  });
+
+
+  $(document).on('keyup', '.policy-mlos', function() {
+
+    let current_val = parseInt($(this).val())
+    let main_id = $(this).attr('main-id')
+
+    if (current_val >= 0) {
+
+      let original_val = null
+      let diff = null
+      let is_increased = 'unchanged'
+      let prepared_text = ''
+      let textClass = ''
+      let increaseDecrease = ''
+
+      $.each( window.dataSummary, function( ds_key, ds_value) {
+        if (ds_value != undefined) {
+          if (ds_value['id'] == main_id) {
+            original_val = parseInt(ds_value['properties']['mlos'])
+          }
+        }
+      })
+
+      diff = difference(current_val, original_val)
+
+      if (current_val > original_val) {
+
+        prepared_text = 'increased by '+diff
+        textClass = 'bg-lime'
+        increaseDecrease = 'Increase'
+
+      } else if (current_val < original_val) {
+       
+        prepared_text = 'decreased by '+diff
+        textClass = 'bg-orange'
+        increaseDecrease = 'Decrease'
+
+      } else {
+
+        prepared_text = 'unchanged'
+        textClass = 'bg-secondary'
+
+      }
+
+      $(this).removeClass('is-invalid').addClass('is-valid')
+
+      $(this).parents('div').first().find('.input-group-text').removeClass('bg-secondary bg-orange bg-lime').addClass(textClass).text(prepared_text)
+
+      if (current_val != original_val) {
+
+        $(this).parents('tr').first().find('.increase-decrease').first().text(increaseDecrease)
+
+        $(this).parents('tr').first().find('.mlos-mq').first().removeAttr('readonly')
+
+      } else {
+
+        $(this).parents('tr').first().find('.increase-decrease').first().text('Increase or decrease')
+
+        $(this).parents('tr').first().find('.mlos-mq').first().attr('readonly','true')
+
+      }
+
+    } else {
+
+      $(this).removeClass('is-valid').addClass('is-invalid')
+
+      $(this).parents('div').first().find('.input-group-text').removeClass('bg-secondary bg-orange bg-lime').addClass('bg-secondary').text('')
+
+      $(this).parents('tr').first().find('.mlos-mq').first().attr('readonly','true')
+
+      $(this).parents('tr').first().find('.increase-decrease').first().text('Increase or decrease')
+
+    }
+
+  })
+
+
+  $(document).on('keyup', '.mlos-mq', function() {
+
+    let original_val = parseInt($(this).parents('tr').first().find('.policy-mlos').first().attr('original-val'))
+    let current_val = parseInt($(this).parents('tr').first().find('.policy-mlos').first().val())
+
+    let mq_val = parseInt($(this).val())
+
+    let flag = false
+    let msg = ''
+
+    let diff = difference(current_val, original_val)
+
+    if (current_val<mq_val) {
+
+      msg = 'Monthly quota cannot be bigger than the new maximum length of stay'
+
+      $(this).removeClass('is-valid').addClass('is-invalid')
+
+      $(this).parents('tr').first().find('.mq-error').first().removeClass('hide').addClass('show').text(msg)
+
+    } else if (mq_val<= 0) {
+
+      msg = 'Monthly quota cannot be zero'
+
+      $(this).removeClass('is-valid').addClass('is-invalid')
+
+      $(this).parents('tr').first().find('.mq-error').first().removeClass('hide').addClass('show').text(msg)
+
+    } else {
+
+      $(this).removeClass('is-invalid').addClass('is-valid')
+
+      $(this).parents('tr').first().find('.mq-error').first().removeClass('show').addClass('hide')
+
+    }
+
+
 
   })
 
   //*********************************
-  //**************************STEP 4 END
+  //**************************STEP 5 END
 
 
   $(document).on('keyup', '.transitioninput', function() {
@@ -1197,6 +1760,7 @@ function checkStep1(){
       $('#loc-overview').text('Complete').addClass('text-success').removeClass('text-danger')
 
       $('#loc-div').removeClass('hide')
+      $('#s1-sum').removeClass('hide')
 
       $('#simname-side').text( simname )
       $('#cityname-side').text( $('#autocomplete').val() )
@@ -1212,6 +1776,7 @@ function checkStep1(){
       $('#loc-overview').text('Incomplete').addClass('text-danger').removeClass('text-success')
 
       $('#loc-div').addClass('hide')
+      $('#s1-sum').addClass('hide')
 
       $('#simname-side').text('')
       $('#cityname-side').text('')
@@ -1225,6 +1790,7 @@ function checkStep1(){
     $('#loc-overview').text('Incomplete').addClass('text-danger').removeClass('text-success')
 
     $('#loc-div').addClass('hide')
+    $('#s1-sum').addClass('hide')
 
     $('#simname-side').text('')
     $('#cityname-side').text('')
@@ -1246,17 +1812,21 @@ function step1HandleErrors(){
 
   if (simname=="" || !NoSpecialCharacter(simname)) {
     $('#simname-error').css('display','block')
+    $('#simulation-name').removeClass('is-valid').addClass('is-invalid')
     nameValidated = false
   } else {
     $('#simname-error').css('display','none')
+    $('#simulation-name').removeClass('is-invalid').addClass('is-valid')
     nameValidated = true
   }
 
   if (window.loc != 1) {
     $('#cityname-error').css('display','block')
+    $('.sim-location').removeClass('is-valid').addClass('is-invalid')
     cityValidated = false
   } else {
     $('#cityname-error').css('display','none')
+    $('.sim-location').removeClass('is-invalid').addClass('is-valid')
     cityValidated = true
   }
 
@@ -1322,33 +1892,60 @@ function step4HandleErrors(){
   }
   
 }
+
 function step5HandleErrors(){
+
+  let policySet = true
+
+  if (policySet) {
+    $('#next').removeAttr('disabled')
+  } else {
+    $('#next').attr('disabled','true')
+  }
+  
+}
+
+function step6HandleErrors(){
 
   let weeksVal = $('#simweeks').val()
   let simnumVal = $('#simnum').val()
+  let housingpVal = $('#housingp').val()
 
   let weeksInput = false
   let simNumInput = false
-
-
+  let housingiInput = false
 
   if (weeksVal=="" || !NoSpecialCharacter(weeksVal)) {
     $('#weeks-error').css('display','block')
+    $('#simweeks').removeClass('is-valid').addClass('is-invalid')
     weeksInput = false
   } else {
     $('#weeks-error').css('display','none')
+    $('#simweeks').removeClass('is-invalid').addClass('is-valid')
     weeksInput = true
   }
 
   if (simnumVal=="" || !NoSpecialCharacter(simnumVal)) {
     $('#simnum-error').css('display','block')
+    $('#simnum').removeClass('is-valid').addClass('is-invalid')
     simNumInput = false
   } else {
     $('#simnum-error').css('display','none')
+    $('#simnum').removeClass('is-invalid').addClass('is-valid')
     simNumInput = true
   }
 
-  if (weeksInput && simNumInput) {
+  if (housingpVal=="" || !NoSpecialCharacter(housingpVal)) {
+    $('#housingp-error').css('display','block')
+    $('#housingp').removeClass('is-valid').addClass('is-invalid')
+    housingiInput = false
+  } else {
+    $('#housingp-error').css('display','none')
+    $('#housingp').removeClass('is-invalid').addClass('is-valid')
+    housingiInput = true
+  }
+
+  if (weeksInput && simNumInput && housingiInput) {
     $('#parameters-overview').text('Complete').addClass('text-success').removeClass('text-danger')
     $('#next').removeAttr('disabled')
   } else {
@@ -1369,8 +1966,10 @@ function checkStep2(){
   } else {
 
     $('#population-overview').text('Incomplete').addClass('text-danger').removeClass('text-success')
-    $('#population-info-table').css('display','none');
-    $('#population-info-table table tbody').html('');
+
+
+    $('#population-info').css('display','none');
+    $('#population-info').html('');
 
     output['message'] = 'At least 1 population type is required!'
 
@@ -1396,7 +1995,7 @@ function checkStep2(){
 
       $('#population-overview').text('Complete').addClass('text-success').removeClass('text-danger')
 
-      let infoSectionPopulationTable = ''
+      let infoSectionPopulation = '<ul class="sum-ul">'
       
       let tbody = $(document).find('#populationtable tbody')
 
@@ -1404,13 +2003,16 @@ function checkStep2(){
 
         let thisPopulationVal = tbody.find('input[popfullname="'+value+'"]').first().val()
 
-        infoSectionPopulationTable += '<tr><td>'+value+'</td>'+
-                '<td>'+thisPopulationVal+'</td></tr>';
+        infoSectionPopulation += '<li>'+value+': '+thisPopulationVal+'</li>';
 
       });
 
-      $('#population-info-table').css('display','block');
-      $('#population-info-table table tbody').html(infoSectionPopulationTable);
+      infoSectionPopulation += '</ul>'
+
+
+
+      $('#population-info').css('display','block');
+      $('#population-info').html(infoSectionPopulation);
 
     }
 
@@ -1427,8 +2029,9 @@ function checkStep3(){
   if (window.resources.length >= 1) {
 
     let unsetRows = $(document).find('#restable').find('.not-set').length
+    let unsetNames = $(document).find('#restable').find('.is-invalid').length
 
-    if (unsetRows!=0) {
+    if (parseInt(unsetRows)!=0 || parseInt(unsetNames)!=0) {
 
       output['message'] = "One or more properties are not set!"
 
@@ -1438,8 +2041,6 @@ function checkStep3(){
       output['flag'] = true
 
     }
-
-
 
   } else {
 
@@ -1460,8 +2061,9 @@ function checkStep4(){
   if (window.states.length >= 1) {
 
     let unsetRows = $(document).find('#statetable').find('.not-set').length
+    let unsetNames = $(document).find('#statetable').find('.is-invalid').length
 
-    if (unsetRows!=0) {
+    if (parseInt(unsetRows)!=0 || parseInt(unsetNames)!=0) {
 
       output['message'] = "One or more properties are not set."
 
@@ -1484,34 +2086,11 @@ function checkStep4(){
 
 }
 
-
 function checkStep5(){
 
-  let output = false;
+  let output = {'flag':false,'message':''}
 
-  let transitionInput = $(document).find('.transitioninput');
-
-  let flag = true;
-
-  transitionInput.each(function(){
-
-    if ( $(this).val() == "" ){
-      flag = false
-    }
-
-  });
-
-  if (flag) {
-
-    output = true
-
-    $('#transitions-overview').text('Complete').addClass('text-success').removeClass('text-danger')
-
-  } else {
-
-    $('#transitions-overview').text('Incomplete').addClass('text-danger').removeClass('text-success')
-
-  }
+  output['flag'] = true
 
   return output
 
@@ -1564,6 +2143,7 @@ function activatePopUpWindows(rowID,type){
   let ipopID = 'ipop-'+rowID
   let mpopID = 'mpop-'+rowID
   let cpopID = 'cpop-'+rowID
+  let mqpopID = 'qpop-'+rowID
 
   $(document).find('#'+apopID).popover({html:true,title: "Allowed Population Type <a class='show-info pointer apop-info'><span></span><i class='text-info fas fa-info-circle'></i></a> <a class='dismisspopover close' data-dismiss='alert'>&times;</a>"}).click(function(e) {
       $('.popover').not(this).hide();
@@ -1580,6 +2160,7 @@ function activatePopUpWindows(rowID,type){
   });
 
   let _type = 'state'
+
   if (type=="res") {
 
     _type = 'resource'
@@ -1598,12 +2179,21 @@ function activatePopUpWindows(rowID,type){
         e.preventDefault();
     });
 
+    $(document).find('#'+mqpopID).popover({html:true,title: "Monthly Quota <a class='show-info pointer cap-info'><span></span><i class='text-info fas fa-info-circle'></i></a> <a class='dismisspopover close' data-dismiss='alert'>&times;</a>"}).click(function(e) {
+        $('.popover').not(this).hide();
+        $(this).data("bs.popover").inState.click = false;
+        $(this).popover('show');
+        e.preventDefault();
+    });
+
+    addMpopHTML(mpopID,rowID,_type)
+    addCpopHTML(cpopID,rowID,_type)
+    addMQpopHTML(mqpopID,rowID,_type)
+
   }
 
   addApopHTML(apopID,rowID,_type)
   addIpopHTML(ipopID,rowID,_type)
-  addMpopHTML(mpopID,rowID,_type)
-  addCpopHTML(cpopID,rowID,_type)
 
 }
 
@@ -1704,6 +2294,7 @@ function addCpopHTML(ThisID,rowID,_type){
 
 }
 
+
 function addMpopHTML(ThisID,rowID,_type){
 
   let html =  '<div><div class="table-responsive">'+
@@ -1711,6 +2302,33 @@ function addMpopHTML(ThisID,rowID,_type){
 
   html += '<tr><td class="pop" style="font-weight: 900">Maximum Length of Stay (weeks)</td>'+
             '<td class="pop"><input kind="mls" class="maxlength-input-validation" type="number" min="1" max="1000" step="1" name="maximumlengthofstay['+_type+']['+rowID+']" value="7" style="width:100px; height:100%;" placeholder="#"></td></tr>';
+
+  html +=   '</tbody></table></div><div style="width:100%"><a rowid="'+rowID+'" id="'+ThisID+'" class="closepop btn btn-xs btn-primary text-white pointer">Save and Close</a></div></div>';
+
+
+  if(typeof window.popovers[ThisID] === 'undefined') {
+    window.popovers[ThisID] = html
+  }
+
+  $(document).find('#'+ThisID).on('shown.bs.popover', function () {
+
+    let popid = $(this).attr('aria-describedby')
+
+    let thisid = $(this).attr('id')
+
+    $(document).find('#'+popid).first().find('.popover-content').first().html(window.popovers[thisid]);
+
+  })
+
+}
+
+function addMQpopHTML(ThisID,rowID,_type){
+
+  let html =  '<div><div class="table-responsive">'+
+          '<table id="'+ThisID+'" class="table table-bordered"><tbody>';
+
+  html += '<tr><td class="pop" style="font-weight: 900">Monthly Quota</td>'+
+            '<td class="pop"><input kind="mqinput" class="mq-input-validation" type="number" min="1" max="10000" step="1" name="monthlyquota['+_type+']['+rowID+']" value="0" style="width:100px; height:100%;" placeholder="#"></td></tr>';
 
   html +=   '</tbody></table></div><div style="width:100%"><a rowid="'+rowID+'" id="'+ThisID+'" class="closepop btn btn-xs btn-primary text-white pointer">Save and Close</a></div></div>';
 
@@ -1770,7 +2388,7 @@ function ReturnIpopTR(value,rowID,_type){
   return html;
 }
 
-function makeResourcesPropretiesTD(rowID,tooltipClass){
+function makeResourcesPropretiesTD(rowID,tooltipClass,name){
   let html =  '<ul class="mb0"><li name="apop-'+rowID+'"><a id="apop-'+rowID+'" class="a-tag popover-all" data-placement="bottom" data-toggle="popover">Allowed Population Type</a>'+
               '&nbsp;<a data-toggle="tooltip" data-placement="top" title="Not set" class="_icon not-set pointer '+tooltipClass+'"><i class="text-danger fas fa-times-circle"></i></a>'+
               '</li>'+
@@ -1786,6 +2404,14 @@ function makeResourcesPropretiesTD(rowID,tooltipClass){
               '<li name="cpop-'+rowID+'"><a id="cpop-'+rowID+'" class="a-tag popover-all" data-placement="bottom" data-toggle="popover">Capacity</a>'+
               '&nbsp;<a data-toggle="tooltip" data-placement="top" title="Not set" class="_icon not-set pointer '+tooltipClass+'"><i class="text-danger fas fa-times-circle"></i></a>'+
               '</li>';
+
+              if (name == 'Housing First') {
+
+                html +='<li name="qpop-'+rowID+'"><a id="qpop-'+rowID+'" class="a-tag popover-all" data-placement="bottom" data-toggle="popover">Monthly Quota</a>'+
+                '&nbsp;<a data-toggle="tooltip" data-placement="top" title="Not set" class="_icon not-set pointer '+tooltipClass+'"><i class="text-danger fas fa-times-circle"></i></a>'+
+                '</li>';
+
+              }
 
   return html
 }
@@ -1878,8 +2504,25 @@ function HandleStepsOnNextBtnClick(){
 
     break;
 
-    //PRAMETERS
+    //policies
     case 5:
+
+      let policyValidate = checkStep5()
+
+      if (policyValidate['flag']===true) {
+        $('#smartwizard').smartWizard("next")
+      } else {
+        Toast.fire({
+          title: 'Error',
+          text: policyValidate['message'],
+          icon: 'warning'
+        })
+      }
+
+    break;
+
+    //PRAMETERS
+    case 6:
       if (checkStep6()) {
 
         if (validateAllSteps()) {
@@ -1918,23 +2561,24 @@ function HandleStepsOnNextBtnClick(){
 }
 
 function MakeResourcesRowColumnHTML(rowID,tooltipClass,type,name,nameForShow){
-  let rowCount = $("#restable tbody tr").length
+
+  let rowCount = $("#res-tbody tr").length
 
   let tr = '<tr id="'+rowID+'" class="mainrow" count="'+rowCount+'" type="'+type+'" name="'+name+'">';
   let td0 = '<td kind="name">'+nameForShow+'</td>';
 
-  let td1 = '<td kind="nameinput"><input type="text" maxlength="40" class="form-control no-special-chars" name="resources['+rowID+'][name-for-show]" value="'+nameForShow+'">'+
-            '<input type="hidden" class="form-control" name="resources['+rowID+'][name]" value="'+name+'" maxlength="40">'+
-            '<small class="text-danger hide">* duplication name is not allowed</small></td>';
+  let td1 = '<td kind="nameinput"><input type="text" maxlength="40" class="form-control no-special-chars res-state-name is-invalid" name="resources['+rowID+'][name-for-show]" value="" placeholder="Enter resource name">'+
+            '<input type="hidden" class="form-control" name="resources['+rowID+'][name]" value="" maxlength="40">'+
+            '<small class="text-danger hide res-state-name-error">* This name has been entered. Duplicate name is not allowed.</small></td>';
   
   let td2 = '<td kind="action">'+
-            '<a class="text-link divideRes pointer">Add sub-element&nbsp;<a class="show-info pointer"><span msg="This feature divides this resource into multiple resources"></span><i class="text-info fas fa-info-circle"></i></a></a>'+
+            '<a class="text-link divideRes pointer">Add sub-resource&nbsp;<a class="show-info pointer"><span msg="This feature divides this resource into multiple resources"></span><i class="text-info fas fa-info-circle"></i></a></a>'+
             '</td>'
 
-  let td3 = '<td kind="props">'+makeResourcesPropretiesTD(rowID,tooltipClass)+'</td>'
+  let td3 = '<td kind="props">'+makeResourcesPropretiesTD(rowID,tooltipClass,name)+'</td>'
 
   let td4 = '<td kind="action">'+
-            '<a class="text-danger pointer removeResRow">Delete row</a>'+
+            '<a class="text-danger pointer removeResRow">Delete resource</a>'+
             '</td>'
 
   let row =   tr+
@@ -1948,16 +2592,17 @@ function MakeResourcesRowColumnHTML(rowID,tooltipClass,type,name,nameForShow){
 }
 
 function MakeSUBResourcesRowColumnHTML(rowID,parentID,subRowCount,tooltipClass,parentName){
+
   let _class = ""
   if (subRowCount!=0) 
     _class = 'nthsub'
 
   let tr = '<tr id="'+rowID+'" parentID="'+parentID+'" class="sub '+_class+'" count="'+subRowCount+'">'
   let td0 = '<td>Sub '+parentName+'</td>';
-  let td1 = '<td><input type="text" class="form-control no-special-chars" name="subresources['+parentID+']['+rowID+'][name]" placeholder="Sub '+parentName+'"><small class="text-danger hide">* duplication name is not allowed</small></td>'
+  let td1 = '<td><input type="text" class="form-control no-special-chars res-state-name is-invalid" name="subresources['+parentID+']['+rowID+'][name]" placeholder="Enter sub-resource name"><small class="text-danger hide res-state-name-error">* This name has been entered. Duplicate name is not allowed.</small></td>'
   let td2 = '<td></td>'
-  let td3 = '<td>'+makeResourcesPropretiesTD(rowID,tooltipClass)+'</td>'
-  let td4 = '<td><a class="text-danger pointer removeResSubRow">Delete row&nbsp;</a></td>'
+  let td3 = '<td>'+makeResourcesPropretiesTD(rowID,tooltipClass,parentName)+'</td>'
+  let td4 = '<td><a class="text-danger pointer removeResSubRow">Delete sub-resource&nbsp;</a></td>'
   let row =   tr+
               td0+
               td1+
@@ -1969,16 +2614,16 @@ function MakeSUBResourcesRowColumnHTML(rowID,parentID,subRowCount,tooltipClass,p
 }
 
 function MakeStatesRowColumnHTML(rowID,tooltipClass,type,name){
-  let rowCount = $("#statetable tbody tr").length
+  let rowCount = $("#state-tbody tr").length
   let tr = '<tr id="'+rowID+'" class="mainrow" count="'+rowCount+'" type="'+type+'" name="'+name+'">';
   let td0 = '<td>'+name+'</td>';
 
-  let td1 = '<td><input type="text" class="form-control no-special-chars" name="states['+rowID+'][name-for-show]" value="'+name+'">'+
+  let td1 = '<td><input type="text" class="form-control no-special-chars res-state-name is-invalid" name="states['+rowID+'][name-for-show]" value="" placeholder="Enter living situations name">'+
             '<input type="hidden" class="form-control" name="states['+rowID+'][name]" value="'+name+'">'+
-            '<small class="text-danger hide">* duplication name is not allowed</small></td>';
+            '<small class="text-danger hide res-state-name-error">* This name has been entered. Duplicate name is not allowed.</small></td>';
 
   let td3 = '<td>'+makeStatesPropretiesTD(rowID,tooltipClass)+'</td>'
-  let td4 = '<td><a class="text-danger pointer removeStateRow">Delete row</a></td>'
+  let td4 = '<td><a class="text-danger pointer removeStateRow">Delete living situation</a></td>'
   let row =   tr+
               td0+
               td1+
@@ -2137,8 +2782,6 @@ function validatePopulationCounts(popArray,rowID){
   let errorArray = {}
   let f = false
 
-  console.log(totalArray)
-
   $.each(totalArray, function( k3, v3 ) {
 
     if (window.TypePopulation[k3] != undefined) {
@@ -2184,7 +2827,6 @@ function validatePopulationCounts(popArray,rowID){
 function removeTotalInitKey(rowID){
 
   delete window.TotalInitPopulation[rowID]
-  console.log(window.TotalInitPopulation)
 
 }
     
@@ -2194,6 +2836,14 @@ function UnsetCapacity(rowID){
 
   thisTooltip.removeClass('set').addClass('not-set').attr('title','Not set').attr('data-original-title','Not set')
   thisTooltip.find('i').first().removeClass('fa-check-circle').removeClass('text-success').addClass('fa-times-circle').addClass('text-danger')
+
+  $.each( window.dataSummary, function( ds_key, ds_value ) {
+    if (ds_value != undefined) {
+      if (rowID == ds_value['id']) {
+        window.dataSummary[ds_key]['properties']['cap']= '-1';
+      }
+    }
+  });
 
 }
 
@@ -2226,6 +2876,15 @@ function UnsetMLS(rowID){
 
 }
 
+function UnsetMQ(rowID){
+
+  let thisTooltip = $(document).find('li[name="qpop-'+rowID+'"').first().find('._icon').first()
+
+  thisTooltip.removeClass('set').addClass('not-set').attr('title','Not set').attr('data-original-title','Not set')
+  thisTooltip.find('i').first().removeClass('fa-check-circle').removeClass('text-success').addClass('fa-times-circle').addClass('text-danger')
+
+}
+
 function UnlockPopulationTypes(elem){
 
   $('.pop-total-nums').removeAttr('readonly')
@@ -2242,4 +2901,274 @@ function LockPopulationTypes(elem){
   $('.removePopulationRow').addClass('disabled')
   $('#populationselect').attr('disabled','disabled')
 
+}
+
+function ResourcesToOverview(){
+
+}
+
+function sanitizeString(str){
+    str = str.replace(/[^a-z0-9áéíóúñü \.,_-]/gim,"");
+    return str.trim();
+}
+
+function drawResSummay(){
+
+  let flag = false
+
+  let html = ''
+
+  $.each( window.dataSummary, function( ds_key, ds_value ) {
+
+    if (ds_value != undefined) {
+
+      if (ds_value['type'] == 'res') {
+
+        if (ds_value['kind'] == 'main') {
+
+          html += '<ul class="sum-ul">'
+
+          flag = true
+
+          html += '<li>'+ds_value['name']+'</li>'
+
+          html += '<ul class="sum-ul">'
+
+          html += '<li>Name: '+ds_value['nameforshow']+'</li>'
+
+          //----
+
+          ap_string = '<ul class="sum-ul">'
+
+          $.each( ds_value['properties']['ap'], function( ds_keyap, ds_valueap ) {
+
+            ap_string += '<li>'+ds_valueap+'</li>'
+
+          });
+
+          ap_string += '</ul>'
+
+          html += '<li>Allowed Population: '+ap_string+'</li>'
+
+          //----
+
+          let ip_string = '<ul class="sum-ul">'
+
+          $.each( ds_value['properties']['ip'], function( ds_keyip, ds_valueip ) {
+
+            ip_string += '<li>'+ds_valueip['name']+': '+ds_valueip['value']+'</li>'
+
+          });
+
+          ip_string += '</ul>'
+
+          html += '<li>Initial Population: '+ip_string+'</li>'
+
+          //----
+
+          html += '<li>Maximum length of stay: '+ds_value['properties']['mlos']+'</li>'
+
+          html += '<li>Capacity: '+ds_value['properties']['cap']+'</li>'
+
+          if (ds_value['name'] == 'Housing First') {
+
+            html += '<li>Monthly quota: '+ds_value['properties']['mq']+'</li>'
+            
+          }          
+
+          html += '</ul>'
+
+          html += '</ul>'
+
+        } else if (ds_value['kind'] == 'parent') {
+
+          html += '<ul class="sum-ul">'
+
+          let num_children = 0
+
+          $.each( window.dataSummary, function( ds_key_child, ds_value_child ) {
+
+            if (ds_value_child != undefined) {
+
+              if (ds_value['id'] == ds_value_child['parent_id']) {
+
+                num_children+=1
+
+              }
+
+            }
+
+          });
+
+          flag = true
+
+          let sub_text = 'sub-resource'
+          if (num_children>1) {
+            sub_text = 'sub-resources'
+          }
+
+          html += '<li>'+ds_value['name']+' ('+num_children+' '+sub_text+')</li>'
+
+          var subResNo = 0
+
+          $.each( window.dataSummary, function( ds_key_child2, ds_value_child2 ) {
+
+            if (ds_value_child2 != undefined) {
+
+              if (ds_value['id'] == ds_value_child2['parent_id']) {
+
+                subResNo+=1
+
+                html += '<ul class="sum-ul child-ul">'
+
+                html += '<li>Name: '+ds_value_child2['nameforshow']+' (sub-resource '+subResNo+')</li>'
+
+                //----
+
+                ap_string = '<ul class="sum-ul">'
+
+                $.each( ds_value_child2['properties']['ap'], function( ds_keyap, ds_valueap ) {
+
+                  ap_string += '<li>'+ds_valueap+'</li>'
+
+                });
+
+                ap_string += '</ul>'
+
+                html += '<li>Allowed Population: '+ap_string+'</li>'
+
+                //----
+
+                let ip_string = '<ul class="sum-ul">'
+
+                $.each( ds_value_child2['properties']['ip'], function( ds_keyip, ds_valueip ) {
+
+                  ip_string += '<li>'+ds_valueip['name']+': '+ds_valueip['value']+'</li>'
+
+                });
+
+                ip_string += '</ul>'
+
+                html += '<li>Initial Population: '+ip_string+'</li>'
+
+                //----
+
+                html += '<li>Maximum length of stay: '+ds_value_child2['properties']['mlos']+'</li>'
+
+                html += '<li>Capacity: '+ds_value_child2['properties']['cap']+'</li>'
+
+                if (ds_value['name'] == 'Housing First') {
+
+                  html += '<li>Monthly quota: '+ds_value_child2['properties']['mq']+'</li>'
+                  
+                }
+
+                html += '</ul>'
+
+              }
+
+            }
+
+          });
+
+          html += '</ul>'
+
+        }
+
+      }
+
+    }
+
+  });
+
+  $('#res-summary').html(html)
+
+}
+
+function drawStateSummay(){
+
+  let flag = false
+
+  let html = ''
+
+  $.each( window.dataSummary, function( ds_key, ds_value ) {
+
+    if (ds_value != undefined) {
+
+        if (ds_value['type'] == 'state') {
+
+          if (ds_value['kind'] == 'main') {
+
+            html += '<ul class="sum-ul">'
+
+            flag = true
+
+            html += '<li>'+ds_value['name']+'</li>'
+
+            html += '<ul class="sum-ul">'
+
+            html += '<li>Name: '+ds_value['nameforshow']+'</li>'
+
+            //----
+
+            ap_string = '<ul class="sum-ul">'
+
+            $.each( ds_value['properties']['ap'], function( ds_keyap, ds_valueap ) {
+
+              ap_string += '<li>'+ds_valueap+'</li>'
+
+            });
+
+            ap_string += '</ul>'
+
+            html += '<li>Allowed Population: '+ap_string+'</li>'
+
+            //----
+
+            let ip_string = '<ul class="sum-ul">'
+
+            $.each( ds_value['properties']['ip'], function( ds_keyip, ds_valueip ) {
+
+              ip_string += '<li>'+ds_valueip['name']+': '+ds_valueip['value']+'</li>'
+
+            });
+
+            ip_string += '</ul>'
+
+            html += '<li>Initial Population: '+ip_string+'</li>'
+
+            //----
+
+            html += '</ul>'
+
+            html += '</ul>'
+
+        }
+
+      }
+
+    }
+
+  });
+
+  $('#state-summary').html(html)
+
+}
+
+function ToggleVideoSlider(){
+
+    if ($('.my-sidebar').hasClass('sidebar-close')) {
+
+      $('.my-sidebar').removeClass('sidebar-close').addClass('sidebar-open')
+
+    } else {
+
+      $('.my-sidebar').removeClass('sidebar-open').addClass('sidebar-close')
+
+    }
+
+}
+
+function difference(a, b) { 
+  return Math.abs(a - b); 
 }

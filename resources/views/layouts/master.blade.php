@@ -34,7 +34,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
 </head>
 
-<body class="hold-transition sidebar-mini">
+<body class="hold-transition sidebar-mini" id="#top">
 <div class="wrapper" >
 
   <!-- Navbar -->
@@ -67,15 +67,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
   </div>
   <!-- /.content-wrapper -->
 
-  <!-- Control Sidebar -->
-  <aside class="control-sidebar control-sidebar-dark">
-    <!-- Control sidebar content goes here -->
-    <div class="p-3">
-      <a href="/logout">Logout</a>
-    </div>
-  </aside>
-  <!-- /.control-sidebar -->
-
   <!-- Main Footer -->
   <footer class="main-footer" style="margin-left: 0">
     <!-- To the right -->
@@ -85,10 +76,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <!-- Default to the left -->
     <strong>Copyright &copy; 2018-2021 <a href="https://www.datalab.science/">datalab.science</a>.</strong> All rights reserved.
   </footer>
+
+
 </div>
 <!-- ./wrapper -->
-
-<!-- REQUIRED SCRIPTS -->
 
 <!-- jQuery -->
 <script src="/AdminLTE-3.0.0/plugins/jquery/jquery.min.js"></script>

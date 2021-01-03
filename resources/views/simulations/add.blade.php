@@ -7,14 +7,93 @@
 	<link rel="stylesheet"href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.0.0/animate.min.css"/>
 @stop
 @section('scripts')
-	<script src="/SmartWizard-master/src/js/jquery.smartWizard.js?22"></script>
-	<script src="/assets/js/sweetalert2.min.js?1"></script>
+	<script type="text/javascript" src="/SmartWizard-master/src/js/jquery.smartWizard.js?22"></script>
+	<script type="text/javascript" src="/assets/js/sweetalert2.min.js?1"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/xlsx.full.min.js"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/jszip.js"></script>
-	<script src="/assets/js/simulations/index.js?9"></script>
+	<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.7/dist/loadingoverlay.min.js"></script>
+	<script type="text/javascript" src="/assets/js/simulations/index.js?11"></script>
 @stop
 
 @section('content')
+
+
+  <!-- Control Sidebar -->
+  <aside class="my-sidebar control-sidebar-dark sidebar-close">
+    <!-- Control sidebar content goes here -->
+	<div class="p-3 control-sidebar-content">
+
+		<div class="header" style="display: inline-block;width: 100%;">
+			
+			<div style="float: left;" class="title"><h5>Video Tutorial</h5></div>
+			<div style="float: right; cursor: pointer;" class="control"><i id="close-slider" class="fas fa-times-circle"></i></div>
+
+		</div>
+
+		<div id="step-1-video" class="video-container hide">
+
+			<h6>Step 1</h6>
+			
+			<div class="embed-responsive embed-responsive-16by9">
+			  <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/zpOULjyy-n8?rel=0" allowfullscreen></iframe>
+			</div>
+
+		</div>
+
+		<div id="step-2-video" class="video-container hide">
+
+			<h6>Step 2</h6>
+			
+			<div class="embed-responsive embed-responsive-16by9">
+			  <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/zpOULjyy-n8?rel=0" allowfullscreen></iframe>
+			</div>
+
+		</div>
+
+		<div id="step-3-video" class="video-container hide">
+
+			<h6>Step 3</h6>
+			
+			<div class="embed-responsive embed-responsive-16by9">
+			  <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/zpOULjyy-n8?rel=0" allowfullscreen></iframe>
+			</div>
+
+		</div>
+
+		<div id="step-4-video" class="video-container hide">
+
+			<h6>Step 4</h6>
+			
+			<div class="embed-responsive embed-responsive-16by9">
+			  <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/zpOULjyy-n8?rel=0" allowfullscreen></iframe>
+			</div>
+
+		</div>
+
+		<div id="step-5-video" class="video-container hide">
+
+			<h6>Step 5</h6>
+			
+			<div class="embed-responsive embed-responsive-16by9">
+			  <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/zpOULjyy-n8?rel=0" allowfullscreen></iframe>
+			</div>
+
+		</div>
+
+		<div id="step-6-video" class="video-container hide">
+
+			<h6>Step 6</h6>
+			
+			<div class="embed-responsive embed-responsive-16by9">
+			  <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/zpOULjyy-n8?rel=0" allowfullscreen></iframe>
+			</div>
+
+		</div>
+
+	</div>
+
+  </aside>
+  <!-- /.control-sidebar -->
 
 	<style>
 		
@@ -162,618 +241,722 @@
 		.text-left{
 			text-align: left !important;
 		}
+
+		.sum-ul{
+			padding-left: 27px !important
+			width:100%;
+		}
+
+		.sum-ul .child-ul {
+			margin-bottom: 15px
+		}
+
+		.sidebar-open {
+		  right: 0
+		}
+
+		.sidebar-close {
+		  right: -500px
+		}
+
+		.my-sidebar{
+		  width: 500px;
+		  position: absolute;
+		  top:0;
+		  height: 100%;
+		  transition: all .2s;
+		  z-index: 999;
+		}
+
+		.video-container{
+			margin-top: 40px;
+		}
+
+		.video-link-container{
+		    float: right;
+		    margin: 0px 10px 10px 10px;
+		    font-size: 23px;
+		    cursor: pointer;
+		}
+
+		.video-link-container i{
+		    cursor: pointer;
+		}
+
+		.policy-input{
+			width: 100px !important;
+		}
+
+		.parentrow td {
+			border-bottom: none !important;
+		}
+
+
+		.last-child-row td{
+			border-top: none !important;
+		}
+
+		.child-row td {
+			border-top: none !important;
+			border-bottom: none !important;
+		}
+
+		.bb0{
+			border-bottom: 0 !important;
+		}
+
+		.bt0{
+			border-top: 0 !important;
+		}
+
 	</style>
 
 	<!-- Content Wrapper. Contains page content -->
 	<div class="content-wrapper" style="margin-left: 0">
-	<!-- Content Header (Page header) -->
-	<div class="content-header">
-		<div class="container-fluid">
-			<div class="row mb-2">
-			  <div class="col-sm-6">
-			    <h1 class="m-0 text-dark">New Simulation</h1>
-			  </div><!-- /.col -->
-			</div><!-- /.row -->
-		</div><!-- /.container-fluid -->
-	</div>
-	<!-- /.content-header -->
 
-	<div id="mcontent" class="content" style="display: none">
+		<div id="myoverlay" style="position: absolute;width: 100%;height: 100%;background: white;z-index: 9;"></div>
+		<!-- Content Header (Page header) -->
+		<div class="content-header">
+			<div class="container-fluid">
+				<div class="row mb-2">
+				  <div class="col-sm-6">
+				    <h1 class="m-0 text-dark">New Simulation</h1>
+				  </div><!-- /.col -->
+				</div><!-- /.row -->
+			</div><!-- /.container-fluid -->
+		</div>
+		<!-- /.content-header -->
 
-	    <div class="container-fluid">
+		<div id="mcontent" class="content" style="display: none">
 
-	        <div class="row myrow">
+		    <div class="container-fluid">
 
-		        <div class="col-lg-9 mycol" id="main-window">
+		        <div class="row myrow">
 
-					{!! Form::open(array('action' => 'SimulationsController@postAdd','role'=>"form", 'id'=>"myform", 'autocomplete'=>"off")) !!}
+			        <div class="col-lg-9 mycol" id="main-window">
 
-				        @if(isset($project_id))
-					        	<input type="hidden" name="project_id" value="{{$project_id}}">
-					    @endif
+						{!! Form::open(array('action' => 'SimulationsController@postAdd','role'=>"form", 'id'=>"myform", 'autocomplete'=>"off")) !!}
 
-					    <input type="hidden" name="stopwatch" id="stopwatch" value="0">
+					        @if(isset($project_id))
+						        	<input type="hidden" name="project_id" value="{{$project_id}}">
+						    @endif
 
-							
-						<!-- Popoovers are going to be here -->
-					    <div style="display: none" id="popoverhtmls"> 
+						    <input type="hidden" name="stopwatch" id="stopwatch" value="0">
 
-					    </div>
+								
+							<!-- Popoovers are going to be here -->
+						    <div style="display: none" id="popoverhtmls"> 
 
-					    <div class="card card-primary card-outline" style="height: 100%;margin-bottom: 0">
+						    </div>
 
-				            <div class="card-body" id="smartwizard"	>
+							<!-- Popoovers for overview window are going to be here -->
+						    <div style="display: none" id="popoverhtmls-overview"> 
 
-					            <ul>
-					                <li><a href="#step-1">Step 1<br /><big>Location&nbsp;&nbsp;<i class="fas fa-map-marked-alt"></i></big></a></li>
-					                <li><a href="#step-2">Step 2<br /><big>Population Group&nbsp;&nbsp;<i class="fas fa-users"></i></big></a></li>
-					                <li><a href="#step-3">Step 3<br /><big>Resources&nbsp;&nbsp;<i class="fas fa-shapes"></i></big></a></li>
-					                <li><a href="#step-4">Step 4<br /><big>Living Situations&nbsp;&nbsp;<i class="fas fa-project-diagram"></i></big></a></li>
-					                <!-- <li><a href="#step-5">Step 5<br /><big>Transition Probability&nbsp;&nbsp;<i class="fas fa-percent"></i></big></a></li> -->
-					                <li><a href="#step-5">Step 5<br /><big>Parameters&nbsp;&nbsp;<i class="fas fa-sliders-h"></i></big></a></li>
-					            </ul>
+						    </div>
 
-					            <div style="padding-top: 15px">
+						    <div class="card card-primary card-outline" style="height: 100%;margin-bottom: 0">
 
-					                <div id="step-1" class="">
+					            <div class="card-body" id="smartwizard"	>
 
-					                	<div class="row">
+						            <ul>
+						                <li><a href="#step-1">Step 1<br /><big>Location&nbsp;&nbsp;<i class="fas fa-map-marked-alt"></i></big></a></li>
+						                <li><a href="#step-2">Step 2<br /><big>Population Group&nbsp;&nbsp;<i class="fas fa-users"></i></big></a></li>
+						                <li><a href="#step-3">Step 3<br /><big>Resources&nbsp;&nbsp;<i class="fas fa-shapes"></i></big></a></li>
+						                <li><a href="#step-4">Step 4<br /><big>Living Situations&nbsp;&nbsp;<i class="fas fa-id-badge"></i></big></a></li>
+						                <li><a href="#step-5">Step 5<br /><big>Housing Interventions&nbsp;&nbsp;<i class="fas fa-building"></i></big></a></li>
+						                <li><a href="#step-6">Step 6<br /><big>Parameters&nbsp;&nbsp;<i class="fas fa-sliders-h"></i></big></a></li>
+						            </ul>
 
-							                <div class="col-md-12">
-							                	<div class="row">
-								                	<div class="col-md-6">
-														<div class="form-group">
-										                	<label for="inputName">Simulation Name&nbsp;
+						            <div style="padding-top: 15px">
 
-															<a class='show-info pointer'>
-															<span msg="Name your simulation. This is for your recollection and does not affect the outcome of your simulation."></span>
-															<i class='text-info fas fa-info-circle'></i>
-															</a>
+						                <div id="step-1" class="">
 
-										                	&nbsp;</label>
-										                	<div id="locationField"></div>
-										                	<input name="simulation_name" id="simulation-name" type="text" class="form-control border-primary" placeholder="Simulation 1" value='' onpaste="return false" maxlength="20">
-										                	<span class="text-danger" id="simname-error">Simulation name is required. No special characters are permitted.</span>
-										              	</div>
-									              	</div>
-								              	</div>
-								            </div>
+						                	<div class="video-link-container"><i step='1' class="text-info far fa-file-video tutorial-link"></i></div>
 
-								            <div class="col-md-12">
-							                	<div class="row">
-								                	<div class="col-md-6">
-														<div class="form-group">
-										                	<label for="inputName">Enter a name and select a city from the dropdown list&nbsp;
+						                	<div class="row">
+
+								                <div class="col-md-12">
+								                	<div class="row">
+									                	<div class="col-md-6">
+															<div class="form-group">
+											                	<label for="inputName">Simulation Name&nbsp;
 
 																<a class='show-info pointer'>
-																<span msg="Select the city that your data is representing. This is for your recollection and does not affect the outcome of your simulation."></span>
+																<span msg="Name your simulation. This is for your recollection and does not affect the outcome of your simulation."></span>
 																<i class='text-info fas fa-info-circle'></i>
+
 																</a>
 
-										                	&nbsp;</label>
-										                	<div id="locationField"></div>
-										                	<input autocomplete="off" id="autocomplete" placeholder="City name" name="simulation_location" type="text" class="form-control border-primary">
-										                	<span class="text-danger" id="cityname-error">City name is required.</span>
-											            </div>
+											                	&nbsp;</label>
+											                	<div id="locationField"></div>
+											                	<input name="simulation_name" id="simulation-name" type="text" class="form-control" placeholder="Enter simulation name" value='' onpaste="return false" maxlength="20">
+											                	<span class="text-danger" id="simname-error">Simulation name is required. No special characters are permitted.</span>
+											              	</div>
+										              	</div>
 									              	</div>
-								              	</div>
-								            </div>
+									            </div>
 
-								            <div class="col-md-6">
+									            <div class="col-md-12">
+								                	<div class="row">
+									                	<div class="col-md-6">
+															<div class="form-group">
+											                	<label for="inputName">Enter a name and select a city from the dropdown list&nbsp;
 
-											    <div id="map"></div>
-
-											    <script>
-
-											      var map, map2, places, infoWindow;
-											      var markers = [];
-											      var autocomplete;
-											      var countryRestrict = {'country': 'ca'};
-											      var MARKER_PATH = 'https://developers.google.com/maps/documentation/javascript/images/marker_green';
-											      var hostnameRegexp = new RegExp('^https?://.+?/');
-
-											      var countries = {
-											        'ca': {
-											          center: {lat: 62, lng: -110.0},
-											          zoom: 3
-											        }
-											      };
-
-											      function initMap() {
-											        map = new google.maps.Map(document.getElementById('map'), {
-											          zoom: countries['ca'].zoom,
-											          center: countries['ca'].center,
-											          mapTypeControl: false,
-											          panControl: false,
-											          zoomControl: false,
-											          streetViewControl: false
-											        });
-
-											        map2 = new google.maps.Map(document.getElementById('map2'), {
-											          zoom: countries['ca'].zoom,
-											          center: countries['ca'].center,
-											          mapTypeControl: false,
-											          panControl: false,
-											          zoomControl: false,
-											          streetViewControl: false
-											        });
-
-											        infoWindow = new google.maps.InfoWindow({
-											          content: document.getElementById('info-content')
-											        });
-
-											        // Create the autocomplete object and associate it with the UI input control.
-											        // Restrict the search to the default country, and to place type "cities".
-											        autocomplete = new google.maps.places.Autocomplete(
-											            /** @type {!HTMLInputElement} */ (
-											            document.getElementById('autocomplete')), {
-											              types: ['(cities)'],
-											              componentRestrictions: countryRestrict
-											            });
-											        places = new google.maps.places.PlacesService(map);
-											        places2 = new google.maps.places.PlacesService(map2);
-
-											        autocomplete.addListener('place_changed', onPlaceChanged);
-
-											      }
-
-											      // When the user selects a city, get the place details for the city and
-											      // zoom the map in on the city.
-											      function onPlaceChanged() {
-											        var place = autocomplete.getPlace();
-											        if (place.geometry) {
-											          map.panTo(place.geometry.location);
-											          map.setZoom(15);
-											          map2.panTo(place.geometry.location);
-											          map2.setZoom(10);
-
-											        } else {
-											          document.getElementById('autocomplete').placeholder = 'City name';
-											        }
-
-											        window.loc=1;
-											      
-											        step1HandleErrors();
-
-											      }
-
-											      function clearMarkers() {
-											        for (var i = 0; i < markers.length; i++) {
-											          if (markers[i]) {
-											            markers[i].setMap(null);
-											          }
-											        }
-											        markers = [];
-											      }
-
-											      // Set the country restriction based on user input.
-											      // Also center and zoom the map on the given country.
-											      function setAutocompleteCountry() {
-											        var country = 'ca';
-											        if (country == 'all') {
-											          autocomplete.setComponentRestrictions({'country': []});
-											          map.setCenter({lat: 15, lng: 0});
-											          map.setZoom(2);
-											          map2.setCenter({lat: 15, lng: 0});
-											          map2.setZoom(2);
-											        } else {
-											          autocomplete.setComponentRestrictions({'country': country});
-											          map.setCenter(countries[country].center);
-											          map.setZoom(countries[country].zoom);
-											          map2.setCenter(countries[country].center);
-											          map2.setZoom(countries[country].zoom);
-											        }
-											        clearResults();
-											        clearMarkers();
-											      }
-
-											    </script>
-											    
-											    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBjSc4Dogy851gGnXKKWcypMufL4ASk3RM&libraries=places&callback=initMap" async defer></script>
-
-								            </div>
-
-							        	</div>
-
-					                </div>
-
-					                <div id="step-2" class="">
-
-					                	<div class="row">
-
-							                <div class="col-md-12">
-
-												<div class="form-group">
-
-								                	<label for="inputName">Select population type&nbsp;
-													<!-- <a class='show-info pointer'>
-													<span msg="The name of population types can be based on your labeling system. For example, you can use Male, Female, and Other. In the later stages, you can use the defined population types to customize your simulation."></span>
-													<i class='text-info fas fa-info-circle'></i>
-													</a> -->
-								                	&nbsp;</label>
-								                	<br>
-								                	
-												  	<div class="form-inline">
-													  	<select class="form-control col-md-6" id="populationselect">
-													  		<option selected disabled id="title" value="0">Select One</option>
-															<option id="u30hl1m" >under 30, homeless less than 1 year, male</option>
-															<option id="u30hm1m" >under 30, homeless more than 1 year, male</option>
-															<option id="u30hl1f" >under 30, homeless less than 1 year, female</option>
-															<option id="u30hm1f" >under 30, homeless more than 1 year, female</option>
-															<option id="b30t50hl1m" >30-50 years, homeless less than 1 year, male</option>
-															<option id="b30t50hm1m" >30-50 years, homeless more than 1 year, male</option>
-															<option id="b30t50hl1f" >30-50 years, homeless less than 1 year, female</option>
-															<option id="b30t50hm1f" >30-50 years, homeless more than 1 year, female</option>
-															<option id="g50hl1m" >greater than 50 years, homeless less than 1 year, male</option>
-															<option id="g50hm1m" >greater than 50 years, homeless more than 1 year, male</option>
-															<option id="g50hl1f" >greater than 50 years, homeless less than 1 year, female</option>
-															<option id="g50hm1f" >greater than 50 years, homeless more than 1 year, female</option>
-										                </select>
-												    	<button id="populationbtn" type="button" class="btn btn-primary btn-flat" style="margin-left: 10px">Add</button>
-												    </div>
-
-								              	</div>
-								            </div>
-
-										</div>
-
-										<div class="row">
-
-											<div class="col-lg-12" style="margin-bottom: 50px;">
-
-												<div id="populationtable">
-
-													<div class="table-responsive row-scroll" style="border: 1px solid gray;">
-														<table class="table table-bordered" style="margin-bottom: 0">
-															<thead>
-																<tr>
-
-																	<th>Name</th>
-																	<th>Population count<span id="pop-count-info">&nbsp;
 																	<a class='show-info pointer'>
-																	<span msg="Enter the total population of each population type."></span>
+																	<span msg="Select the city that your data is representing. This is for your recollection and does not affect the outcome of your simulation."></span>
 																	<i class='text-info fas fa-info-circle'></i>
 																	</a>
-																	&nbsp;</span></th>
-																	<th>Action</th>
 
-																</tr>
-															</thead>
-															<tbody>
-																<tr><td></td><td></td><td></td></tr>
-															</tbody>
-														</table>
+											                	&nbsp;</label>
+											                	<div id="locationField"></div>
+											                	<input autocomplete="off" id="autocomplete" placeholder="Enter city name" name="simulation_location" type="text" class="form-control sim-location">
+											                	<span class="text-danger" id="cityname-error">City name is required.</span>
+												            </div>
+										              	</div>
+									              	</div>
+									            </div>
+
+									            <div class="col-md-6">
+
+												    <div id="map"></div>
+
+												    <script>
+
+												      var map, map2, places, infoWindow;
+												      var markers = [];
+												      var autocomplete;
+												      var countryRestrict = {'country': 'ca'};
+												      var MARKER_PATH = 'https://developers.google.com/maps/documentation/javascript/images/marker_green';
+												      var hostnameRegexp = new RegExp('^https?://.+?/');
+
+												      var countries = {
+												        'ca': {
+												          center: {lat: 62, lng: -110.0},
+												          zoom: 3
+												        }
+												      };
+
+												      function initMap() {
+												        map = new google.maps.Map(document.getElementById('map'), {
+												          zoom: countries['ca'].zoom,
+												          center: countries['ca'].center,
+												          mapTypeControl: false,
+												          panControl: false,
+												          zoomControl: false,
+												          streetViewControl: false
+												        });
+
+												        map2 = new google.maps.Map(document.getElementById('map2'), {
+												          zoom: countries['ca'].zoom,
+												          center: countries['ca'].center,
+												          mapTypeControl: false,
+												          panControl: false,
+												          zoomControl: false,
+												          streetViewControl: false
+												        });
+
+												        infoWindow = new google.maps.InfoWindow({
+												          content: document.getElementById('info-content')
+												        });
+
+												        // Create the autocomplete object and associate it with the UI input control.
+												        // Restrict the search to the default country, and to place type "cities".
+												        autocomplete = new google.maps.places.Autocomplete(
+												            /** @type {!HTMLInputElement} */ (
+												            document.getElementById('autocomplete')), {
+												              types: ['(cities)'],
+												              componentRestrictions: countryRestrict
+												            });
+												        places = new google.maps.places.PlacesService(map);
+												        places2 = new google.maps.places.PlacesService(map2);
+
+												        autocomplete.addListener('place_changed', onPlaceChanged);
+
+												      }
+
+												      // When the user selects a city, get the place details for the city and
+												      // zoom the map in on the city.
+												      function onPlaceChanged() {
+												        var place = autocomplete.getPlace();
+												        if (place.geometry) {
+												          map.panTo(place.geometry.location);
+												          map.setZoom(15);
+												          map2.panTo(place.geometry.location);
+												          map2.setZoom(10);
+
+												        } else {
+												          document.getElementById('autocomplete').placeholder = 'City name';
+												        }
+
+												        window.loc=1;
+												      
+												        step1HandleErrors();
+
+												      }
+
+												      function clearMarkers() {
+												        for (var i = 0; i < markers.length; i++) {
+												          if (markers[i]) {
+												            markers[i].setMap(null);
+												          }
+												        }
+												        markers = [];
+												      }
+
+												      // Set the country restriction based on user input.
+												      // Also center and zoom the map on the given country.
+												      function setAutocompleteCountry() {
+												        var country = 'ca';
+												        if (country == 'all') {
+												          autocomplete.setComponentRestrictions({'country': []});
+												          map.setCenter({lat: 15, lng: 0});
+												          map.setZoom(2);
+												          map2.setCenter({lat: 15, lng: 0});
+												          map2.setZoom(2);
+												        } else {
+												          autocomplete.setComponentRestrictions({'country': country});
+												          map.setCenter(countries[country].center);
+												          map.setZoom(countries[country].zoom);
+												          map2.setCenter(countries[country].center);
+												          map2.setZoom(countries[country].zoom);
+												        }
+												        clearResults();
+												        clearMarkers();
+												      }
+
+												    </script>
+												    
+												    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBjSc4Dogy851gGnXKKWcypMufL4ASk3RM&libraries=places&callback=initMap" async defer></script>
+
+									            </div>
+
+								        	</div>
+
+						                </div>
+
+						                <div id="step-2" class="">
+
+						                	<div class="video-link-container"><i step='2' class="text-info far fa-file-video tutorial-link"></i></div>
+
+						                	<div class="row">
+
+								                <div class="col-md-12">
+
+													<div class="form-group">
+
+									                	<label for="inputName">Select population type&nbsp;
+														<!-- <a class='show-info pointer'>
+														<span msg="The name of population types can be based on your labeling system. For example, you can use Male, Female, and Other. In the later stages, you can use the defined population types to customize your simulation."></span>
+														<i class='text-info fas fa-info-circle'></i>
+														</a> -->
+									                	&nbsp;</label>
+									                	<br>
+									                	
+													  	<div class="form-inline">
+														  	<select class="form-control col-md-6" id="populationselect">
+														  		<option selected disabled id="title" value="0">Select One</option>
+																<option id="u30hl1m" >under 30, homeless less than 1 year, male</option>
+																<option id="u30hm1m" >under 30, homeless more than 1 year, male</option>
+																<option id="u30hl1f" >under 30, homeless less than 1 year, female</option>
+																<option id="u30hm1f" >under 30, homeless more than 1 year, female</option>
+																<option id="b30t50hl1m" >30-50 years, homeless less than 1 year, male</option>
+																<option id="b30t50hm1m" >30-50 years, homeless more than 1 year, male</option>
+																<option id="b30t50hl1f" >30-50 years, homeless less than 1 year, female</option>
+																<option id="b30t50hm1f" >30-50 years, homeless more than 1 year, female</option>
+																<option id="g50hl1m" >greater than 50 years, homeless less than 1 year, male</option>
+																<option id="g50hm1m" >greater than 50 years, homeless more than 1 year, male</option>
+																<option id="g50hl1f" >greater than 50 years, homeless less than 1 year, female</option>
+																<option id="g50hm1f" >greater than 50 years, homeless more than 1 year, female</option>
+											                </select>
+													    	<button id="populationbtn" type="button" class="btn btn-primary btn-flat" style="margin-left: 10px">Add</button>
+													    </div>
+
+									              	</div>
+									            </div>
+
+											</div>
+
+											<div class="row">
+
+												<div class="col-lg-12" style="margin-bottom: 50px;">
+
+													<div id="populationtable">
+
+														<div class="table-responsive row-scroll" style="border: 1px solid gray;">
+															<table class="table table-bordered" style="margin-bottom: 0">
+																<thead>
+																	<tr>
+
+																		<th>Name</th>
+																		<th>Population count<span id="pop-count-info">&nbsp;
+																		<a class='show-info pointer'>
+																		<span msg="Enter the total population of each population type."></span>
+																		<i class='text-info fas fa-info-circle'></i>
+																		</a>
+																		&nbsp;</span></th>
+																		<th>Action</th>
+
+																	</tr>
+																</thead>
+																<tbody>
+																	<tr><td></td><td></td><td></td></tr>
+																</tbody>
+															</table>
+														</div>
+
 													</div>
 
 												</div>
 
 											</div>
 
-										</div>
+						                </div>
 
-					                </div>
+						                <div id="step-3" class="">
 
+						                	<div class="video-link-container"><i step='3' class="text-info far fa-file-video tutorial-link"></i></div>
 
-					<!--                 <div id="step-2" class="">
+						                	<div class="row">
 
-					                	<div class="row">
+								                <div class="col-md-12">
 
-							                <div class="col-md-12">
-												<div class="form-group">
-								                	<label for="inputName">Population group for simulation (comma separated)</label>
-								                	<br>
-								                	<p>Set your population type/types and click on the <span class="text-primary">Generate table</span> button to create a population table&nbsp;
+													<div class="form-group">
 
-													<a class='show-info pointer'>
-													<span msg="The name of population types can be based on your labeling system. For example, you can use Male, Female, and Other. In the later stages, you can use the defined population types to customize your simulation."></span>
-													<i class='text-info fas fa-info-circle'></i>
-													</a>
+									                	<label for="inputName">Select between the provided resources&nbsp;
+															<a class='show-info pointer'>
+															<span msg="A resource is a place or a type of facility where people experiencing homelessness can spend the night."></span>
+															<i class='text-info fas fa-info-circle'></i>
+															</a>
+														&nbsp;</label>
+													  	<div class="form-inline">
+														  	<select class="form-control col-md-4" id="resselect">
+														  		<option selected disabled id="title">Select</option>
+																<!-- <option id="Hospital" type="res">Hospital</option> -->
+																<option id="Shelter" type="res">Shelter</option>
+																<option id="TransitionalHousing" type="res">Transitional Housing</option>
+																<option id="HousingFirst" type="res">Housing First</option>
+																<!-- <option id="Rehabilitation" type="res">Addiction / Rehabilitation Center</option>	 -->
+											                </select>
+													    	<button id="resourcebtn" type="button" class="btn btn-primary btn-flat" style="margin-left: 10px">Add</button>
+													    </div>
 
-								                	&nbsp;</p>
-									                <div class="input-group mb-3">
-													  <input placeholder="Male, Female, Other, ..." autocomplete="off" id="populationtext" type="text" class="form-control rounded-0">
-													  <span class="input-group-append">
-													    <button id="populationbtn" type="button" class="btn btn-primary btn-flat">Generate table</button>
-													  </span>
-													</div>
-													<p class="text-danger" id="pop-spchrter-error" style="display: none">Special characters aren't permitted in population types.</p>
-								              	</div>
-								            </div>
+									              	</div>
+									            </div>
 
-										</div>
+											</div>
 
-										<div class="row">
+											<div class="row">
 
-											<div class="col-lg-12">
+												<div class="col-lg-12" style="margin-bottom: 50px;">
 
-												<div id="_table">
+													<div id="resource_table">
 
-													<div id="populationtable" class="table-responsive">
-														<table class="table table-bordered ">
-														<thead>
-														<tr>
-														<th>Population Type</th><th>Population Count<span id="pop-count-info" style="display: none">&nbsp;
+														<div class="table-responsive row-scroll" style="border: 1px solid gray;">
+															<table class="table table-bordered" id="restable" style="margin-bottom: 0">
+																<thead>
+																	<tr>
 
-														<a class='show-info pointer'>
-														<span msg="Enter the total population of each population type"></span>
-														<i class='text-info fas fa-info-circle'></i>
-														</a>
+																		<th>Type</th><th>Name</th><th>Action</th><th>Properties</th><th>Delete</th>
 
-														&nbsp;</span></th>
-														</tr>
-														</thead>
-														<tbody>
-															<tr>
-											                    <td></td>
-											                    <td></td>
-										                	</tr>
-														</tbody>
-														</table>
+																	</tr>
+																</thead>
+																<tbody id="res-tbody">
+																	<tr><td></td><td></td><td></td><td></td><td></td></tr>
+																</tbody>
+															</table>
+														</div>
+
 													</div>
 
 												</div>
 
 											</div>
 
-										</div>
+						                </div>
 
-					                </div> -->
+						                <div id="step-4" class="">
 
-					                <div id="step-3" class="">
+						                	<div class="video-link-container"><i step='4' class="text-info far fa-file-video tutorial-link"></i></div>
 
-					                	<div class="row">
+						                	<div class="row">
 
-							                <div class="col-md-12">
+								                <div class="col-md-12">
 
-												<div class="form-group">
+													<div class="form-group">
 
-								                	<label for="inputName">Select between the provided resources&nbsp;
-														<a class='show-info pointer'>
-														<span msg="A resource is a place or a type of facility where people experiencing homelessness can spend the night."></span>
-														<i class='text-info fas fa-info-circle'></i>
-														</a>
-													&nbsp;</label>
-												  	<div class="form-inline">
-													  	<select class="form-control col-md-4" id="resselect">
-													  		<option selected disabled id="title">Select</option>
-															<option id="Hospital" type="res">Hospital</option>
-															<option id="Shelter" type="res">Shelter</option>
-															<option id="TransitionalHousing" type="res">Transitional Housing</option>
-															<option id="Rehabilitation" type="res">Addiction / Rehabilitation Center</option>	
-										                </select>
-												    	<button id="resourcebtn" type="button" class="btn btn-primary btn-flat" style="margin-left: 10px">Add</button>
-												    </div>
+									                	<label for="inputName">Select between the provided living situations&nbsp;
+															<a class='show-info pointer'>
+															<span msg="A particular living condition such as hidden homelessness"></span>
+															<i class='text-info fas fa-info-circle'></i>
+															</a>
+									                	&nbsp;</label>
+									                	<br>
+									                	
+													  	<div class="form-inline">
+														  	<select class="form-control col-md-4" id="stateselect">
+														  		<option selected disabled id="title">Select</option>
+																<option id="HiddenHomeless" type="state">Hidden Homeless</option>
+																<option id="NotHomeless" type="state">Not Homeless</option>
+																<option id="Street" type="state">Street</option>
+																<option id="InstitutionalOrganization" type="state">Institutional Organization</option>
+											                </select>
+													    	<button id="statebtn" type="button" class="btn btn-primary btn-flat" style="margin-left: 10px">Add</button>
+													    </div>
 
-								              	</div>
-								            </div>
+									              	</div>
+									            </div>
 
-										</div>
+											</div>
 
-										<div class="row">
+											<div class="row">
 
-											<div class="col-lg-12" style="margin-bottom: 50px;">
+												<div class="col-lg-12" style="margin-bottom: 50px;">
 
-												<div id="resource_table">
+													<div id="state_table">
 
-													<div class="table-responsive row-scroll" style="border: 1px solid gray;">
-														<table class="table table-bordered" id="restable" style="margin-bottom: 0">
-															<thead>
-																<tr>
+														<div class="table-responsive row-scroll" style="border: 1px solid gray;">
+															<table class="table table-bordered" id="statetable" style="margin-bottom: 0">
+																<thead>
+																	<tr>
 
-																	<th>Type</th><th>Name</th><th>Action</th><th>Properties</th><th>Delete</th>
+																		<th>Type</th><th>Name</th><th>Properties</th><th>Action</th>
 
-																</tr>
-															</thead>
-															<tbody>
-																<tr><td></td><td></td><td></td><td></td><td></td></tr>
-															</tbody>
-														</table>
+																	</tr>
+																</thead>
+																<tbody id="state-tbody">
+																	<tr><td></td><td></td><td></td><td></td></tr>
+																</tbody>
+															</table>
+														</div>
+
 													</div>
 
 												</div>
 
 											</div>
 
-										</div>
+						                </div>
 
-					                </div>
+						                <div id="step-5" class="">
 
-					                <div id="step-4" class="">
+						                	<div class="video-link-container"><i step='5' class="text-info far fa-file-video tutorial-link"></i></div>
 
-					                	<div class="row">
+						                	<div class="row">
 
-							                <div class="col-md-12">
+								                <div class="col-md-12">
 
-												<div class="form-group">
+													<div class="form-group">
 
-								                	<label for="inputName">Select between the provided living situations&nbsp;
-														<a class='show-info pointer'>
-														<span msg="A particular living condition such as hidden homelessness"></span>
-														<i class='text-info fas fa-info-circle'></i>
-														</a>
-								                	&nbsp;</label>
-								                	<br>
-								                	
-												  	<div class="form-inline">
-													  	<select class="form-control col-md-4" id="stateselect">
-													  		<option selected disabled id="title">Select</option>
-															<option id="HiddenHomeless" type="state">Hidden Homeless</option>
-															<option id="NotHomeless" type="state">Not Homeless</option>
-															<option id="Street" type="state">Street</option>
-										                </select>
-												    	<button id="statebtn" type="button" class="btn btn-primary btn-flat" style="margin-left: 10px">Add</button>
-												    </div>
+									                	<label for="inputName">Add a housing intervention policy&nbsp;
+															<a class='show-info pointer'>
+															<span msg="----------------------------------"></span>
+															<i class='text-info fas fa-info-circle'></i>
+															</a>
+														</label>
+									                	<br>
+									                	
+													  	<div class="form-inline">
+													  		<input id="policy-name-input" type="text" class="form-control col-md-4 is-invalid no-special-chars" value="" placeholder="Enter policy name and press add">
+													    	<button id="policybtn" type="button" class="btn btn-primary btn-flat" style="margin-left: 10px">Add</button>
+													    </div>
+													    <span class="text-danger" id="housingp-error">*required.</span>
 
-								              	</div>
-								            </div>
+									              	</div>
+									            </div>
 
-										</div>
+											</div>
 
-										<div class="row">
+											<div class="row">
 
-											<div class="col-lg-12" style="margin-bottom: 50px;">
+												<div class="col-lg-12" style="margin-bottom: 50px;">
 
-												<div id="state_table">
+													<div id="policy_table">
 
-													<div class="table-responsive row-scroll" style="border: 1px solid gray;">
-														<table class="table table-bordered" id="statetable" style="margin-bottom: 0">
-															<thead>
-																<tr>
+														<div class="table-responsive row-scroll" style="border: 1px solid gray;">
+															<table class="table table-bordered" id="policytable" style="margin-bottom: 0">
+																<thead>
+																	<tr>
 
-																	<th>Type</th><th>Name</th><th>Properties</th><th>Action</th>
+																		<th>Type</th><th>Name</th><th>Properties</th><th>Action</th>
 
-																</tr>
-															</thead>
-															<tbody>
-																<tr><td></td><td></td><td></td><td></td></tr>
-															</tbody>
-														</table>
+																	</tr>
+																</thead>
+																<tbody id="policy-tbody">
+																	<tr><td></td><td></td><td></td><td></td></tr>
+																</tbody>
+															</table>
+														</div>
+
 													</div>
 
 												</div>
 
 											</div>
 
-										</div>
+						                </div>
 
-					                </div>
 
-					                <div id="step-5" class="">
+						                <div id="step-6" class="">
 
-					                	<div class="row" style="margin-left: 0;margin-right: 0;">
+						                	<div class="video-link-container"><i step='6' class="text-info far fa-file-video tutorial-link"></i></div>
 
-							                <div class="col-md-4">
+						                	<div class="row" style="margin-left: 0;margin-right: 0;">
 
-<!-- 												<div class="form-group">
-								                	<label for="inputName">Created by&nbsp;
-							                			<a class='show-info pointer'>
-														<span msg="This is for your recollection and does not affect the outcome of your simulation."></span>
-														<i class='text-info fas fa-info-circle'></i>
-														</a>
-								                	&nbsp;</label>
-								                	<input placeholder="Creator's first name" type="text" autocomplete="off" name="creatorname"  id="cname" class="form-control" maxlength="20">
-								                	<span class="text-danger" id="personname-error">This input is required. No special characters are permitted.</span>
-								              	</div> -->
+								                <div class="col-md-4">
 
-												<div class="form-group">
-								                	<label for="inputName">Number of weeks&nbsp;
-							                			<a class='show-info pointer'>
-														<span msg="The total number of weeks to run the simulation."></span>
-														<i class='text-info fas fa-info-circle'></i>
-														</a>
-								                	&nbsp;</label>
-								                	<input type="number" min="1" max="520" step="1" autocomplete="off" name="numberofweeks" id="simweeks" class="form-control">
-								                	<span class="text-danger" id="weeks-error">This input is required. The value must be a numeric value between 1 to 520.</span>
-								              	</div>
+													<div class="form-group">
+									                	<label for="inputName">Number of weeks&nbsp;
+								                			<a class='show-info pointer'>
+															<span msg="The total number of weeks to run the simulation."></span>
+															<i class='text-info fas fa-info-circle'></i>
+															</a>
+									                	&nbsp;</label>
+									                	<input type="number" min="1" max="520" step="1" autocomplete="off" name="numberofweeks" id="simweeks" class="form-control is-invalid">
+									                	<span class="text-danger" id="weeks-error">This input is required. The value must be a numeric value between 1 to 520.</span>
+									              	</div>
 
-												<div class="form-group">
-								                	<label for="inputName">Number of simulations&nbsp;
-							                			<a class='show-info pointer'>
-														<span msg="The total number of separate simulation runs. In the end, the results of the simulations will be averaged."></span>
-														<i class='text-info fas fa-info-circle'></i>
-														</a>
-								                	&nbsp;</label>
-								                	<input type="number" min="1" max="10" step="1" autocomplete="off" name="numberofsims" type="text" id="simnum" class="form-control">
-								                	<span class="text-danger" id="simnum-error">This input is required. The value must be a numeric value between 1 to 10.</span>
-								              	</div>
+													<div class="form-group">
+									                	<label for="inputName">Number of simulations&nbsp;
+								                			<a class='show-info pointer'>
+															<span msg="The total number of separate simulation runs. In the end, the results of the simulations will be averaged."></span>
+															<i class='text-info fas fa-info-circle'></i>
+															</a>
+									                	&nbsp;</label>
+									                	<input type="number" min="1" max="10" step="1" autocomplete="off" name="numberofsims" type="text" id="simnum" class="form-control is-invalid">
+									                	<span class="text-danger" id="simnum-error">This input is required. The value must be a numeric value between 1 to 10.</span>
+									              	</div>
 
-								            </div>
+				              						<div class="form-group">
+				              		                	<label for="inputName">Housing Intervention&nbsp;
+				              	                			<a class='show-info pointer'>
+				              								<span msg="The total number of housing interventaion per month"></span>
+				              								<i class='text-info fas fa-info-circle'></i>
+				              								</a>
+				              		                	&nbsp;</label>
+				              		                	<input type="number" min="0" max="1000" step="1" autocomplete="off" name="housingpdata" type="text" id="housingp" class="form-control is-invalid">
+				              		                	<span class="text-danger" id="housingp-error">This input is required. The value must be a numeric value between 0 to 1000.</span>
+				              		              	</div>
 
-							        	</div>
+									            </div>
 
-					                </div>
+								        	</div>
+
+						                </div>
+
+						            </div>
+							            
 
 					            </div>
-						            
 
-				            </div>
+					            <div class="card-footer" style="text-align: right;">
+							
+									<button type="button" class="btn btn-default" id="prev" disabledx="">Back</button>
+									<button type="button" class="btn bg-gradient-primary" id="next">Next Step</button>
 
-				            <div class="card-footer" style="text-align: right;">
+				              	</div>
+
+						    </div><!-- /.card -->
+
+						{!! Form::close() !!}
+
+					</div>
+
+					<div class="col-lg-3 mycol" id="side-window">
 						
-								<button type="button" class="btn btn-default" id="prev" disabledx="">Back</button>
-								<button type="button" class="btn bg-gradient-primary" id="next">Next Step</button>
+						<div class="card card-primary card-outline" style="height: 100%">
 
-			              	</div>
-
-					    </div><!-- /.card -->
-
-					{!! Form::close() !!}
-
-				</div>
-
-				<div class="col-lg-3 mycol" id="side-window">
-					
-					<div class="card card-primary card-outline" style="height: 100%">
-
-						<div class="card-header" style="height: 73px;background:#f5f5f5;border: 1px solid #ddd;">
-							<h3 class="card-title" style="line-height: 48px;">
-								<strong>Overview</strong>
-							</h3>
-						</div>
-
-						<div class="card-body">
-
-							<div class="row">
-								<p><strong>Step 1:</strong> <span id="loc-overview" class="text-danger">Incomplete</span></p>
-								<div class="col-lg-12 hide" id="loc-div">
-									<p><strong>Simulation Name: <small id="simname-side"></small></strong></p>
-									<p><strong>City Name: <small id="cityname-side"></small></strong></p>
-									<div id="map2"></div>
-								</div>
+							<div class="card-header" style="height: 73px;background: #17a2b8;color: #fff;border: 1px solid #078da2;">
+								<h3 class="card-title" style="line-height: 48px;">
+									<strong>Overview</strong>
+								</h3>
 							</div>
 
-							<hr>
+							<div class="card-body" style="height: 100px;overflow-x: auto;">
 
-							<div class="row">
-								<p><strong>Step 2:</strong> <span id="population-overview" class="text-danger">Incomplete</span></p>
-								
-								<div class="table-responsive table-bordered row-scroll" id="population-info-table" style="max-height: 162px;overflow: auto;display: none;margin-top: 10px">
-									<table class="table" style="margin-bottom: 0">
-										<thead>
-											<tr>
-
-												<th>Population</th><th>Count</th>
-
-											</tr>
-										</thead>
-										<tbody>
-										</tbody>
-									</table>
+								<div class="row">
+									<p><strong>Step 1:</strong> <span id="loc-overview" class="text-danger">Incomplete</span></p>
+								</div>
+								<div class="row summary-data hide" id="s1-sum">
+									<ul class="sum-ul">
+										<li>Simulation Name: <span id="simname-side"></span></li>
+										<li>City Name: <span id="cityname-side"></span></li>
+									</ul>
+								</div>
+								<div class="row">
+									<div class="col-lg-12 hide" id="loc-div">
+										<div id="map2"></div>
+									</div>
 								</div>
 
-							</div>
+								<hr>
 
-							<hr>
+								<div class="row">
+									<p><strong>Step 2:</strong> <span id="population-overview" class="text-danger">Incomplete</span></p>
+								</div>
 
-							<div class="row">
-								<p><strong>Step 3:</strong> <span id="resources-overview" class="text-danger">Incomplete</span></p>
-							</div>
-
-							<hr>
-
-							<div class="row">
-								<p><strong>Step 4:</strong> <span id="states-overview" class="text-danger">Incomplete</span></p>
-							</div>
-
-							<hr>
-
-							<div class="row">
-								<p><strong>Step 5:</strong> <span id="parameters-overview" class="text-danger">Incomplete</span></p>
-							</div>
+								<div id="population-info" class="row summary-data">
 
 
-					    </div>
+								</div>
 
-					</div><!-- /.card -->
+								<hr>
 
-				</div>
+								<div class="row">
+									<p><strong>Step 3:</strong> <span id="resources-overview" class="text-danger">Incomplete</span></p>
+								</div>
+								<div class="row summary-data" id="res-summary"></div>
 
-	        </div>
-	        <!-- /.row -->
+								<hr>
 
-	    </div><!-- /.container-fluid -->
+								<div class="row">
+									<p><strong>Step 4:</strong> <span id="states-overview" class="text-danger">Incomplete</span></p>
+								</div>
+								<div class="row summary-data" id="state-summary"></div>
 
+								<hr>
+
+								<div class="row">
+									<p><strong>Step 5:</strong> <span id="parameters-overview" class="text-danger">Incomplete</span></p>
+								</div>
+
+
+						    </div>
+
+						</div><!-- /.card -->
+
+					</div>
+
+		        </div>
+		        <!-- /.row -->
+
+		    </div><!-- /.container-fluid -->
+
+		</div>
 	</div>
+
+	<div class="modal" id="modal-xl-policy" style="background: #0000005c;" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">Edit policy</h4>
+              <button type="button" class="close close-policy-modal" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">×</span>
+              </button>
+            </div>
+            <div class="modal-body" id="policy-modal-body">
+              
+            	<div id="policy-edit-twrapper"></div>
+
+            </div>
+            <div class="modal-footer justify-content-between">
+              <button type="button" class="btn btn-default close-policy-modal">Close</button>
+              <button type="button" class="btn btn-primary" id="save-close-policy-modal">Save changes</button>
+            </div>
+          </div>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+     </div>
 
 @stop
 
