@@ -8,6 +8,7 @@ $baseDir = dirname($vendorDir);
 return array(
     'Absolute_Positioner' => $vendorDir . '/dompdf/dompdf/include/absolute_positioner.cls.php',
     'Abstract_Renderer' => $vendorDir . '/dompdf/dompdf/include/abstract_renderer.cls.php',
+    'AddFieldsToUsersTable' => $baseDir . '/database/migrations/2021_01_17_222609_add-fields-to-users-table.php',
     'AddPopulationToSimulationTable' => $baseDir . '/database/migrations/2020_07_07_001020_add_population_to_simulation_table.php',
     'AddStopwatchToSimulationTable' => $baseDir . '/database/migrations/2020_10_23_104719_add-stopwatch-to-simulation-table.php',
     'Adobe_Font_Metrics' => $vendorDir . '/phenx/php-font-lib/classes/Adobe_Font_Metrics.php',

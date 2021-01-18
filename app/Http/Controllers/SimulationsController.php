@@ -190,9 +190,7 @@ class SimulationsController extends Controller
 
     public function postAdd()
     {
-
-        // Job::dump(Input::all());
-
+        
         $resources = Input::get('resources');
         $subresources = Input::get('subresources');
         $states = Input::get('states');
@@ -201,6 +199,10 @@ class SimulationsController extends Controller
         if (isset($resources)) {
 
             foreach ($resources as $rk => $resource) {
+
+                if ($resource['name']=='Addiction / Rehabilitation Center') {
+                    $resources[$rk]['name'] = 'Rehabilitation';
+                }
 
                 $resources[$rk]['subresources'] = [];
 
@@ -242,16 +244,17 @@ class SimulationsController extends Controller
         $allowedPopulation = Input::get('allowedPopulation');
         $initialPopulation = Input::get('initialPopulation');
         $maximumlengthofstay = Input::get('maximumlengthofstay');
+        $monthlyquota = Input::get('monthlyquota');
         $capacity = Input::get('capacity');
 
         $resources = Simulation::mergeResourcesPropreties($resources, $allowedPopulation, 'allowedpopulation');
         $resources = Simulation::mergeResourcesPropreties($resources, $initialPopulation, 'initialPopulation');
         $resources = Simulation::mergeResourcesPropreties($resources, $maximumlengthofstay, 'maximumlengthofstay');
+        $resources = Simulation::mergeResourcesPropreties($resources, $monthlyquota, 'monthlyquota');
         $resources = Simulation::mergeResourcesPropreties($resources, $capacity, 'capacity');
         $states = Simulation::mergeStatesPropreties($states, $allowedPopulation, 'allowedpopulation');
         $states = Simulation::mergeStatesPropreties($states, $initialPopulation, 'initialPopulation');
 
-        $transitionProbability = Input::get('TransitionProbability');
         $creatorname = 'none';
         $numberofweeks = Input::get('numberofweeks');
         $numberofsims = Input::get('numberofsims');
@@ -269,7 +272,7 @@ class SimulationsController extends Controller
         $output['populationType'] = $populationType;
         $output['resources'] = $resources;
         $output['states'] = $states;
-        $output['transitionProbability'] = $transitionProbability;
+        $output['transitionProbability'] = null;
 
         $sim = new Simulation();
         $sim->user_id = Auth::user()->id;

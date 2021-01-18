@@ -386,6 +386,7 @@ class ComposerStaticInit6ff8fbba5f58ec266906a0f204970d71
     public static $classMap = array (
         'Absolute_Positioner' => __DIR__ . '/..' . '/dompdf/dompdf/include/absolute_positioner.cls.php',
         'Abstract_Renderer' => __DIR__ . '/..' . '/dompdf/dompdf/include/abstract_renderer.cls.php',
+        'AddFieldsToUsersTable' => __DIR__ . '/../..' . '/database/migrations/2021_01_17_222609_add-fields-to-users-table.php',
         'AddPopulationToSimulationTable' => __DIR__ . '/../..' . '/database/migrations/2020_07_07_001020_add_population_to_simulation_table.php',
         'AddStopwatchToSimulationTable' => __DIR__ . '/../..' . '/database/migrations/2020_10_23_104719_add-stopwatch-to-simulation-table.php',
         'Adobe_Font_Metrics' => __DIR__ . '/..' . '/phenx/php-font-lib/classes/Adobe_Font_Metrics.php',

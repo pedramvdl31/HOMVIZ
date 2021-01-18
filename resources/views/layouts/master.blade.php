@@ -21,7 +21,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
   @yield('stylesheets')
 
 <!-- Hotjar Tracking Code for http://homelessness-visualization.datalab.science/ -->
-  <script>
+<!--   <script>
       (function(h,o,t,j,a,r){
           h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
           h._hjSettings={hjid:1885970,hjsv:6};
@@ -30,7 +30,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
           r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
           a.appendChild(r);
       })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
-  </script>
+  </script> -->
 
 </head>
 
@@ -88,5 +88,17 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <!-- AdminLTE App -->
 <script src="/AdminLTE-3.0.0/dist/js/adminlte.min.js"></script>
 @yield('scripts')
+
+
+<!-- <script type="text/javascript">
+  window._mfq = window._mfq || [];
+  (function() {
+    var mf = document.createElement("script");
+    mf.type = "text/javascript"; mf.defer = true;
+    mf.src = "//cdn.mouseflow.com/projects/8809e78c-6e1b-4148-9614-082f83032b70.js";
+    document.getElementsByTagName("head")[0].appendChild(mf);
+  })();
+</script> -->
+
 </body>
 </html>

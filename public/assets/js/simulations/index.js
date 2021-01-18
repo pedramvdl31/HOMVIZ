@@ -32,8 +32,9 @@ $('.general-info').tooltip();
 
 startTimer()
 
-
 $(document).ready(function(){
+
+  $('.general-tooltip').tooltip();
 
   let headerHeight = $('.main-header').height() + 15
   $('.my-sidebar').css('padding-top',headerHeight+'px')
@@ -119,13 +120,13 @@ $(document).ready(function(){
 
       step4HandleErrors()
 
-    } else if (window.currentstep==5) {
+    } else if (window.currentstep==5000) {
 
       $('#prev').removeAttr('disabled')
 
       step5HandleErrors()
 
-    } else if (window.currentstep==6) {
+    } else if (window.currentstep==5) {
 
       $('#prev').removeAttr('disabled')
       $('#next').removeClass('bg-gradient-primary').addClass('bg-gradient-success').text('Create Simulation')
@@ -162,7 +163,7 @@ $(document).ready(function(){
 
     }, 500)
 
-  }, 1500)
+  }, 3000)
 
 
   $('.tutorial-link').on('click', function(e) {
@@ -198,7 +199,7 @@ $(document).ready(function(){
     step1HandleErrors()
   })
 
-  $(document).on("keypress",".pop-input-validation, .maxlength-input-validation, .capacity-input-validation, .mq-input-validation",function(event) {
+  $(document).on("keypress",".pop-input-validation, .maxlength-input-validation, .capacity-input-validation, .mq-input-validation, .mlos-input-validation",function(event) {
 
       var regex = new RegExp("^[0-9]+$");
       var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
@@ -327,7 +328,7 @@ $(document).ready(function(){
 
   });
 
-  $(document).on("blur","maxlength-input-validation, .capacity-input-validation, .mq-input-validation",function(event) {
+  $(document).on("blur","maxlength-input-validation, .capacity-input-validation, .mq-input-validation, .mlos-input-validation",function(event) {
 
     if ($(this).val()=='') {
       $(this).val(1)
@@ -434,7 +435,7 @@ $(document).ready(function(){
 
   });
 
-  $('#simweeks, #simnum, #housingp').on('keyup blur', function(e) {
+  $('#simweeks, #simnum').on('keyup blur', function(e) {
     step6HandleErrors()
   })
   
@@ -632,7 +633,7 @@ $(document).ready(function(){
       //Activate
       $('.'+tooltipClass).tooltip();
 
-      activatePopUpWindows(rowID,type)
+      activatePopUpWindows(rowID,type,name)
 
       window.dataSummary.push({ 'name':name, 'nameforshow':'', 'id':rowID, 'type':type, 'kind':'main', 'parent_id':null, properties: {'ap':[],'ip':[],'mlos':0,'cap':-1,'mq':0} })
 
@@ -986,7 +987,7 @@ $(document).ready(function(){
 
     $('.'+tooltipClass).tooltip();
 
-    activatePopUpWindows(rowID,type)
+    activatePopUpWindows(rowID,type,parentName)
 
 
     window.dataSummary.push({ 'name':name, 'nameforshow':'', 'id':rowID, 'type':type, 'kind':'child', 'parent_id':parentID, properties: {'ap':[],'ip':[],'mlos':0,'cap':-1, 'mq':0} })
@@ -998,7 +999,7 @@ $(document).ready(function(){
         if (parentID == ds_value['id']) {
 
           window.dataSummary[ds_key]['kind'] = 'parent'
-          window.dataSummary[ds_key]['properties'] =  {'ap':[],'ip':[],'mlos':0,'cap':-1}
+          window.dataSummary[ds_key]['properties'] =  {'ap':[],'ip':[],'mlos':0,'cap':-1,'mq':0}
 
         }
 
@@ -1098,6 +1099,7 @@ $(document).ready(function(){
     let subRowCount = $(document).find('tr[parentID='+parentID+']').length
 
     if (subRowCount == 0) {
+
       let parentElem = $(document).find('tr[id='+parentID+']')
       let type = parentElem.attr('type')
 
@@ -1108,7 +1110,7 @@ $(document).ready(function(){
       parentElem.removeClass('parentrow')
       parentElem.find('td').eq(3).html(td3)
 
-      activatePopUpWindows(parentID,type)
+      activatePopUpWindows(parentID,type,name)
 
       $.each( window.dataSummary, function( ds_key1, ds_value1 ) {
 
@@ -1189,7 +1191,7 @@ $(document).ready(function(){
 
       $('.'+tooltipClass).tooltip();
 
-      activatePopUpWindows(rowID,type)
+      activatePopUpWindows(rowID,type,null)
 
       window.dataSummary.push({ 'name':name, 'nameforshow':'', 'id':rowID, 'type':type, 'kind':'main', 'parent_id':null, properties: {'ap':[],'ip':{} } })
 
@@ -1256,10 +1258,19 @@ $(document).ready(function(){
 
     let text = String(sanitizeString($(this).val()))
 
-    if (text!='') {
-      $(this).removeClass('is-invalid').addClass('is-valid')
+    let dupRowCount = $(document).find('.policy-rows[pname="'+text+'"]').length
+
+    $(this).removeClass('is-valid is-invalid')
+
+    if (dupRowCount>0) {
+      $(this).addClass('is-invalid')
+      $('#housingp-error').text('This name has been entered. Duplicate name is not allowed.')
+    } else if (text == '') {
+      $(this).addClass('is-invalid')
+      $('#housingp-error').text('*required.')
     } else {
-      $(this).removeClass('is-valid').addClass('is-invalid')
+      $(this).addClass('is-valid')
+      $('#housingp-error').text('*required.')
     }
 
   })
@@ -1269,22 +1280,31 @@ $(document).ready(function(){
     let text = $('#policy-name-input').val()
     text = String(sanitizeString(text))
 
-    if (text!='') {
+    let dupRowCount = $(document).find('.policy-rows[pname="'+text+'"]').length
+    $('#policy-name-input').removeClass('is-valid is-invalid')
+
+    $('#housingp-error').text('*required.')
+
+    if (dupRowCount > 0) {
+
+      $('#housingp-error').text('This name has been entered. Duplicate name is not allowed.')
+
+      $('#policy-name-input').addClass('is-invalid')
+
+    } else if (text!='') {
 
       let rowID = makeid(5)
-      var myEle = document.getElementById(rowID);
-      while(myEle){
+      while(document.getElementById(rowID)){
         rowID = makeid(5)
-        myEle = document.getElementById(rowID);
       }
 
       let tooltipClass = "tooltip-"+rowID
 
-      let t = '<tr class="mainrow" id="'+rowID+'" pname="'+text+'"><td>Policy</td>'+
+      let t = '<tr class="mainrow policy-rows" id="'+rowID+'" pname="'+text+'"><td>Policy</td>'+
               '<td>'+text+'</td>'+
               '<td><a class="text-danger pointer edit-policy-row a-tag" this-id="'+rowID+'">Edit properties</a>&nbsp;'+
               '<a data-toggle="tooltip" data-placement="top" title="" class="_icon not-set pointer '+tooltipClass+'" data-original-title="Not set"><i class="text-danger fas fa-times-circle"></i></a></td>'+
-              '<td><a class="text-danger pointer remove-policy-row">Delete policy</a></td></tr>'
+              '<td><a class="text-danger pointer remove-policy-row" this-id="'+rowID+'">Delete policy</a></td></tr>'
 
       let rowCount = $("#policy-tbody .mainrow").length
       if (rowCount== 0) {
@@ -1295,8 +1315,10 @@ $(document).ready(function(){
 
       $('.'+tooltipClass).tooltip();
 
-      window.dataSummary.push({ 'name':text, 'id':rowID, 'type':'policy', properties: {'mlos':{'value':null,'changed':'','quota':null},'cap':{'value':null,'changed':'','quota':null} } })
+      window.dataSummary.push({ 'name':text, 'id':rowID, 'type':'policy', data: {} })
 
+    } else {
+      $('#policy-name-input').removeClass('is-valid is-invalid').addClass('is-invalid')
     }
 
   })
@@ -1326,7 +1348,7 @@ $(document).ready(function(){
 
             flag = true
 
-            html += '<tr id="'+policyId+'-'+ds_value['id']+'" class="mainrow">'
+            html += '<tr id="'+policyId+'-'+ds_value['id']+'" class="mainrow" res-id="'+ds_value['id']+'">'
 
             html += '<td rowspan="2">Resource</td>'
 
@@ -1354,19 +1376,19 @@ $(document).ready(function(){
 
             html += '<td class="bb0">'+
                     '<label for="inputName"><span class="increase-decrease">Increase or decrease</span> the maximum length of stay monthly by</label>'+
-                    '<input name="policy['+policyId+']['+ds_value['id']+'][mlos][mq]" type="number" min="1" max="1000" step="1" autocomplete="off" class="form-control policy-input mlos-mq" readonly value="">'+
+                    '<input name="policy['+policyId+']['+ds_value['id']+'][mlos][mq]" type="number" min="1" max="1000" step="1" autocomplete="off" class="form-control policy-input mlos-mq mlos-input-validation" readonly value="">'+
                     '<span class="text-danger mq-error hide"></span></td>'
 
 
-            html += '<tr class="last-child-row">'
+            html += '<tr class="last-child-row" res-id="'+ds_value['id']+'">'
 
             html += '<td>'
 
             html += '<label for="inputName">Capacity</label>'+
                     '<div class="input-group mb-3">'+
-                    '<input '+readonly+' name="policy['+policyId+']['+ds_value['id']+'][cap]" type="number" min="1" max="100000" step="1" autocomplete="off" class="form-control policy-input capacity-input-policy" value="'+ds_value['properties']['cap']+'">'+
+                    '<input '+readonly+' name="policy['+policyId+']['+ds_value['id']+'][cap]" type="number" min="1" max="100000" step="1" autocomplete="off" class="form-control policy-input capacity-input-policy capacity-input-validation is-valid policy-cap" original-val="'+ds_value['properties']['cap']+'" value="'+ds_value['properties']['cap']+'">'+
                     '<div class="input-group-append">'+
-                    '<span class="input-group-text bg-secondary">unchanged</span>'+
+                    '<span class="input-group-text bg-secondary cap-change-text">unchanged</span>'+
                     '</div>'+
                     '</div>';
 
@@ -1375,9 +1397,9 @@ $(document).ready(function(){
             html += '</td>'
 
             html += '<td>'+
-                    '<label for="inputName">Increase the capacity monthly by</label>'+
-                    '<input name="policy['+policyId+']['+ds_value['id']+'][cap][mq]" type="number" min="1" max="1000" step="1" autocomplete="off" class="form-control policy-input" value="">'+
-                    '</td>'
+                    '<label for="inputName"><span class="increase-decrease">Increase or decrease</span> the capacity monthly by</label>'+
+                    '<input name="policy['+policyId+']['+ds_value['id']+'][cap][mq]" type="number" min="1" max="1000" step="1" autocomplete="off" class="form-control policy-input mq-cap capacity-input-validation" readonly value="">'+
+                    '<span class="text-danger cap-error hide"></span></td>'
 
             html += '</tr>'
 
@@ -1430,7 +1452,7 @@ $(document).ready(function(){
 
                     }
 
-                    html += '<tr id="'+policyId+'-'+ds_value_child2['id']+'" parent-id="'+ds_value_child2['parent_id']+'" class="'+childRowClass+'">'
+                    html += '<tr id="'+policyId+'-'+ds_value_child2['id']+'" parent-id="'+ds_value_child2['parent_id']+'" class="'+childRowClass+'" res-id="'+ds_value_child2['id']+'">'
 
                     html += '<td rowspan="2">Sub resource</td>'
 
@@ -1440,14 +1462,14 @@ $(document).ready(function(){
 
                     let checked = ''
                     let readonly = ''
-                    if (ds_value['properties']['cap']==-1) {
+                    if (ds_value_child2['properties']['cap']==-1) {
                       readonly = 'readonly'
                       checked = 'checked=""'
                     }
 
                     html += '<label for="inputName">Maximum length of stay</label>'+
                             '<div class="input-group mb-3">'+
-                            '<input name="policy['+policyId+']['+ds_value_child2['id']+'][mlos]" main-id="'+ds_value_child2['id']+'" type="number" min="1" max="1000" step="1" autocomplete="off" class="is-valid form-control policy-input policy-mlos" original-val="'+ds_value['properties']['mlos']+'" value="'+ds_value_child2['properties']['mlos']+'">'+
+                            '<input name="policy['+policyId+']['+ds_value_child2['id']+'][mlos]" main-id="'+ds_value_child2['id']+'" type="number" min="1" max="1000" step="1" autocomplete="off" class="is-valid form-control policy-input policy-mlos" original-val="'+ds_value_child2['properties']['mlos']+'" value="'+ds_value_child2['properties']['mlos']+'">'+
                             '<div class="input-group-append">'+
                             '<span class="input-group-text bg-secondary">unchanged</span>'+
                             '</div>'+
@@ -1457,28 +1479,28 @@ $(document).ready(function(){
 
                      html +=  '<td class="bb0">'+
                               '<label for="inputName"><span class="increase-decrease">Increase or decrease</span> the maximum length of stay monthly by</label>'+
-                              '<input name="policy['+policyId+']['+ds_value_child2['id']+'][mlos][mq]" type="number" min="1" max="1000" step="1" autocomplete="off" readonly class="form-control policy-input mlos-mq" value="">'+
+                              '<input name="policy['+policyId+']['+ds_value_child2['id']+'][mlos][mq]" type="number" min="1" max="1000" step="1" autocomplete="off" readonly class="form-control policy-input mlos-mq mlos-input-validation" value="">'+
                               '<span class="text-danger mq-error hide"></span></td>'
 
                     html += '</tr>'
 
-                    html += '<tr class="'+childRowClass+'">'
+                    html += '<tr class="'+childRowClass+' cap-class" res-id="'+ds_value_child2['id']+'" parent-id="'+ds_value_child2['parent_id']+'">'
 
                     html += '<td class="bt0">'
                     html += '<label for="inputName">Capacity</label>'+
                             '<div class="input-group mb-3">'+
-                            '<input '+readonly+' name="policy['+policyId+']['+ds_value_child2['id']+'][cap]" type="number" min="1" max="100000" step="1" autocomplete="off" class="form-control policy-input capacity-input-policy" value="'+ds_value_child2['properties']['cap']+'">'+
+                            '<input '+readonly+' name="policy['+policyId+']['+ds_value_child2['id']+'][cap]" type="number" min="1" max="100000" step="1" autocomplete="off" class="form-control policy-input capacity-input-policy capacity-input-validation is-valid policy-cap" original-val="'+ds_value_child2['properties']['cap']+'" value="'+ds_value_child2['properties']['cap']+'">'+
                             '<div class="input-group-append">'+
-                            '<span class="input-group-text bg-secondary">unchanged</span>'+
+                            '<span class="input-group-text bg-secondary cap-change-text">unchanged</span>'+
                             '</div>'+
                             '</div>';
                     html += '<label class="checkbox-inline"><input '+checked+' thisid="'+policyId+'-'+ds_value_child2['id']+'" class="capacities-infinite-policy" type="checkbox"> Infinite</label>' 
                     html += '</td>'
 
                     html += '<td class="bt0">'+
-                            '<label for="inputName">Increase the capacity monthly by</label>'+
-                            '<input name="policy['+policyId+']['+ds_value_child2['id']+'][cap][mq]" type="number" min="1" max="1000" step="1" autocomplete="off" class="form-control policy-input" value="">'+
-                            '</td>'
+                            '<label for="inputName"><span class="increase-decrease">Increase or decrease</span> the capacity monthly by</label>'+
+                            '<input name="policy['+policyId+']['+ds_value_child2['id']+'][cap][mq]" type="number" min="1" max="1000" step="1" autocomplete="off" class="form-control policy-input mq-cap capacity-input-validation" readonly value="">'+
+                            '<span class="text-danger cap-error hide"></span></td>'
 
                     html += '</tr>'
 
@@ -1510,12 +1532,28 @@ $(document).ready(function(){
 
   $('.close-policy-modal').on('click', function(e) {
     $('#modal-xl-policy').removeClass('show').addClass('hide')
+    $('#policy-edit-twrapper').html('')
   })
 
   $('#save-close-policy-modal').on('click', function(e) {
-
+    
     let thisID = $(this).attr('this-id')
 
+
+    //Delete previous data
+    $(document).find('.policy-'+thisID).first().remove()
+    $.each( window.dataSummary, function( ds_key_p, ds_value_p) {
+      if (ds_value_p != undefined) {
+        if (ds_value_p['type']=='policy') {
+          if (ds_value_p['id']==thisID) {
+            ds_value_p['data']={}
+          }
+        }
+      }
+    })
+
+
+    let data = { 'policy-id': thisID, 'policy-data': [] }
 
     let notset_elem = $(document).find('.tooltip-'+thisID)
 
@@ -1523,21 +1561,235 @@ $(document).ready(function(){
     notset_elem.find('i').removeClass('fa-times-circle').removeClass('text-danger').addClass('fa-check-circle').addClass('text-success')
     notset_elem.removeClass('not-set').addClass('set')
 
+    let trMainRows = $(this).parents('.modal-content').first().find('.modal-body').first().find('.mainrow')
+
+    trMainRows.each(function() {
+
+      let ID = $(this).attr('id')
+
+      //not a parent
+      if (!$(this).hasClass('parentrow')) {
+
+        let RowData = {}
+
+        let nameArr = ID.split('-');
+
+        let policyID = nameArr[0]
+        let rowID = nameArr[1]
+
+        let childTrElem = $(this).parents('tbody').first().find('.last-child-row[res-id="'+rowID+'"]').first()
+
+
+        RowData['kind'] = 'main'
+        RowData['policyID'] = policyID
+        RowData['rowID'] = rowID
+        RowData['policy-mlos'] = $(this).find('.policy-mlos').first().val()
+        RowData['mlos-mq'] = $(this).find('.mlos-mq').first().val()
+        RowData['policy-cap'] = childTrElem.find('.policy-cap').first().val()
+        RowData['mq-cap'] = childTrElem.find('.mq-cap').first().val()
+
+        data['policy-data'].push(RowData)
+
+      } else {
+
+        let RowData = {}
+
+        let nameArr = ID.split('-');
+
+        let policyID = nameArr[0]
+        let parentID = nameArr[1]
+
+        RowData['kind'] = 'parent'
+        RowData['policyID'] = policyID
+        RowData['rowID'] = parentID
+        data['policy-data'].push(RowData)
+
+        let childTrElem = $(this).parents('tbody').first().find('tr[parent-id="'+parentID+'"]')
+
+        childTrElem.each(function() {
+
+          if (!$(this).hasClass('cap-class')) {
+
+            let childRowData = {}
+
+            let rowID = $(this).attr('res-id')
+
+            childRowData['kind'] = 'child'
+            childRowData['policyID'] = policyID
+            childRowData['parentID'] = parentID
+            childRowData['rowID'] = rowID
+
+            childRowData['policy-mlos'] = $(this).find('.policy-mlos').first().val()
+            childRowData['mlos-mq'] = $(this).find('.mlos-mq').first().val()
+
+            let childTrCapElem = $(this).parents('tbody').first().find('.cap-class[parent-id="'+parentID+'"][res-id="'+rowID+'"]')
+
+            childRowData['policy-cap'] = childTrCapElem.find('.policy-cap').first().val()
+            childRowData['mq-cap'] = childTrCapElem.find('.mq-cap').first().val()
+
+            data['policy-data'].push(childRowData)
+
+          }
+
+        })
+
+      }
+
+    })
+
+
+    $.each( window.dataSummary, function( ds_key, ds_value) {
+      if (ds_value != undefined) {
+        if (ds_value['type']=='policy') {
+
+          if (ds_value['id'] == thisID) {
+            
+            ds_value['data'] = data
+
+          }
+
+        }
+      }
+    })
+
+    insertPolicyToDOM(thisID)
+
     $('#modal-xl-policy').removeClass('show').addClass('hide')
+    $('#policy-edit-twrapper').html('')
+
   })
 
-  $(document).on("change",".capacities-infinite-policy",function(e,data) {
+  $(document).on("click",".remove-policy-row",function() {
+
+    let thisID = $(this).attr('this-id')
+
+    $(document).find('.policy-'+thisID).first().remove()
+
+    $.each( window.dataSummary, function( ds_key, ds_value) {
+      if (ds_value != undefined) {
+        if (ds_value['type']=='policy') {
+          if (ds_value['id']==thisID) {
+            window.dataSummary.splice(ds_key, 1);
+          }
+        }
+      }
+    })
+
+    $('tr[id="'+thisID+'"]').first().remove()
+
+    let rowCount = $("#policy-tbody .mainrow").length
+    if (rowCount== 0) {
+      
+      $('#policy-tbody').append('<tr><td></td><td></td><td></td><td></td></tr>')
+
+    }
+
+  })
+
+  
+
+  $(document).on("keyup change blur",".capacities-infinite-policy",function(e,data) {
+
+    let cap_input = $(this).parents('td').first().find('.capacity-input-policy').first()
+    let changeTextElem = $(this).parents('td').first().find('.cap-change-text')
+
+    let original_val = cap_input.attr('original-val')
+    let current_val = cap_input.val()
+
+    cap_input.removeClass('is-invalid').addClass('is-valid')
 
     if(this.checked) {
-      $(this).parents('td').first().find('.capacity-input-policy').first().val('-1').attr('readonly','true');
+
+      cap_input.val('-1').attr('readonly','true');
+
+      if (original_val != -1) {
+        changeTextElem.removeClass('bg-secondary bg-orange bg-lime').addClass('bg-secondary').text('changed to infinite')
+      } else {
+        changeTextElem.removeClass('bg-secondary bg-orange bg-lime').addClass('bg-secondary').text('unchanged')
+      }
+
+      $(this).parents('tr').first().find('.mq-cap').val('').removeClass('is-invalid is-valid').attr('readonly',true)
+
     } else {
-      $(this).parents('td').first().find('.capacity-input-policy').first().val('1').removeAttr('readonly');
+
+      if (original_val != -1) {
+
+        cap_input.val(original_val).removeAttr('readonly');
+        changeTextElem.removeClass('bg-secondary bg-orange bg-lime').addClass('bg-secondary').text('unchanged')
+
+      } else {
+
+        cap_input.val('1').removeAttr('readonly');
+        $(this).parents('tr').first().find('.mq-cap').val('').removeClass('is-invalid is-valid').attr('readonly',true)
+        changeTextElem.removeClass('bg-secondary bg-orange bg-lime').addClass('bg-secondary').text('changed')
+
+      }
+
     }
 
   });
 
+  $(document).on('keyup change blur', '.capacity-input-policy', function() {
 
-  $(document).on('keyup', '.policy-mlos', function() {
+    if ($(this).attr('readonly') != 'readonly') {
+
+      let original_val = $(this).attr('original-val')
+      let current_val = parseInt($(this).val())
+
+      if (original_val != -1) {
+
+        $(this).removeClass('is-invalid').addClass('is-valid')
+
+        let is_increased = 'unchanged'
+        let prepared_text = ''
+        let textClass = ''
+        let increaseDecrease = ''
+
+        let diff = difference(current_val, original_val)
+
+        if (current_val > original_val) {
+
+          prepared_text = 'increased by '+ diff
+          textClass = 'bg-lime'
+          increaseDecrease = 'Increase'
+
+        } else if (current_val < original_val) {
+         
+          prepared_text = 'decreased by '+diff
+          textClass = 'bg-orange'
+          increaseDecrease = 'Decrease'
+
+        } else {
+
+          prepared_text = 'unchanged'
+          textClass = 'bg-secondary'
+
+        }
+
+        $(this).parents('div').first().find('.input-group-text').removeClass('bg-secondary bg-orange bg-lime').addClass(textClass).text(prepared_text)
+        
+
+        if (current_val != original_val) {
+
+          $(this).parents('tr').first().find('.increase-decrease').first().text(increaseDecrease)
+
+          $(this).parents('tr').first().find('.mq-cap').first().val('').removeClass('is-valid').addClass('is-invalid').removeAttr('readonly')
+
+        } else {
+
+          $(this).parents('tr').first().find('.increase-decrease').first().text('Increase or decrease')
+
+          $(this).parents('tr').first().find('.mq-cap').first().val('').removeClass('is-invalid is-valid').attr('readonly','true')
+
+        }
+
+      }
+
+    }
+
+  })
+
+  $(document).on('keyup change blur', '.policy-mlos', function() {
 
     let current_val = parseInt($(this).val())
     let main_id = $(this).attr('main-id')
@@ -1588,13 +1840,17 @@ $(document).ready(function(){
 
         $(this).parents('tr').first().find('.increase-decrease').first().text(increaseDecrease)
 
-        $(this).parents('tr').first().find('.mlos-mq').first().removeAttr('readonly')
+        $(this).parents('tr').first().find('.mlos-mq').first().removeAttr('readonly').removeClass('is-valid').addClass('is-invalid').val('')
+
+        $(this).parents('tr').first().find('.mq-error').first().removeClass('show').addClass('hide').text('')
 
       } else {
 
         $(this).parents('tr').first().find('.increase-decrease').first().text('Increase or decrease')
 
-        $(this).parents('tr').first().find('.mlos-mq').first().attr('readonly','true')
+        $(this).parents('tr').first().find('.mlos-mq').first().attr('readonly','true').removeClass('is-valid is-invalid').val('')
+
+        $(this).parents('tr').first().find('.mq-error').first().removeClass('show').addClass('hide').text('')
 
       }
 
@@ -1604,16 +1860,17 @@ $(document).ready(function(){
 
       $(this).parents('div').first().find('.input-group-text').removeClass('bg-secondary bg-orange bg-lime').addClass('bg-secondary').text('')
 
-      $(this).parents('tr').first().find('.mlos-mq').first().attr('readonly','true')
+      $(this).parents('tr').first().find('.mlos-mq').first().attr('readonly','true').removeClass('is-valid is-invalid').val('')
 
       $(this).parents('tr').first().find('.increase-decrease').first().text('Increase or decrease')
+
+      $(this).parents('tr').first().find('.mq-error').first().removeClass('show').addClass('hide').text('')
 
     }
 
   })
 
-
-  $(document).on('keyup', '.mlos-mq', function() {
+  $(document).on('keyup change blur', '.mlos-mq', function() {
 
     let original_val = parseInt($(this).parents('tr').first().find('.policy-mlos').first().attr('original-val'))
     let current_val = parseInt($(this).parents('tr').first().find('.policy-mlos').first().val())
@@ -1625,9 +1882,9 @@ $(document).ready(function(){
 
     let diff = difference(current_val, original_val)
 
-    if (current_val<mq_val) {
+    if (diff<mq_val) {
 
-      msg = 'Monthly quota cannot be bigger than the new maximum length of stay'
+      msg = 'Monthly quota cannot be bigger than the difference between the original and the new maximum length of stay'
 
       $(this).removeClass('is-valid').addClass('is-invalid')
 
@@ -1649,7 +1906,46 @@ $(document).ready(function(){
 
     }
 
+  })
 
+  $(document).on('keyup change blur', '.mq-cap', function() {
+
+    let inputElem =  $(this).parents('tr').first().find('.capacity-input-policy').first()
+    let errorElem = $(this).parents('tr').first().find('.cap-error').first()
+
+    let original_val = inputElem.attr('original-val')
+    let current_val = inputElem.val()
+
+    let cap_val = parseInt($(this).val())
+
+    let flag = false
+    let msg = ''
+
+    let diff = difference(current_val, original_val)
+
+    if (diff<cap_val) {
+
+      msg = 'Monthly quota cannot be bigger than the difference between the original and the new resource capacity'
+
+      $(this).removeClass('is-valid').addClass('is-invalid')
+
+      errorElem.removeClass('hide').addClass('show').text(msg)
+
+    } else if (cap_val<= 0) {
+
+      msg = 'Monthly quota cannot be zero'
+
+      $(this).removeClass('is-valid').addClass('is-invalid')
+
+      errorElem.removeClass('hide').addClass('show').text(msg)
+
+    } else {
+
+      $(this).removeClass('is-invalid').addClass('is-valid')
+
+      errorElem.removeClass('show').addClass('hide')
+
+    }
 
   })
 
@@ -1704,12 +2000,18 @@ $(document).ready(function(){
     if (message === 'undefined' || message === undefined) {
       if ($(this).hasClass('apop-info')) {
         message = 'The population type that is allowed to enter this resource/subresource'
+      } else if ($(this).hasClass('apop-ls-info')) {
+        message = 'The population type that is allowed to enter this living situation'
       } else if($(this).hasClass('initpop-info')){
         message = 'The number of individuals that reside in this resource/subresource at the beginning of the simulation'
+      } else if($(this).hasClass('initpop-ls-info')){
+        message = 'The number of individuals that are in this living situation at the beginning of the simulation'
       } else if($(this).hasClass('maxl-info')){
         message = 'The maximum number of weeks any individual can reside continuously in this resource/subresource'
       } else if($(this).hasClass('cap-info')){
         message = 'The total number of individuals that can stay at this resource/subresource at any given time'
+      } else if($(this).hasClass('mq-info')){
+        message = 'The number of individuals allowed to move to this resource at the beginning of every month'
       }
     }
 
@@ -1909,11 +2211,9 @@ function step6HandleErrors(){
 
   let weeksVal = $('#simweeks').val()
   let simnumVal = $('#simnum').val()
-  let housingpVal = $('#housingp').val()
 
   let weeksInput = false
   let simNumInput = false
-  let housingiInput = false
 
   if (weeksVal=="" || !NoSpecialCharacter(weeksVal)) {
     $('#weeks-error').css('display','block')
@@ -1935,17 +2235,7 @@ function step6HandleErrors(){
     simNumInput = true
   }
 
-  if (housingpVal=="" || !NoSpecialCharacter(housingpVal)) {
-    $('#housingp-error').css('display','block')
-    $('#housingp').removeClass('is-valid').addClass('is-invalid')
-    housingiInput = false
-  } else {
-    $('#housingp-error').css('display','none')
-    $('#housingp').removeClass('is-invalid').addClass('is-valid')
-    housingiInput = true
-  }
-
-  if (weeksInput && simNumInput && housingiInput) {
+  if (weeksInput && simNumInput) {
     $('#parameters-overview').text('Complete').addClass('text-success').removeClass('text-danger')
     $('#next').removeAttr('disabled')
   } else {
@@ -2008,8 +2298,6 @@ function checkStep2(){
       });
 
       infoSectionPopulation += '</ul>'
-
-
 
       $('#population-info').css('display','block');
       $('#population-info').html(infoSectionPopulation);
@@ -2137,7 +2425,7 @@ function makeid(length) {
 
 }
 
-function activatePopUpWindows(rowID,type){
+function activatePopUpWindows(rowID,type,name){
 
   let apopID = 'apop-'+rowID
   let ipopID = 'ipop-'+rowID
@@ -2145,14 +2433,14 @@ function activatePopUpWindows(rowID,type){
   let cpopID = 'cpop-'+rowID
   let mqpopID = 'qpop-'+rowID
 
-  $(document).find('#'+apopID).popover({html:true,title: "Allowed Population Type <a class='show-info pointer apop-info'><span></span><i class='text-info fas fa-info-circle'></i></a> <a class='dismisspopover close' data-dismiss='alert'>&times;</a>"}).click(function(e) {
+  $(document).find('#'+apopID).popover({html:true,title: "Allowed Population Type <a class='dismisspopover close' data-dismiss='alert'>&times;</a>"}).click(function(e) {
       $('.popover').not(this).hide();
       $(this).data("bs.popover").inState.click = false;
       $(this).popover('show');
       e.preventDefault();
   });
 
-  $(document).find('#'+ipopID).popover({html:true,title: "Initial Population Count <a class='show-info pointer initpop-info'><span></span><i class='text-info fas fa-info-circle'></i></a> <a class='dismisspopover close' data-dismiss='alert'>&times;</a>"}).click(function(e) {
+  $(document).find('#'+ipopID).popover({html:true,title: "Initial Population Count <a class='dismisspopover close' data-dismiss='alert'>&times;</a>"}).click(function(e) {
       $('.popover').not(this).hide();
       $(this).data("bs.popover").inState.click = false;
       $(this).popover('show');
@@ -2165,21 +2453,14 @@ function activatePopUpWindows(rowID,type){
 
     _type = 'resource'
 
-    $(document).find('#'+mpopID).popover({html:true,title: "Maximum Length of Stay <a class='show-info pointer maxl-info'><span></span><i class='text-info fas fa-info-circle'></i></a> <a class='dismisspopover close' data-dismiss='alert'>&times;</a>"}).click(function(e) {
+    $(document).find('#'+mpopID).popover({html:true,title: "Maximum Length of Stay <a class='dismisspopover close' data-dismiss='alert'>&times;</a>"}).click(function(e) {
         $('.popover').not(this).hide();
         $(this).data("bs.popover").inState.click = false;
         $(this).popover('show');
         e.preventDefault();
     });
 
-    $(document).find('#'+cpopID).popover({html:true,title: "Capacity <a class='show-info pointer cap-info'><span></span><i class='text-info fas fa-info-circle'></i></a> <a class='dismisspopover close' data-dismiss='alert'>&times;</a>"}).click(function(e) {
-        $('.popover').not(this).hide();
-        $(this).data("bs.popover").inState.click = false;
-        $(this).popover('show');
-        e.preventDefault();
-    });
-
-    $(document).find('#'+mqpopID).popover({html:true,title: "Monthly Quota <a class='show-info pointer cap-info'><span></span><i class='text-info fas fa-info-circle'></i></a> <a class='dismisspopover close' data-dismiss='alert'>&times;</a>"}).click(function(e) {
+    $(document).find('#'+cpopID).popover({html:true,title: "Capacity <a class='dismisspopover close' data-dismiss='alert'>&times;</a>"}).click(function(e) {
         $('.popover').not(this).hide();
         $(this).data("bs.popover").inState.click = false;
         $(this).popover('show');
@@ -2188,7 +2469,18 @@ function activatePopUpWindows(rowID,type){
 
     addMpopHTML(mpopID,rowID,_type)
     addCpopHTML(cpopID,rowID,_type)
-    addMQpopHTML(mqpopID,rowID,_type)
+
+    if (name == 'Housing First') {
+
+      $(document).find('#'+mqpopID).popover({html:true,title: "Monthly Quota <a class='dismisspopover close' data-dismiss='alert'>&times;</a>"}).click(function(e) {
+          $('.popover').not(this).hide();
+          $(this).data("bs.popover").inState.click = false;
+          $(this).popover('show');
+          e.preventDefault();
+      });
+      addMQpopHTML(mqpopID,rowID,_type)
+
+    }
 
   }
 
@@ -2328,7 +2620,7 @@ function addMQpopHTML(ThisID,rowID,_type){
           '<table id="'+ThisID+'" class="table table-bordered"><tbody>';
 
   html += '<tr><td class="pop" style="font-weight: 900">Monthly Quota</td>'+
-            '<td class="pop"><input kind="mqinput" class="mq-input-validation" type="number" min="1" max="10000" step="1" name="monthlyquota['+_type+']['+rowID+']" value="0" style="width:100px; height:100%;" placeholder="#"></td></tr>';
+            '<td class="pop"><input kind="mqinput" class="mq-input-validation" type="number" min="1" max="10000" step="1" name="monthlyquota['+_type+']['+rowID+']" value="1" style="width:100px; height:100%;" placeholder="#"></td></tr>';
 
   html +=   '</tbody></table></div><div style="width:100%"><a rowid="'+rowID+'" id="'+ThisID+'" class="closepop btn btn-xs btn-primary text-white pointer">Save and Close</a></div></div>';
 
@@ -2390,25 +2682,25 @@ function ReturnIpopTR(value,rowID,_type){
 
 function makeResourcesPropretiesTD(rowID,tooltipClass,name){
   let html =  '<ul class="mb0"><li name="apop-'+rowID+'"><a id="apop-'+rowID+'" class="a-tag popover-all" data-placement="bottom" data-toggle="popover">Allowed Population Type</a>'+
-              '&nbsp;<a data-toggle="tooltip" data-placement="top" title="Not set" class="_icon not-set pointer '+tooltipClass+'"><i class="text-danger fas fa-times-circle"></i></a>'+
+              '&nbsp;<a class="show-info pointer apop-info"><i class="text-info fas fa-info-circle"></i></a>&nbsp;<a data-toggle="tooltip" data-placement="top" title="Not set" class="_icon not-set pointer '+tooltipClass+'"><i class="text-danger fas fa-times-circle"></i></a>'+
               '</li>'+
 
               '<li name="ipop-'+rowID+'"><a id="ipop-'+rowID+'" class="a-tag popover-all" data-placement="bottom" data-toggle="popover">Initial Population Count</a>'+
-              '&nbsp;<a data-toggle="tooltip" data-placement="top" title="Not set" class="_icon not-set pointer '+tooltipClass+'"><i class="text-danger fas fa-times-circle"></i></a>'+
+              '&nbsp;<a class="show-info pointer initpop-info"><span></span><i class="text-info fas fa-info-circle"></i></a>&nbsp;<a data-toggle="tooltip" data-placement="top" title="Not set" class="_icon not-set pointer '+tooltipClass+'"><i class="text-danger fas fa-times-circle"></i></a>'+
               '</li>'+
 
               '<li name="mpop-'+rowID+'"><a id="mpop-'+rowID+'" class="a-tag popover-all" data-placement="bottom" data-toggle="popover">Maximum Length of Stay</a>'+
-              '&nbsp;<a data-toggle="tooltip" data-placement="top" title="Not set" class="_icon not-set pointer '+tooltipClass+'"><i class="text-danger fas fa-times-circle"></i></a>'+
+              '&nbsp;<a class="show-info pointer maxl-info"><span></span><i class="text-info fas fa-info-circle"></i></a>&nbsp;<a data-toggle="tooltip" data-placement="top" title="Not set" class="_icon not-set pointer '+tooltipClass+'"><i class="text-danger fas fa-times-circle"></i></a>'+
               '</li>'+
 
               '<li name="cpop-'+rowID+'"><a id="cpop-'+rowID+'" class="a-tag popover-all" data-placement="bottom" data-toggle="popover">Capacity</a>'+
-              '&nbsp;<a data-toggle="tooltip" data-placement="top" title="Not set" class="_icon not-set pointer '+tooltipClass+'"><i class="text-danger fas fa-times-circle"></i></a>'+
+              '&nbsp;<a class="show-info pointer cap-info"><span></span><i class="text-info fas fa-info-circle"></i></a>&nbsp;<a data-toggle="tooltip" data-placement="top" title="Not set" class="_icon not-set pointer '+tooltipClass+'"><i class="text-danger fas fa-times-circle"></i></a>'+
               '</li>';
 
               if (name == 'Housing First') {
 
                 html +='<li name="qpop-'+rowID+'"><a id="qpop-'+rowID+'" class="a-tag popover-all" data-placement="bottom" data-toggle="popover">Monthly Quota</a>'+
-                '&nbsp;<a data-toggle="tooltip" data-placement="top" title="Not set" class="_icon not-set pointer '+tooltipClass+'"><i class="text-danger fas fa-times-circle"></i></a>'+
+                '&nbsp;<a class="show-info pointer mq-info"><span></span><i class="text-info fas fa-info-circle"></i></a>&nbsp;<a data-toggle="tooltip" data-placement="top" title="Not set" class="_icon not-set pointer '+tooltipClass+'"><i class="text-danger fas fa-times-circle"></i></a>'+
                 '</li>';
 
               }
@@ -2418,11 +2710,11 @@ function makeResourcesPropretiesTD(rowID,tooltipClass,name){
 
 function makeStatesPropretiesTD(rowID,tooltipClass){
   let html =  '<ul class="mb0"><li name="apop-'+rowID+'"><a id="apop-'+rowID+'" class="a-tag popover-all" data-placement="bottom" data-toggle="popover">Allowed Population Type</a>'+
-              '&nbsp;<a data-toggle="tooltip" data-placement="top" title="Not set" class="_icon not-set pointer '+tooltipClass+'"><i class="text-danger fas fa-times-circle"></i></a>'+
+              '&nbsp;<a class="show-info pointer apop-ls-info"><i class="text-info fas fa-info-circle"></i></a>&nbsp;<a data-toggle="tooltip" data-placement="top" title="Not set" class="_icon not-set pointer '+tooltipClass+'"><i class="text-danger fas fa-times-circle"></i></a>'+
               '</li>'+
 
               '<li name="ipop-'+rowID+'"><a id="ipop-'+rowID+'" class="a-tag popover-all" data-placement="bottom" data-toggle="popover">Initial Population Count</a>'+
-              '&nbsp;<a data-toggle="tooltip" data-placement="top" title="Not set" class="_icon not-set pointer '+tooltipClass+'"><i class="text-danger fas fa-times-circle"></i></a>'+
+              '&nbsp;<a class="show-info pointer initpop-ls-info"><span></span><i class="text-info fas fa-info-circle"></i></a>&nbsp;<a data-toggle="tooltip" data-placement="top" title="Not set" class="_icon not-set pointer '+tooltipClass+'"><i class="text-danger fas fa-times-circle"></i></a>'+
               '</li>';
 
   return html
@@ -2505,7 +2797,7 @@ function HandleStepsOnNextBtnClick(){
     break;
 
     //policies
-    case 5:
+    case 5000:
 
       let policyValidate = checkStep5()
 
@@ -2522,7 +2814,7 @@ function HandleStepsOnNextBtnClick(){
     break;
 
     //PRAMETERS
-    case 6:
+    case 5:
       if (checkStep6()) {
 
         if (validateAllSteps()) {
@@ -2568,7 +2860,7 @@ function MakeResourcesRowColumnHTML(rowID,tooltipClass,type,name,nameForShow){
   let td0 = '<td kind="name">'+nameForShow+'</td>';
 
   let td1 = '<td kind="nameinput"><input type="text" maxlength="40" class="form-control no-special-chars res-state-name is-invalid" name="resources['+rowID+'][name-for-show]" value="" placeholder="Enter resource name">'+
-            '<input type="hidden" class="form-control" name="resources['+rowID+'][name]" value="" maxlength="40">'+
+            '<input type="hidden" class="form-control" name="resources['+rowID+'][name]" value="'+name+'" maxlength="40">'+
             '<small class="text-danger hide res-state-name-error">* This name has been entered. Duplicate name is not allowed.</small></td>';
   
   let td2 = '<td kind="action">'+
@@ -2966,13 +3258,25 @@ function drawResSummay(){
 
           //----
 
-          html += '<li>Maximum length of stay: '+ds_value['properties']['mlos']+'</li>'
+          html += '<li>Maximum Length of Stay: '+ds_value['properties']['mlos']+'</li>'
 
-          html += '<li>Capacity: '+ds_value['properties']['cap']+'</li>'
+          let cap_html = ''
+
+          if (ds_value['properties']['cap'] == -1) {
+
+            cap_html = 'infinite'
+
+          } else {
+
+            cap_html = ds_value['properties']['cap']
+
+          }
+
+          html += '<li>Capacity: '+cap_html+'</li>'
 
           if (ds_value['name'] == 'Housing First') {
 
-            html += '<li>Monthly quota: '+ds_value['properties']['mq']+'</li>'
+            html += '<li>Monthly Quota: '+ds_value['properties']['mq']+'</li>'
             
           }          
 
@@ -3053,13 +3357,25 @@ function drawResSummay(){
 
                 //----
 
-                html += '<li>Maximum length of stay: '+ds_value_child2['properties']['mlos']+'</li>'
+                html += '<li>Maximum Length of Stay: '+ds_value_child2['properties']['mlos']+'</li>'
 
-                html += '<li>Capacity: '+ds_value_child2['properties']['cap']+'</li>'
+                let cap_html = ''
+
+                if (ds_value_child2['properties']['cap'] == -1) {
+
+                  cap_html = 'infinite'
+
+                } else {
+
+                  cap_html = ds_value_child2['properties']['cap']
+
+                }
+
+                html += '<li>Capacity: '+cap_html+'</li>'
 
                 if (ds_value['name'] == 'Housing First') {
 
-                  html += '<li>Monthly quota: '+ds_value_child2['properties']['mq']+'</li>'
+                  html += '<li>Monthly Quota: '+ds_value_child2['properties']['mq']+'</li>'
                   
                 }
 
@@ -3171,4 +3487,45 @@ function ToggleVideoSlider(){
 
 function difference(a, b) { 
   return Math.abs(a - b); 
+}
+
+function insertPolicyToDOM(policyID){
+
+  let html = ''
+
+  $.each( window.dataSummary, function( ds_key, ds_value ) {
+
+      if (ds_value != undefined) {
+
+        if (ds_value['type'] == 'policy') {
+
+          if (ds_value['id']==policyID) {
+
+            html += '<div class="html-policy policy-'+policyID+'">'
+
+            $.each( ds_value['data']['policy-data'], function( p_key, p_value ) {
+
+              if (p_value['kind']=='main') {
+
+                html += '<input type="hidden" name="policies['+policyID+']['+p_value['rowID']+'][policy-mlos]" value="'+p_value['policy-mlos']+'">'
+                html += '<input type="hidden" name="policies['+policyID+']['+p_value['rowID']+'][mlos-mq]" value="'+p_value['mlos-mq']+'">'
+                html += '<input type="hidden" name="policies['+policyID+']['+p_value['rowID']+'][policy-cap]" value="'+p_value['policy-cap']+'">'
+                html += '<input type="hidden" name="policies['+policyID+']['+p_value['rowID']+'][mq-cap]" value="'+p_value['mq-cap']+'">'
+
+              }
+
+            })
+
+            html += '</div>'
+
+          }
+
+        }
+
+      }
+
+    })
+
+  $('#policieshtmls').append(html)
+
 }

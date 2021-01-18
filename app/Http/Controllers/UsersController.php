@@ -56,6 +56,9 @@ class UsersController extends Controller
 
             $user = new User;
             $user->username = $username;
+            $user->email = Input::get('email');
+            $user->age = Input::get('age');
+            $user->gender = Input::get('gender');
             $user->password = Hash::make(Input::get('password')); 
             $user->save();
             Auth::attempt(array('username'=> $user->username, 'password'=>Input::get('password')));

@@ -1102,11 +1102,25 @@
                         </td>
                       </tr>
 
+                      <tr>
+                        <td>11</td>
+                        <td>What are some aspects of the HOMVIZ platform which you found to be positive?</td>
+                        <td colspan="5">
+                          <input class="form-control" type="text" name="questionnaire[sus][11]" required>
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td>12</td>
+                        <td>What are some aspects of the HOMVIZ platform which you found to be negative?</td>
+                        <td colspan="5">
+                          <input class="form-control" type="text" name="questionnaire[sus][12]" required>
+                        </td>
+                      </tr>
+
                     </tbody>
 
                   </table>
-
-
 
                   <button type="submit" class="btn btn-primary" style="float: right">Submit</button>
 

@@ -12,11 +12,10 @@
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/xlsx.full.min.js"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/jszip.js"></script>
 	<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.7/dist/loadingoverlay.min.js"></script>
-	<script type="text/javascript" src="/assets/js/simulations/index.js?11"></script>
+	<script type="text/javascript" src="/assets/js/simulations/index.js?12"></script>
 @stop
 
 @section('content')
-
 
   <!-- Control Sidebar -->
   <aside class="my-sidebar control-sidebar-dark sidebar-close">
@@ -35,7 +34,7 @@
 			<h6>Step 1</h6>
 			
 			<div class="embed-responsive embed-responsive-16by9">
-			  <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/zpOULjyy-n8?rel=0" allowfullscreen></iframe>
+			  <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/okcfxtIIQdU?start=218&end=236" frameborder="0" allowfullscreen></iframe>
 			</div>
 
 		</div>
@@ -45,7 +44,7 @@
 			<h6>Step 2</h6>
 			
 			<div class="embed-responsive embed-responsive-16by9">
-			  <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/zpOULjyy-n8?rel=0" allowfullscreen></iframe>
+			  <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/okcfxtIIQdU?start=238&end=264" frameborder="0" allowfullscreen></iframe>
 			</div>
 
 		</div>
@@ -261,7 +260,7 @@
 
 		.my-sidebar{
 		  width: 500px;
-		  position: absolute;
+		  position: fixed;
 		  top:0;
 		  height: 100%;
 		  transition: all .2s;
@@ -309,6 +308,19 @@
 			border-top: 0 !important;
 		}
 
+		.overview-title-table{
+			width: 100%
+		}
+
+		.overview-title-table tr td:first-child{
+			text-align: left;
+		}
+
+		.overview-title-table tr td:last-child{
+			text-align: right;
+		}
+
+
 	</style>
 
 	<!-- Content Wrapper. Contains page content -->
@@ -338,40 +350,38 @@
 						{!! Form::open(array('action' => 'SimulationsController@postAdd','role'=>"form", 'id'=>"myform", 'autocomplete'=>"off")) !!}
 
 					        @if(isset($project_id))
-						        	<input type="hidden" name="project_id" value="{{$project_id}}">
+						        <input type="hidden" name="project_id" value="{{$project_id}}">
 						    @endif
 
 						    <input type="hidden" name="stopwatch" id="stopwatch" value="0">
 
+
+							<!-- Policies are going to be here -->
+						    <div style="display: none" id="policieshtmls"></div>
+
 								
 							<!-- Popoovers are going to be here -->
-						    <div style="display: none" id="popoverhtmls"> 
-
-						    </div>
+						    <div style="display: none" id="popoverhtmls"></div>
 
 							<!-- Popoovers for overview window are going to be here -->
-						    <div style="display: none" id="popoverhtmls-overview"> 
-
-						    </div>
+						    <div style="display: none" id="popoverhtmls-overview"></div>
 
 						    <div class="card card-primary card-outline" style="height: 100%;margin-bottom: 0">
 
 					            <div class="card-body" id="smartwizard"	>
 
 						            <ul>
-						                <li><a href="#step-1">Step 1<br /><big>Location&nbsp;&nbsp;<i class="fas fa-map-marked-alt"></i></big></a></li>
+						                <li><a href="#step-1">Step 1<br /><big>Name and Location&nbsp;&nbsp;<i class="fas fa-map-marked-alt"></i></big></a></li>
 						                <li><a href="#step-2">Step 2<br /><big>Population Group&nbsp;&nbsp;<i class="fas fa-users"></i></big></a></li>
 						                <li><a href="#step-3">Step 3<br /><big>Resources&nbsp;&nbsp;<i class="fas fa-shapes"></i></big></a></li>
 						                <li><a href="#step-4">Step 4<br /><big>Living Situations&nbsp;&nbsp;<i class="fas fa-id-badge"></i></big></a></li>
-						                <li><a href="#step-5">Step 5<br /><big>Housing Interventions&nbsp;&nbsp;<i class="fas fa-building"></i></big></a></li>
-						                <li><a href="#step-6">Step 6<br /><big>Parameters&nbsp;&nbsp;<i class="fas fa-sliders-h"></i></big></a></li>
+						                <!-- <li><a href="#step-5">Step 5<br /><big>Housing Interventions&nbsp;&nbsp;<i class="fas fa-building"></i></big></a></li> -->
+						                <li><a href="#step-5">Step 5<br /><big>Parameters&nbsp;&nbsp;<i class="fas fa-sliders-h"></i></big></a></li>
 						            </ul>
 
 						            <div style="padding-top: 15px">
 
 						                <div id="step-1" class="">
-
-						                	<div class="video-link-container"><i step='1' class="text-info far fa-file-video tutorial-link"></i></div>
 
 						                	<div class="row">
 
@@ -384,8 +394,10 @@
 																<a class='show-info pointer'>
 																<span msg="Name your simulation. This is for your recollection and does not affect the outcome of your simulation."></span>
 																<i class='text-info fas fa-info-circle'></i>
-
 																</a>
+
+																
+																<a data-toggle="tooltip" data-placement="top" title="" data-original-title="Tutorial video" class="pointer general-tooltip"><i step='1' class="text-info fas fa-video tutorial-link"></i></a>
 
 											                	&nbsp;</label>
 											                	<div id="locationField"></div>
@@ -536,20 +548,21 @@
 
 						                <div id="step-2" class="">
 
-						                	<div class="video-link-container"><i step='2' class="text-info far fa-file-video tutorial-link"></i></div>
-
 						                	<div class="row">
 
 								                <div class="col-md-12">
 
 													<div class="form-group">
 
-									                	<label for="inputName">Select population type&nbsp;
-														<!-- <a class='show-info pointer'>
-														<span msg="The name of population types can be based on your labeling system. For example, you can use Male, Female, and Other. In the later stages, you can use the defined population types to customize your simulation."></span>
+									                	<label for="inputName">Select population type</label>
+
+									                	<a class='show-info pointer'>
+														<span msg="Select among the provided population types. In the later stages, you can use the defined population types to customize your simulation."></span>
 														<i class='text-info fas fa-info-circle'></i>
-														</a> -->
-									                	&nbsp;</label>
+														</a>
+
+									                	<a data-toggle="tooltip" data-placement="top" title="" data-original-title="Tutorial video" class="pointer general-tooltip"><i step='2' class="text-info fas fa-video tutorial-link"></i></a>
+
 									                	<br>
 									                	
 													  	<div class="form-inline">
@@ -614,28 +627,31 @@
 
 						                <div id="step-3" class="">
 
-						                	<div class="video-link-container"><i step='3' class="text-info far fa-file-video tutorial-link"></i></div>
-
 						                	<div class="row">
 
 								                <div class="col-md-12">
 
 													<div class="form-group">
 
-									                	<label for="inputName">Select between the provided resources&nbsp;
-															<a class='show-info pointer'>
-															<span msg="A resource is a place or a type of facility where people experiencing homelessness can spend the night."></span>
-															<i class='text-info fas fa-info-circle'></i>
-															</a>
-														&nbsp;</label>
+									                	<label for="inputName">Select between the provided resources</label>
+
+
+														<a class='show-info pointer'>
+														<span msg="A resource is a place or a type of facility where people experiencing homelessness can spend the night."></span>
+														<i class='text-info fas fa-info-circle'></i>
+														</a>
+
+														<a data-toggle="tooltip" data-placement="top" title="" data-original-title="Tutorial video" class="pointer general-tooltip"><i step='3' class="text-info fas fa-video tutorial-link"></i></a>
+
+
 													  	<div class="form-inline">
 														  	<select class="form-control col-md-4" id="resselect">
 														  		<option selected disabled id="title">Select</option>
-																<!-- <option id="Hospital" type="res">Hospital</option> -->
+																<option id="Hospital" type="res">Hospital</option>
 																<option id="Shelter" type="res">Shelter</option>
 																<option id="TransitionalHousing" type="res">Transitional Housing</option>
-																<option id="HousingFirst" type="res">Housing First</option>
-																<!-- <option id="Rehabilitation" type="res">Addiction / Rehabilitation Center</option>	 -->
+																<!-- <option id="HousingFirst" type="res">Housing First</option> -->
+																<option id="Rehabilitation" type="res">Addiction / Rehabilitation Center</option>	
 											                </select>
 													    	<button id="resourcebtn" type="button" class="btn btn-primary btn-flat" style="margin-left: 10px">Add</button>
 													    </div>
@@ -676,20 +692,20 @@
 
 						                <div id="step-4" class="">
 
-						                	<div class="video-link-container"><i step='4' class="text-info far fa-file-video tutorial-link"></i></div>
-
 						                	<div class="row">
 
 								                <div class="col-md-12">
 
 													<div class="form-group">
 
-									                	<label for="inputName">Select between the provided living situations&nbsp;
-															<a class='show-info pointer'>
+									                	<label for="inputName">Select between the provided living situations</label>
+
+									                	<a class='show-info pointer'>
 															<span msg="A particular living condition such as hidden homelessness"></span>
 															<i class='text-info fas fa-info-circle'></i>
-															</a>
-									                	&nbsp;</label>
+														</a>
+
+														<a data-toggle="tooltip" data-placement="top" title="" data-original-title="Tutorial video" class="pointer general-tooltip"><i step='4' class="text-info fas fa-video tutorial-link"></i></a>
 									                	<br>
 									                	
 													  	<div class="form-inline">
@@ -698,7 +714,7 @@
 																<option id="HiddenHomeless" type="state">Hidden Homeless</option>
 																<option id="NotHomeless" type="state">Not Homeless</option>
 																<option id="Street" type="state">Street</option>
-																<option id="InstitutionalOrganization" type="state">Institutional Organization</option>
+																<!-- <option id="InstitutionalOrganization" type="state">Institutional Organization</option> -->
 											                </select>
 													    	<button id="statebtn" type="button" class="btn btn-primary btn-flat" style="margin-left: 10px">Add</button>
 													    </div>
@@ -737,9 +753,7 @@
 
 						                </div>
 
-						                <div id="step-5" class="">
-
-						                	<div class="video-link-container"><i step='5' class="text-info far fa-file-video tutorial-link"></i></div>
+						                <div id="step-5xxx" class="">
 
 						                	<div class="row">
 
@@ -747,12 +761,15 @@
 
 													<div class="form-group">
 
-									                	<label for="inputName">Add a housing intervention policy&nbsp;
-															<a class='show-info pointer'>
-															<span msg="----------------------------------"></span>
-															<i class='text-info fas fa-info-circle'></i>
-															</a>
-														</label>
+									                	<label for="inputName">Add a housing intervention policy</label>
+
+														<a class='show-info pointer'>
+														<span msg="to be added"></span>
+														<i class='text-info fas fa-info-circle'></i>
+														</a>
+
+														<a data-toggle="tooltip" data-placement="top" title="" data-original-title="Tutorial video" class="pointer general-tooltip"><i step='5' class="text-info fas fa-video tutorial-link"></i></a>
+
 									                	<br>
 									                	
 													  	<div class="form-inline">
@@ -796,21 +813,23 @@
 						                </div>
 
 
-						                <div id="step-6" class="">
-
-						                	<div class="video-link-container"><i step='6' class="text-info far fa-file-video tutorial-link"></i></div>
+						                <div id="step-5" class="">
 
 						                	<div class="row" style="margin-left: 0;margin-right: 0;">
 
 								                <div class="col-md-4">
 
 													<div class="form-group">
-									                	<label for="inputName">Number of weeks&nbsp;
-								                			<a class='show-info pointer'>
+									                	<label for="inputName">Number of weeks</label>
+
+									                	<a class='show-info pointer'>
 															<span msg="The total number of weeks to run the simulation."></span>
 															<i class='text-info fas fa-info-circle'></i>
-															</a>
-									                	&nbsp;</label>
+														</a>
+
+														<a data-toggle="tooltip" data-placement="top" title="" data-original-title="Tutorial video" class="pointer general-tooltip"><i step='5' class="text-info fas fa-video tutorial-link"></i></a>
+
+
 									                	<input type="number" min="1" max="520" step="1" autocomplete="off" name="numberofweeks" id="simweeks" class="form-control is-invalid">
 									                	<span class="text-danger" id="weeks-error">This input is required. The value must be a numeric value between 1 to 520.</span>
 									              	</div>
@@ -826,7 +845,7 @@
 									                	<span class="text-danger" id="simnum-error">This input is required. The value must be a numeric value between 1 to 10.</span>
 									              	</div>
 
-				              						<div class="form-group">
+<!-- 				              						<div class="form-group">
 				              		                	<label for="inputName">Housing Intervention&nbsp;
 				              	                			<a class='show-info pointer'>
 				              								<span msg="The total number of housing interventaion per month"></span>
@@ -835,7 +854,7 @@
 				              		                	&nbsp;</label>
 				              		                	<input type="number" min="0" max="1000" step="1" autocomplete="off" name="housingpdata" type="text" id="housingp" class="form-control is-invalid">
 				              		                	<span class="text-danger" id="housingp-error">This input is required. The value must be a numeric value between 0 to 1000.</span>
-				              		              	</div>
+				              		              	</div> -->
 
 									            </div>
 
@@ -874,8 +893,16 @@
 							<div class="card-body" style="height: 100px;overflow-x: auto;">
 
 								<div class="row">
-									<p><strong>Step 1:</strong> <span id="loc-overview" class="text-danger">Incomplete</span></p>
+
+									<table class="overview-title-table">
+									  <tr>
+									    <td>Step 1, Name and Location:</td>
+									    <td><span id="loc-overview" class="text-danger">Incomplete</span></td>
+									  </tr>
+									</table>
+
 								</div>
+
 								<div class="row summary-data hide" id="s1-sum">
 									<ul class="sum-ul">
 										<li>Simulation Name: <span id="simname-side"></span></li>
@@ -891,7 +918,14 @@
 								<hr>
 
 								<div class="row">
-									<p><strong>Step 2:</strong> <span id="population-overview" class="text-danger">Incomplete</span></p>
+
+									<table class="overview-title-table">
+									  <tr>
+									    <td>Step 2, Population Group:</td>
+									    <td><span id="population-overview" class="text-danger">Incomplete</span></td>
+									  </tr>
+									</table>
+
 								</div>
 
 								<div id="population-info" class="row summary-data">
@@ -902,21 +936,54 @@
 								<hr>
 
 								<div class="row">
-									<p><strong>Step 3:</strong> <span id="resources-overview" class="text-danger">Incomplete</span></p>
+
+									<table class="overview-title-table">
+									  <tr>
+									    <td>Step 3, Resources:</td>
+									    <td><span id="resources-overview" class="text-danger">Incomplete</span></td>
+									  </tr>
+									</table>
+
 								</div>
 								<div class="row summary-data" id="res-summary"></div>
 
 								<hr>
 
 								<div class="row">
-									<p><strong>Step 4:</strong> <span id="states-overview" class="text-danger">Incomplete</span></p>
-								</div>
-								<div class="row summary-data" id="state-summary"></div>
 
+									<table class="overview-title-table">
+									  <tr>
+									    <td>Step 4, Living Situations:</td>
+									    <td><span id="states-overview" class="text-danger">Incomplete</span></td>
+									  </tr>
+									</table>
+
+								</div>
+ 								<div class="row summary-data" id="state-summary"></div>
+
+								<!--<hr>
+
+								<div class="row">
+
+									<table class="overview-title-table">
+									  <tr>
+									    <td>Step 5, Housing Interventions:</td>
+									    <td><span id="policies-overview" class="text-danger">Incomplete</span></td>
+									  </tr>
+									</table>
+
+								</div> -->
 								<hr>
 
 								<div class="row">
-									<p><strong>Step 5:</strong> <span id="parameters-overview" class="text-danger">Incomplete</span></p>
+									
+									<table class="overview-title-table">
+									  <tr>
+									    <td>Step 5, Parameters:</td>
+									    <td><span id="parameters-overview"" class="text-danger">Incomplete</span></td>
+									  </tr>
+									</table>
+
 								</div>
 
 
