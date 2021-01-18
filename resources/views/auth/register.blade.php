@@ -107,7 +107,7 @@
           </div>
 
           <div class="input-group mb-3">
-            <input id="password" name="password" type="password" class="form-control" placeholder="Password" required minlength="8" title="Must contain at least one  number and one uppercase and lowercase letter, and at least 8 or more characters">
+            <input id="password" name="password" type="password" class="form-control" placeholder="Password" required minlength="6" title="Must contain at least one  number and one uppercase and lowercase letter, and at least 8 or more characters">
             <div class="input-group-append">
               <div class="input-group-text">
                 <span class="fas fa-lock"></span>
