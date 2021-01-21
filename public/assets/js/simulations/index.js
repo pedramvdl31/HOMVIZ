@@ -23,7 +23,7 @@ window.stateset = 0
 window.params = 0
 
 //debug
-window.debug = 1
+window.debug = false
 
 var timeElapsed = 0;
 var myTimer;
@@ -3473,15 +3473,20 @@ function drawStateSummay(){
 
 function ToggleVideoSlider(){
 
-    if ($('.my-sidebar').hasClass('sidebar-close')) {
+  let or_val = parseInt($('#videosliderwatches').val())
 
-      $('.my-sidebar').removeClass('sidebar-close').addClass('sidebar-open')
+  if ($('.my-sidebar').hasClass('sidebar-close')) {
 
-    } else {
+    let new_val = or_val + 1
+    $('#videosliderwatches').val(new_val)
 
-      $('.my-sidebar').removeClass('sidebar-open').addClass('sidebar-close')
+    $('.my-sidebar').removeClass('sidebar-close').addClass('sidebar-open')
 
-    }
+  } else {
+
+    $('.my-sidebar').removeClass('sidebar-open').addClass('sidebar-close')
+
+  }
 
 }
 

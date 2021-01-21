@@ -34,7 +34,7 @@
 			<h6>Step 1</h6>
 			
 			<div class="embed-responsive embed-responsive-16by9">
-			  <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/okcfxtIIQdU?start=218&end=236" frameborder="0" allowfullscreen></iframe>
+			  <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/p7nSuzCPUkk" frameborder="0" allowfullscreen></iframe>
 			</div>
 
 		</div>
@@ -44,7 +44,7 @@
 			<h6>Step 2</h6>
 			
 			<div class="embed-responsive embed-responsive-16by9">
-			  <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/okcfxtIIQdU?start=238&end=264" frameborder="0" allowfullscreen></iframe>
+			  <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/ns3F-ztSV8I" frameborder="0" allowfullscreen></iframe>
 			</div>
 
 		</div>
@@ -54,7 +54,7 @@
 			<h6>Step 3</h6>
 			
 			<div class="embed-responsive embed-responsive-16by9">
-			  <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/zpOULjyy-n8?rel=0" allowfullscreen></iframe>
+			  <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/3ororsdLHdo" allowfullscreen></iframe>
 			</div>
 
 		</div>
@@ -64,7 +64,7 @@
 			<h6>Step 4</h6>
 			
 			<div class="embed-responsive embed-responsive-16by9">
-			  <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/zpOULjyy-n8?rel=0" allowfullscreen></iframe>
+			  <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/XnGM3V09eEY" allowfullscreen></iframe>
 			</div>
 
 		</div>
@@ -74,17 +74,7 @@
 			<h6>Step 5</h6>
 			
 			<div class="embed-responsive embed-responsive-16by9">
-			  <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/zpOULjyy-n8?rel=0" allowfullscreen></iframe>
-			</div>
-
-		</div>
-
-		<div id="step-6-video" class="video-container hide">
-
-			<h6>Step 6</h6>
-			
-			<div class="embed-responsive embed-responsive-16by9">
-			  <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/zpOULjyy-n8?rel=0" allowfullscreen></iframe>
+			  <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/qOCtxqZ7H7U" allowfullscreen></iframe>
 			</div>
 
 		</div>
@@ -354,6 +344,7 @@
 						    @endif
 
 						    <input type="hidden" name="stopwatch" id="stopwatch" value="0">
+						    <input type="hidden" name="videosliderwatches" id="videosliderwatches" value="0">
 
 
 							<!-- Policies are going to be here -->

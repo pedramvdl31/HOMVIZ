@@ -14,6 +14,7 @@ class AddStopwatchToSimulationTable extends Migration
     {
         Schema::table('simulations', function(Blueprint $table) {
             $table->string('stopwatch');
+            $table->string('videosliderwatches');
         });
     }
 

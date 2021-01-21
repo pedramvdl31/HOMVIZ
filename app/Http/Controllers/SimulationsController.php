@@ -279,6 +279,9 @@ class SimulationsController extends Controller
         $sim->data = json_encode($output);
         $sim->population_content = json_encode(Input::get('populationTypeCount'));
         $sim->stopwatch = Input::get('stopwatch');
+
+        $sim->videosliderwatches = Input::get('videosliderwatches');
+        
         $sim->save();
 
         return Redirect::route('index');
