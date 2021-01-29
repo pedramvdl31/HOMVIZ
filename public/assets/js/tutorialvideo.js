@@ -21,12 +21,14 @@ function onYouTubeIframeAPIReady() {
 function onPlayerStateChange(event) {
 
   if (event.data == YT.PlayerState.PLAYING) {
+    console.log('start')
      videoInteractionFeedback('started '+time())
      playing = true;
     }
 
   else if(event.data == YT.PlayerState.PAUSED){
         videoInteractionFeedback('paused '+time())
+        console.log('paused')
         playing = false;
    }
 

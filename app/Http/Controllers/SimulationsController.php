@@ -13,7 +13,9 @@ use Auth;
 use URL;
 use Session;
 use DB;
+use DateTime;
 use App\Job;
+use App\User;
 use App\Simulation;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
@@ -26,6 +28,240 @@ class SimulationsController extends Controller
         $this->layout = "layouts.master";
         //CHECK IF THE HOMEPAGE IS SET
     }
+
+    public function getTest()
+    {
+
+        // $u = User::all();
+
+        // foreach ($u as $key => $value) {
+        //     Job::dump($value->gender);
+        //     // Job::dump($value->age);
+        // }
+
+
+        // $malecount = 0;
+        // $femalecount = 0;
+        // foreach ($u as $key => $value) {
+        //     $age = '31 to 45';
+        //     if ($value->age == $age && $value->gender == 'male') {
+        //         $malecount++;
+        //     }
+        //     if ($value->age == $age && $value->gender == 'female') {
+        //         $femalecount++;
+        //     }
+        // }
+        // Job::dump('male count = '.$malecount);
+        // Job::dump('female count = '.$femalecount);
+
+
+
+        // $qs = DB::table('questionnaires')->get();
+        // foreach ($qs as $key => $value) {
+        //     Job::dump($value->stopwatch);
+        // }
+
+
+        // $qs = DB::table('questionnaires')->get();
+        // foreach ($qs as $key => $value) {
+        //     Job::dump($value->stopwatch);
+        // }
+
+
+        // $qs = DB::table('simulations')->get();
+        // foreach ($qs as $key => $value) {
+        //     Job::dump($value->user_id);
+        // }
+
+
+        // $qs = DB::table('simulations')->get();
+        // $sum = 0;
+        // foreach ($qs as $key => $value) {
+        //     $sum = $sum + $value->videosliderwatches;
+        // }
+        // Job::dump($sum);
+
+
+        // $qs = DB::table('userdata')->get();
+        // $limit = 0;
+        // foreach ($qs as $key => $value) {
+        //     $limit += 1;
+
+        //     if ($limit!=999) {
+
+        //         $total = 0;
+
+        //         if (!empty($value->data)) {
+
+        //             $data_array = explode(',', $value->data);
+
+
+        //             foreach ($data_array as $k => $v) {
+                        
+        //                 if (!empty($v)) {
+
+        //                     $data_point = explode(' ', $v);
+
+        //                     $kind = $data_point[0];
+
+        //                     if ($kind == 'started') {
+                            
+        //                         $date1 = date("Y-m-d H:i:s", substr($data_point[1], 0, 10));
+
+        //                         $next_pasued = explode(' ', $data_array[$k+1]);
+
+        //                         $date2 = date("Y-m-d H:i:s", substr($next_pasued[1], 0, 10));
+
+        //                         $total = $total + Job::time_diff($date2,$date1);
+
+
+        //                     }
+
+        //                 }
+
+        //             }
+
+        //             Job::dump($value->user_id.','.$total);
+
+        //         }
+
+        //     }
+        // }
+
+        // $qs = DB::table('userdata')->get();
+        // $limit = 0;
+        // foreach ($qs as $key => $value) {
+        //     $limit += 1;
+        //     if ($limit==1) {
+
+        //         $total = 0;
+
+        //         $data_array = explode(',', $value->data);
+
+        //         foreach ($data_array as $k => $v) {
+
+        //             if (!empty($v)) {
+
+        //                 $data_point = explode(' ', $v);
+
+        //                 $kind = $data_point[0];
+        //                 $data = date("Y-m-d H:i:s", substr($data_point[1], 0, 10));
+
+        //                 $p = $pdata = $diff = $pkind = null;
+        //                 if ($k!=0) {
+
+        //                     $p = explode(' ', $data_array[$k-1]);
+        //                     $pdata = $p[1];
+        //                     $pkind = $p[0];
+
+        //                 }
+
+        //                 if ($pdata!=null && $pkind == 'started') {
+                        
+        //                     $diff = $data_point[1] - $pdata;
+        //                     $pdata = date("Y-m-d H:i:s", substr($p[1], 0, 10));
+
+        //                     $total = $total + Job::time_diff($data,$pdata);
+
+
+        //                 }
+
+        //             }
+
+        //         }
+
+        //         Job::dump($value->user_id.','.$total);
+
+        //     }
+        // }
+
+        //---
+        // $qs = DB::table('userdata')->get();
+        // $qx = [];
+
+        // $limit = 0;
+
+        // foreach ($qs as $key => $value) {
+        //     $limit += 1;
+
+        //     if ($limit==5) {
+
+        //         $data_array = explode(',', $value->data);
+        //         array_push($qx, $data_array);
+
+        //     }
+        // }
+
+        // $qx = json_encode($qx);
+
+
+        // return view('test')
+        // ->with('qx',$qx)
+        // ->with('layout',"layouts.default");
+        //----
+
+
+        $qs = DB::table('questionnaires')->get();
+        foreach ($qs as $key => $value) {
+
+            $answer = json_decode($value->answer);
+
+            foreach ($answer as $ka => $va) {
+                if ($ka == 'sus') {
+
+                    $text='';
+                    foreach ($va as $keach => $veach) {
+                    
+                        if ($keach>=1 && $keach<=10) {
+                            $text.=$veach.',';
+                        }
+
+                    }
+                    Job::dump($text);
+                    // Job::dump($value->user_id);
+                }
+            }
+        }
+
+        // $qs = DB::table('users')->get();
+        // foreach ($qs as $key => $value) {
+        //     Job::dump($value->email);
+        // }
+
+        // $qs = DB::table('users')->get();
+        // foreach ($qs as $key => $value) {
+
+        //     $qsx = DB::table('userdata')->where('user_id',$value->id)->first();
+
+        //     $video = 0;
+        //     if (isset($qsx)) {
+        //         $video = 1;
+        //     }
+
+        //     $qsy = DB::table('questionnaires')->where('user_id',$value->id)->first();
+            
+        //     $questionnaire = 0;
+        //     if (isset($qsy)) {
+        //         $questionnaire = 1;
+        //     }
+
+        //     $qsz = DB::table('simulations')->where('user_id',$value->id)->first();
+            
+        //     $sim = 0;
+        //     if (isset($qsz)) {
+        //         $sim = 1;
+        //     }
+
+        //     Job::dump($value->id.','.$video.','.$sim.','.$questionnaire);
+
+        // }
+
+
+
+    }
+
+
+
 
     public function getAdd()
     {

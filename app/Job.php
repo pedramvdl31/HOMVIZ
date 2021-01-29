@@ -26,6 +26,26 @@ class Job extends Model
 {
 
 
+    static public function time_diff($dt1,$dt2){
+        $y1 = substr($dt1,0,4);
+        $m1 = substr($dt1,5,2);
+        $d1 = substr($dt1,8,2);
+        $h1 = substr($dt1,11,2);
+        $i1 = substr($dt1,14,2);
+        $s1 = substr($dt1,17,2);   
+
+        $y2 = substr($dt2,0,4);
+        $m2 = substr($dt2,5,2);
+        $d2 = substr($dt2,8,2);
+        $h2 = substr($dt2,11,2);
+        $i2 = substr($dt2,14,2);
+        $s2 = substr($dt2,17,2);   
+
+        $r1=date('U',mktime($h1,$i1,$s1,$m1,$d1,$y1));
+        $r2=date('U',mktime($h2,$i2,$s2,$m2,$d2,$y2));
+        return ($r1-$r2);
+
+    }
 
 	static public function ViewShareAdminPrivateData() {
 		$array = [];
