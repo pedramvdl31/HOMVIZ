@@ -82,6 +82,12 @@ class SimulationsController extends Controller
         // Job::dump($sum);
 
 
+        $qs = DB::table('simulations')->get();
+        foreach ($qs as $key => $value) {
+            Job::dump($value->user_id.','.$value->videosliderwatches);
+        }
+
+
         // $qs = DB::table('userdata')->get();
         // $limit = 0;
         // foreach ($qs as $key => $value) {
@@ -201,27 +207,59 @@ class SimulationsController extends Controller
         //----
 
 
-        $qs = DB::table('questionnaires')->get();
-        foreach ($qs as $key => $value) {
+        // $qs = DB::table('questionnaires')->get();
+        // foreach ($qs as $key => $value) {
 
-            $answer = json_decode($value->answer);
+        //     $answer = json_decode($value->answer);
 
-            foreach ($answer as $ka => $va) {
-                if ($ka == 'sus') {
+        //     foreach ($answer as $ka => $va) {
+        //         if ($ka == 'sus') {
+        //             $text=$value->user_id.',';
+        //             foreach ($va as $keach => $veach) {
 
-                    $text='';
-                    foreach ($va as $keach => $veach) {
+        //                 $comma = '';
+
+        //                 if ($keach==11) {
+        //                     $comma=',';
+        //                 }
                     
-                        if ($keach>=1 && $keach<=10) {
-                            $text.=$veach.',';
-                        }
+        //                 if ($keach>=11 && $keach<=12) {
+        //                     $comment = str_replace(',', '.', $veach);
+        //                     $text.=$comment.$comma;
+        //                 }
 
-                    }
-                    Job::dump($text);
-                    // Job::dump($value->user_id);
-                }
-            }
-        }
+        //             }
+        //             Job::dump($text);
+        //             // Job::dump($value->user_id);
+        //         }
+        //     }
+        // }
+
+
+
+        // $qs = DB::table('questionnaires')->get();
+        // foreach ($qs as $key => $value) {
+
+        //     $answer = json_decode($value->answer);
+
+        //     foreach ($answer as $ka => $va) {
+        //         if ($ka == 'cuq') {
+
+        //             $data = '';
+
+        //             foreach ($va as $keach => $veach) {
+
+        //                 foreach ($veach as $k2 => $v2) {
+        //                     $data .= $v2.',';
+        //                 }
+
+        //             }
+
+        //             Job::dump($data);
+
+        //         }
+        //     }
+        // }
 
         // $qs = DB::table('users')->get();
         // foreach ($qs as $key => $value) {

@@ -32,6 +32,16 @@ scratch. This page gets rid of all links and provides the needed markup only.
       })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
   </script>
 
+<script type='text/javascript'>
+  window.smartlook||(function(d) {
+    var o=smartlook=function(){ o.api.push(arguments)},h=d.getElementsByTagName('head')[0];
+    var c=d.createElement('script');o.api=new Array();c.async=true;c.type='text/javascript';
+    c.charset='utf-8';c.src='https://rec.smartlook.com/recorder.js';h.appendChild(c);
+    })(document);
+    smartlook('init', '7752652b0c092560396f442c65c8a72894b043cb');
+</script>
+
+
 </head>
 
 <body class="hold-transition sidebar-mini" id="#top">
