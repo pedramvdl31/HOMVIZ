@@ -82,57 +82,57 @@ class SimulationsController extends Controller
         // Job::dump($sum);
 
 
-        $qs = DB::table('simulations')->get();
-        foreach ($qs as $key => $value) {
-            Job::dump($value->user_id.','.$value->videosliderwatches);
-        }
-
-
-        // $qs = DB::table('userdata')->get();
-        // $limit = 0;
+        // $qs = DB::table('simulations')->get();
         // foreach ($qs as $key => $value) {
-        //     $limit += 1;
-
-        //     if ($limit!=999) {
-
-        //         $total = 0;
-
-        //         if (!empty($value->data)) {
-
-        //             $data_array = explode(',', $value->data);
-
-
-        //             foreach ($data_array as $k => $v) {
-                        
-        //                 if (!empty($v)) {
-
-        //                     $data_point = explode(' ', $v);
-
-        //                     $kind = $data_point[0];
-
-        //                     if ($kind == 'started') {
-                            
-        //                         $date1 = date("Y-m-d H:i:s", substr($data_point[1], 0, 10));
-
-        //                         $next_pasued = explode(' ', $data_array[$k+1]);
-
-        //                         $date2 = date("Y-m-d H:i:s", substr($next_pasued[1], 0, 10));
-
-        //                         $total = $total + Job::time_diff($date2,$date1);
-
-
-        //                     }
-
-        //                 }
-
-        //             }
-
-        //             Job::dump($value->user_id.','.$total);
-
-        //         }
-
-        //     }
+        //     Job::dump($value->user_id.','.$value->videosliderwatches);
         // }
+
+
+        $qs = DB::table('userdata')->get();
+        $limit = 0;
+        foreach ($qs as $key => $value) {
+            $limit += 1;
+
+            if ($limit!=999) {
+
+                $total = 0;
+
+                if (!empty($value->data)) {
+
+                    $data_array = explode(',', $value->data);
+
+
+                    foreach ($data_array as $k => $v) {
+                        
+                        if (!empty($v)) {
+
+                            $data_point = explode(' ', $v);
+
+                            $kind = $data_point[0];
+
+                            if ($kind == 'started') {
+                            
+                                $date1 = date("Y-m-d H:i:s", substr($data_point[1], 0, 10));
+
+                                $next_pasued = explode(' ', $data_array[$k+1]);
+
+                                $date2 = date("Y-m-d H:i:s", substr($next_pasued[1], 0, 10));
+
+                                $total = $total + Job::time_diff($date2,$date1);
+
+
+                            }
+
+                        }
+
+                    }
+
+                    Job::dump($value->user_id.','.$total);
+
+                }
+
+            }
+        }
 
         // $qs = DB::table('userdata')->get();
         // $limit = 0;
@@ -255,7 +255,7 @@ class SimulationsController extends Controller
 
         //             }
 
-        //             Job::dump($data);
+        //             Job::dump($value->user_id.','.$data);
 
         //         }
         //     }

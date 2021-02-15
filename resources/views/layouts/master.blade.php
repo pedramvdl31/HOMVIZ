@@ -20,17 +20,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"> -->
   @yield('stylesheets')
 
-<!-- Hotjar Tracking Code for http://homelessness-visualization.datalab.science/ -->
-  <script>
-      (function(h,o,t,j,a,r){
-          h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
-          h._hjSettings={hjid:1885970,hjsv:6};
-          a=o.getElementsByTagName('head')[0];
-          r=o.createElement('script');r.async=1;
-          r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
-          a.appendChild(r);
-      })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
-  </script>
+
 
 <script type='text/javascript'>
   window.smartlook||(function(d) {
@@ -38,7 +28,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     var c=d.createElement('script');o.api=new Array();c.async=true;c.type='text/javascript';
     c.charset='utf-8';c.src='https://rec.smartlook.com/recorder.js';h.appendChild(c);
     })(document);
-    smartlook('init', '7752652b0c092560396f442c65c8a72894b043cb');
+    smartlook('init', 'c119a83f9fa5663d9fcc5c2df84da887ae32519b');
 </script>
 
 
