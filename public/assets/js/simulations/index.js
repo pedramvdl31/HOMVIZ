@@ -23,7 +23,7 @@ window.stateset = 0
 window.params = 0
 
 //debug
-window.debug = false
+window.debug = true
 
 var timeElapsed = 0;
 var myTimer;
@@ -120,13 +120,14 @@ $(document).ready(function(){
 
       step4HandleErrors()
 
-    } else if (window.currentstep==5000) {
+    } else if (window.currentstep==5) {
 
+      $('#next').removeAttr('disabled')
       $('#prev').removeAttr('disabled')
 
       step5HandleErrors()
 
-    } else if (window.currentstep==5) {
+    } else if (window.currentstep==6) {
 
       $('#prev').removeAttr('disabled')
       $('#next').removeClass('bg-gradient-primary').addClass('bg-gradient-success').text('Create Simulation')
@@ -199,27 +200,33 @@ $(document).ready(function(){
     step1HandleErrors()
   })
 
-  $(document).on("keypress",".pop-input-validation, .maxlength-input-validation, .capacity-input-validation, .mq-input-validation, .mlos-input-validation",function(event) {
+  $(document).on("keypress",".pop-input-validation, .maxlength-input-validation, .capacity-input-validation, .mlos-input-validation",function(event) {
+
+    var attr = $(this).attr('readonly');
+
+    if (typeof attr == 'undefined') {
 
       var regex = new RegExp("^[0-9]+$");
       var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
 
       if (!regex.test(key)) {
-         event.preventDefault();
-         return false;
+        event.preventDefault();
+        return false;
       }
 
       if ($(this).val()<1 && String.fromCharCode(event.keyCode)<1) {
         $(this).val(1)
-         event.preventDefault();
-         return false;
+        event.preventDefault();
+        return false;
       }
 
       if ($(this).val()+String.fromCharCode(event.keyCode)>100000) {
         $(this).val(100000)
-         event.preventDefault();
-         return false;
+        event.preventDefault();
+        return false;
       }
+
+    }
 
   });
 
@@ -328,10 +335,16 @@ $(document).ready(function(){
 
   });
 
-  $(document).on("blur","maxlength-input-validation, .capacity-input-validation, .mq-input-validation, .mlos-input-validation",function(event) {
+  $(document).on("blur","maxlength-input-validation, .capacity-input-validation, .mlos-input-validation",function(event) {
 
-    if ($(this).val()=='') {
-      $(this).val(1)
+    var attr = $(this).attr('readonly');
+
+    if (typeof attr == 'undefined') {
+
+      if ($(this).val()=='') {
+        $(this).val(1)
+      }
+
     }
 
   });
@@ -605,6 +618,10 @@ $(document).ready(function(){
 
     if (id != 'title'){
 
+      if (id=='HousingFirst') {
+        $('option[id='+id+']').attr("disabled", true);
+      }
+
       let type = $('option[id='+id+']').attr('type')
 
       //is this the first row
@@ -626,22 +643,31 @@ $(document).ready(function(){
       window.resources.push(obj)
 
       let tooltipClass = "tooltip-"+rowID
-      let row = MakeResourcesRowColumnHTML(rowID,tooltipClass,type,name,nameForShow)
+      let row = MakeResourcesRowColumnHTML(rowID,tooltipClass,type,name,nameForShow,id)
 
       $("#res-tbody").append(row)
 
       //Activate
       $('.'+tooltipClass).tooltip();
 
-      activatePopUpWindows(rowID,type,name)
 
-      window.dataSummary.push({ 'name':name, 'nameforshow':'', 'id':rowID, 'type':type, 'kind':'main', 'parent_id':null, properties: {'ap':[],'ip':[],'mlos':0,'cap':-1,'mq':0} })
+      if (id=='HousingFirst') {
+        activatePopUpWindowsForHosuingFirst(rowID,name,id)
+        window.dataSummary.push({ 'name':name, 'nameforshow':'', 'id':rowID, 'type':type, 'kind':'main', 'parent_id':null, properties: {'hfcc':0,'hfnc':0,'hfmroi':0} })
+      } else {
+        activatePopUpWindows(rowID,type,name)
+        window.dataSummary.push({ 'name':name, 'nameforshow':'', 'id':rowID, 'type':type, 'kind':'main', 'parent_id':null, properties: {'ap':[],'ip':[],'mlos':0,'cap':-1} })
+      }
+
 
     }
 
     step3HandleErrors()
 
     drawResSummay()
+
+    $("#resselect").val(0);
+    $("#resselect").change();
 
   })
 
@@ -796,28 +822,72 @@ $(document).ready(function(){
 
       }
 
-    } else if(this_name=='qpop') { //monthly quota
+    } else if(this_name=='xpop') {
 
-      let mqInput = $(this).parents('.popover-content').first().find('input[kind="mqinput"]').first().val()
+      let hfccInput = $(this).parents('.popover-content').first().find('input[kind="hfcc"]').first().val()
 
-      if (mqInput=='' || mqInput < 1) {
+      $.each( window.dataSummary, function( ds_key61, ds_value61 ) {
+        if (ds_value61 != undefined) {
+          if (rowID == ds_value61['id']) {
+            window.dataSummary[ds_key61]['properties']['hfcc'] = hfccInput;
+          }
+        }
+      });
+
+    } else if(this_name=='ypop') {
+
+      console.log('saving')
+
+      let hfnc = $(this).parents('.popover-content').first().find('input[kind="hfnc"]').first().val()
+
+      console.log('new value '+ hfnc)
+
+      if (hfnc=='' || hfnc < 1) {
 
         window.general_Toast.fire({
           title: 'Error',
-          text: "The monthly quota is required and cannot be equal to zero",
+          text: "The new HF capacity is required and cannot be equal to zero",
           icon: 'error'
         })
 
-        UnsetMQ(mainId)
+        UnsetHFNC(mainId)
 
         return false
 
       } else {
 
-        $.each( window.dataSummary, function( ds_keymq, ds_valuemq ) {
-          if (ds_valuemq != undefined) {
-            if (rowID == ds_valuemq['id']) {
-              window.dataSummary[ds_keymq]['properties']['mq'] = mqInput;
+        $.each( window.dataSummary, function( ds_key62, ds_value62 ) {
+          if (ds_value62 != undefined) {
+            if (rowID == ds_value62['id']) {
+              window.dataSummary[ds_key62]['properties']['hfnc'] = hfnc;
+            }
+          }
+        });
+
+      }
+
+    } else if(this_name=='zpop') {
+
+      let hfcmroiInput = $(this).parents('.popover-content').first().find('input[kind="hfcmroi"]').first().val()
+
+      if (hfcmroiInput=='' || hfcmroiInput < 1) {
+
+        window.general_Toast.fire({
+          title: 'Error',
+          text: "The new rate of incrase per month is required and cannot be equal to zero",
+          icon: 'error'
+        })
+
+        UnsetHFMROI(mainId)
+
+        return false
+
+      } else {
+
+        $.each( window.dataSummary, function( ds_key63, ds_value63 ) {
+          if (ds_value63 != undefined) {
+            if (rowID == ds_value63['id']) {
+              window.dataSummary[ds_key63]['properties']['hfmroi'] = hfcmroiInput;
             }
           }
         });
@@ -990,7 +1060,7 @@ $(document).ready(function(){
     activatePopUpWindows(rowID,type,parentName)
 
 
-    window.dataSummary.push({ 'name':name, 'nameforshow':'', 'id':rowID, 'type':type, 'kind':'child', 'parent_id':parentID, properties: {'ap':[],'ip':[],'mlos':0,'cap':-1, 'mq':0} })
+    window.dataSummary.push({ 'name':name, 'nameforshow':'', 'id':rowID, 'type':type, 'kind':'child', 'parent_id':parentID, properties: {'ap':[],'ip':[],'mlos':0,'cap':-1} })
 
     $.each( window.dataSummary, function( ds_key, ds_value ) {
 
@@ -999,7 +1069,7 @@ $(document).ready(function(){
         if (parentID == ds_value['id']) {
 
           window.dataSummary[ds_key]['kind'] = 'parent'
-          window.dataSummary[ds_key]['properties'] =  {'ap':[],'ip':[],'mlos':0,'cap':-1,'mq':0}
+          window.dataSummary[ds_key]['properties'] =  {'ap':[],'ip':[],'mlos':0,'cap':-1}
 
         }
 
@@ -1021,6 +1091,10 @@ $(document).ready(function(){
     removeTotalInitKey(rowID)
 
     removeAllPopoverOfID(rowID)
+
+    if ($(this).hasClass('hf')) {
+      $('option[id=HousingFirst]').removeAttr("disabled");
+    }
     
     //ALL SUB-ROWS
     $(document).find('tr[parentID='+rowID+']').each(function( index ) {
@@ -1105,7 +1179,7 @@ $(document).ready(function(){
 
       let name = parentElem.attr('name')
 
-      let td3 = makeResourcesPropretiesTD(parentID,null,name)
+      let td3 = makeResourcesPropretiesTD(parentID,null,name,null)
 
       parentElem.removeClass('parentrow')
       parentElem.find('td').eq(3).html(td3)
@@ -1191,7 +1265,7 @@ $(document).ready(function(){
 
       $('.'+tooltipClass).tooltip();
 
-      activatePopUpWindows(rowID,type,null)
+      activatePopUpWindows(rowID,type)
 
       window.dataSummary.push({ 'name':name, 'nameforshow':'', 'id':rowID, 'type':type, 'kind':'main', 'parent_id':null, properties: {'ap':[],'ip':{} } })
 
@@ -1262,12 +1336,18 @@ $(document).ready(function(){
 
     $(this).removeClass('is-valid is-invalid')
 
+    $('#housingp-error').addClass('hide')
+
+    $('#policybtn').removeAttr('disabled')
+
+
     if (dupRowCount>0) {
       $(this).addClass('is-invalid')
-      $('#housingp-error').text('This name has been entered. Duplicate name is not allowed.')
+      $('#housingp-error').removeClass('hide').text('This name has been entered. Duplicate name is not allowed.')
+      $('#policybtn').attr('disabled',true)
     } else if (text == '') {
-      $(this).addClass('is-invalid')
-      $('#housingp-error').text('*required.')
+      // $(this).addClass('is-invalid')
+      // $('#housingp-error').text('*required.')
     } else {
       $(this).addClass('is-valid')
       $('#housingp-error').text('*required.')
@@ -1283,8 +1363,6 @@ $(document).ready(function(){
     let dupRowCount = $(document).find('.policy-rows[pname="'+text+'"]').length
     $('#policy-name-input').removeClass('is-valid is-invalid')
 
-    $('#housingp-error').text('*required.')
-
     if (dupRowCount > 0) {
 
       $('#housingp-error').text('This name has been entered. Duplicate name is not allowed.')
@@ -1293,6 +1371,8 @@ $(document).ready(function(){
 
     } else if (text!='') {
 
+      $('#policy-name-input').val('')
+
       let rowID = makeid(5)
       while(document.getElementById(rowID)){
         rowID = makeid(5)
@@ -1300,7 +1380,7 @@ $(document).ready(function(){
 
       let tooltipClass = "tooltip-"+rowID
 
-      let t = '<tr class="mainrow policy-rows" id="'+rowID+'" pname="'+text+'"><td>Policy</td>'+
+      let t = '<tr class="mainrow policy-rows" id="'+rowID+'" pname="'+text+'"><td>Housing intervention program</td>'+
               '<td>'+text+'</td>'+
               '<td><a class="text-danger pointer edit-policy-row a-tag" this-id="'+rowID+'">Edit properties</a>&nbsp;'+
               '<a data-toggle="tooltip" data-placement="top" title="" class="_icon not-set pointer '+tooltipClass+'" data-original-title="Not set"><i class="text-danger fas fa-times-circle"></i></a></td>'+
@@ -1321,6 +1401,9 @@ $(document).ready(function(){
       $('#policy-name-input').removeClass('is-valid is-invalid').addClass('is-invalid')
     }
 
+    ValidatePolicies()
+    UpdateOverviewSectionForPolicies()
+
   })
 
   $(document).on('click', '.edit-policy-row', function() {
@@ -1331,7 +1414,7 @@ $(document).ready(function(){
                 '<table class="table table-bordered" id="policy-edit-table" style="margin-bottom: 0">'+
                 '<thead>'+
                 '<tr>'+
-                '<th>Type</th><th>Name</th><th>Properties</th><th>Monthly quota</th>'+
+                '<th>Type</th><th>Name</th><th>Properties</th>'+
                 '</tr>'+
                 '</thead>'+
                 '<tbody id="policy-edit-tbody">';
@@ -1342,173 +1425,321 @@ $(document).ready(function(){
 
       if (ds_value != undefined) {
 
-        if (ds_value['type'] == 'res') {
+        if (ds_value['name'] !='Housing First (HF) program') {
 
-          if (ds_value['kind'] == 'main') {
+          if (ds_value['type'] == 'res') {
 
-            flag = true
+            let policyMLOS = null
+            let policyMLOSMq = null
+            let policyCapacity = null
+            let policyCapacityMq = null
 
-            html += '<tr id="'+policyId+'-'+ds_value['id']+'" class="mainrow" res-id="'+ds_value['id']+'">'
+            if (ds_value['kind'] == 'main') {
 
-            html += '<td rowspan="2">Resource</td>'
+              let resourceID = ds_value['id']
+              let policyID = policyId
 
-            html += '<td rowspan="2">'+ds_value['nameforshow']+'</td>'
+              $.each( window.dataSummary, function( policy1_key, policy1_value ) {
 
-            html += '<td class="bb0">'
+                if (policy1_value != undefined) {
 
-            let checked = ''
-            let readonly = ''
-            if (ds_value['properties']['cap']==-1) {
-              readonly = 'readonly'
-              checked = 'checked=""'
+                  if (policy1_value['type'] == 'policy') {
+
+                    if (policyID==policy1_value['id']) {
+
+                      if (!jQuery.isEmptyObject(policy1_value['data'])) {
+
+                        if (!jQuery.isEmptyObject(policy1_value['data']['policy-data'])) {
+
+                          $.each( policy1_value['data']['policy-data'], function( policy2_key, policy2_value ) {
+
+                            if (policy2_value['kind'] == 'main' && policy2_value['rowID'] == resourceID) {
+
+                              policyMLOS = policy2_value['policy-mlos']
+                              policyCapacity = policy2_value['policy-cap']
+
+                            }
+
+                          })
+
+                        }
+
+                      }
+
+                    }
+
+                  }
+
+                }
+
+              })
+
+
+              flag = true
+
+              html += '<tr id="'+policyId+'-'+ds_value['id']+'" class="mainrow" res-id="'+ds_value['id']+'">'
+
+              html += '<td rowspan="2">Resource</td>'
+
+              html += '<td rowspan="2">'+ds_value['nameforshow']+'</td>'
+
+              html += '<td class="bb0">'
+
+              let _capacity = ds_value['properties']['cap']
+              let capText = 'unchanged'
+
+              if (_capacity!=policyCapacity && policyCapacity!=null) {
+
+                _capacity = policyCapacity
+
+                if (_capacity == -1) {
+                  capText = 'changed to infinite'
+                } else {
+                  capText = 'changed'
+                }
+
+              }
+
+              let checked = ''
+              let readonly = ''
+              if (_capacity==-1) {
+                readonly = 'readonly'
+                checked = 'checked=""'
+              }
+
+              //for edit change or unchanged
+              let mlosChanged = 'unchanged'
+              let mlosTextClass = 'bg-secondary'
+              let mlosValue = ds_value['properties']['mlos']
+
+              if (policyMLOS!== null && ds_value['properties']['mlos'] != policyMLOS) {
+
+                mlosValue = policyMLOS
+
+                diff = difference(mlosValue, ds_value['properties']['mlos'])
+
+                if (mlosValue > ds_value['properties']['mlos']) {
+
+                  mlosChanged = 'increased by '+diff
+                  mlosTextClass = 'bg-lime'
+
+                } else if (mlosValue < ds_value['properties']['mlos']) {
+                 
+                  mlosChanged = 'decreased by '+diff
+                  mlosTextClass = 'bg-orange'
+
+                }
+
+              }
+
+              html += '<label for="inputName">Maximum length of stay</label>'+
+                      '<div class="input-group mb-3">'+
+                      '<input name="policy['+policyId+']['+ds_value['id']+'][mlos]" main-id="'+ds_value['id']+'" type="number" min="1" max="1000" step="1" autocomplete="off" class="is-valid form-control policy-input policy-mlos" original-val="'+ds_value['properties']['mlos']+'" value="'+mlosValue+'">'+
+                      '<div class="input-group-append">'+
+                      '<span class="input-group-text '+mlosTextClass+'">'+mlosChanged+'</span>'+
+                      '</div>'+
+                      '</div>';
+
+              html += '</td>'
+
+              html += '<tr class="last-child-row" res-id="'+ds_value['id']+'">'
+
+              html += '<td>'
+
+              html += '<label for="inputName">Capacity</label>'+
+                      '<div class="input-group mb-3">'+
+                      '<input '+readonly+' name="policy['+policyId+']['+ds_value['id']+'][cap]" type="number" min="1" max="100000" step="1" autocomplete="off" class="form-control policy-input capacity-input-policy capacity-input-validation is-valid policy-cap" original-val="'+ds_value['properties']['cap']+'" value="'+_capacity+'">'+
+                      '<div class="input-group-append">'+
+                      '<span class="input-group-text bg-secondary cap-change-text">'+capText+'</span>'+
+                      '</div>'+
+                      '</div>';
+
+              html += '<label class="checkbox-inline"><input '+checked+' thisid="'+policyId+'-'+ds_value['id']+'" class="capacities-infinite-policy" type="checkbox"> Infinite</label>' 
+     
+              html += '</td>'
+
+              html += '</tr>'
+
+            } else if (ds_value['kind'] == 'parent') {
+
+              let policyID = policyId
+
+              flag = true
+
+              html += '<tr id="'+policyId+'-'+ds_value['id']+'" class="mainrow parentrow">'
+
+              html += '<td>Main resource</td>'
+              html += '<td>'+ds_value['nameforshow']+'</td>'
+              html += '<td></td>'
+
+              html += '</tr>'
+
+              let childCount = 0
+              let rowCounter = 0
+              let childRowClass = ''
+
+              $.each( window.dataSummary, function( ds_key_child2, ds_value_child2 ) {
+              
+                if (ds_value_child2 != undefined) {
+
+                  if (ds_value['id'] == ds_value_child2['parent_id']) {
+
+                    childCount += 1
+
+                  }
+
+                }
+
+              })
+
+              $.each( window.dataSummary, function( ds_key_child2, ds_value_child2 ) {
+
+                if (ds_value_child2 != undefined) {
+
+                  if (ds_value['id'] == ds_value_child2['parent_id']) {
+
+
+                      //GET PREVIOSULY SET VALUES
+                      let policyMLOS = null
+                      let policyCapacity = null
+
+                      $.each( window.dataSummary, function( policy1_key, policy1_value ) {
+
+                        if (policy1_value != undefined) {
+
+                          if (policy1_value['type'] == 'policy') {
+
+                            if (policyID==policy1_value['id']) {
+
+                              if (!jQuery.isEmptyObject(policy1_value['data'])) {
+
+                                if (!jQuery.isEmptyObject(policy1_value['data']['policy-data'])) {
+
+                                  console.log('here')
+
+                                  $.each( policy1_value['data']['policy-data'], function( policy2_key, policy2_value ) {
+
+                                    if (policy2_value['kind'] == 'child' && policy2_value['subResourceID'] == ds_value_child2['id']) {
+
+                                      policyMLOS = policy2_value['policy-mlos']
+                                      policyCapacity = policy2_value['policy-cap']
+
+                                    }
+
+                                  })
+
+                                }
+
+                              }
+
+                            }
+
+                          }
+
+                        }
+
+                      })
+
+                      rowCounter += 1
+
+                      if (childCount > 1 && rowCounter < childCount) {
+
+                        childRowClass = 'child-row'
+
+                      } else{
+
+                        childRowClass = 'last-child-row'
+
+                      }
+
+                      html += '<tr id="'+policyId+'-'+ds_value_child2['id']+'" parent-resource-id="'+ds_value_child2['parent_id']+'" class="'+childRowClass+'">'
+
+                      html += '<td rowspan="2">Sub resource</td>'
+
+                      html += '<td rowspan="2">'+ds_value_child2['nameforshow']+'</td>'
+
+                      html += '<td class="bb0">'
+
+                      let _capacity = ds_value_child2['properties']['cap']
+                      let capText = 'unchanged'
+
+                      if (_capacity!=policyCapacity && policyCapacity!==null) {
+
+                        _capacity = policyCapacity
+
+                        if (_capacity == -1) {
+                          capText = 'changed to infinite'
+                        } else {
+                          capText = 'changed'
+                        }
+
+                      }
+
+                      let checked = ''
+                      let readonly = ''
+                      if (_capacity==-1) {
+                        readonly = 'readonly'
+                        checked = 'checked=""'
+                      }
+
+                      //for edit change or unchanged
+                      let mlosChanged = 'unchanged'
+                      let mlosTextClass = 'bg-secondary'
+                      let mlosValue = ds_value_child2['properties']['mlos']
+
+                      if (policyMLOS!== null && ds_value_child2['properties']['mlos'] != policyMLOS) {
+
+                        mlosValue = policyMLOS
+                        diff = difference(mlosValue, ds_value_child2['properties']['mlos'])
+
+                        if (mlosValue > ds_value_child2['properties']['mlos']) {
+
+                          mlosChanged = 'increased by '+diff
+                          mlosTextClass = 'bg-lime'
+
+                        } else if (mlosValue < ds_value_child2['properties']['mlos']) {
+                         
+                          mlosChanged = 'decreased by '+diff
+                          mlosTextClass = 'bg-orange'
+
+                        }
+
+                      }
+
+                      html += '<label for="inputName">Maximum length of stay</label>'+
+                              '<div class="input-group mb-3">'+
+                              '<input name="policy['+policyId+']['+ds_value_child2['id']+'][mlos]" main-id="'+ds_value_child2['id']+'" type="number" min="1" max="1000" step="1" autocomplete="off" class="is-valid form-control policy-input policy-mlos" original-val="'+ds_value_child2['properties']['mlos']+'" value="'+mlosValue+'">'+
+                              '<div class="input-group-append">'+
+                              '<span class="input-group-text '+mlosTextClass+'">'+mlosChanged+'</span>'+
+                              '</div>'+
+                              '</div>';
+
+                      html += '</td>'
+
+                      html += '</tr>'
+
+                      html += '<tr id="'+policyId+'-'+ds_value_child2['id']+'" class="'+childRowClass+' cap-class" parent-resource-id="'+ds_value_child2['parent_id']+'">'
+
+                      html += '<td class="bt0">'
+                      html += '<label for="inputName">Capacity</label>'+
+                              '<div class="input-group mb-3">'+
+                              '<input '+readonly+' name="policy['+policyId+']['+ds_value_child2['id']+'][cap]" type="number" min="1" max="100000" step="1" autocomplete="off" class="form-control policy-input capacity-input-policy capacity-input-validation is-valid policy-cap" original-val="'+ds_value_child2['properties']['cap']+'" value="'+_capacity+'">'+
+                              '<div class="input-group-append">'+
+                              '<span class="input-group-text bg-secondary cap-change-text">'+capText+'</span>'+
+                              '</div>'+
+                              '</div>';
+                      html += '<label class="checkbox-inline"><input '+checked+' thisid="'+policyId+'-'+ds_value_child2['id']+'" class="capacities-infinite-policy" type="checkbox"> Infinite</label>' 
+                      html += '</td>'
+
+                      html += '</tr>'
+
+                  }
+
+                }
+
+              });
+
             }
-
-            html += '<label for="inputName">Maximum length of stay</label>'+
-                    '<div class="input-group mb-3">'+
-                    '<input name="policy['+policyId+']['+ds_value['id']+'][mlos]" main-id="'+ds_value['id']+'" type="number" min="1" max="1000" step="1" autocomplete="off" class="is-valid form-control policy-input policy-mlos" original-val="'+ds_value['properties']['mlos']+'" value="'+ds_value['properties']['mlos']+'">'+
-                    '<div class="input-group-append">'+
-                    '<span class="input-group-text bg-secondary">unchanged</span>'+
-                    '</div>'+
-                    '</div>';
-
-            html += '</td>'
-
-
-            html += '<td class="bb0">'+
-                    '<label for="inputName"><span class="increase-decrease">Increase or decrease</span> the maximum length of stay monthly by</label>'+
-                    '<input name="policy['+policyId+']['+ds_value['id']+'][mlos][mq]" type="number" min="1" max="1000" step="1" autocomplete="off" class="form-control policy-input mlos-mq mlos-input-validation" readonly value="">'+
-                    '<span class="text-danger mq-error hide"></span></td>'
-
-
-            html += '<tr class="last-child-row" res-id="'+ds_value['id']+'">'
-
-            html += '<td>'
-
-            html += '<label for="inputName">Capacity</label>'+
-                    '<div class="input-group mb-3">'+
-                    '<input '+readonly+' name="policy['+policyId+']['+ds_value['id']+'][cap]" type="number" min="1" max="100000" step="1" autocomplete="off" class="form-control policy-input capacity-input-policy capacity-input-validation is-valid policy-cap" original-val="'+ds_value['properties']['cap']+'" value="'+ds_value['properties']['cap']+'">'+
-                    '<div class="input-group-append">'+
-                    '<span class="input-group-text bg-secondary cap-change-text">unchanged</span>'+
-                    '</div>'+
-                    '</div>';
-
-            html += '<label class="checkbox-inline"><input '+checked+' thisid="'+policyId+'-'+ds_value['id']+'" class="capacities-infinite-policy" type="checkbox"> Infinite</label>' 
-   
-            html += '</td>'
-
-            html += '<td>'+
-                    '<label for="inputName"><span class="increase-decrease">Increase or decrease</span> the capacity monthly by</label>'+
-                    '<input name="policy['+policyId+']['+ds_value['id']+'][cap][mq]" type="number" min="1" max="1000" step="1" autocomplete="off" class="form-control policy-input mq-cap capacity-input-validation" readonly value="">'+
-                    '<span class="text-danger cap-error hide"></span></td>'
-
-            html += '</tr>'
-
-          } else if (ds_value['kind'] == 'parent') {
-
-            flag = true
-
-            html += '<tr id="'+policyId+'-'+ds_value['id']+'" class="mainrow parentrow">'
-
-            html += '<td>Main resource</td>'
-            html += '<td>'+ds_value['nameforshow']+'</td>'
-            html += '<td></td>'
-            html += '<td></td>'
-
-            html += '</tr>'
-
-            let childCount = 0
-            let rowCounter = 0
-            let childRowClass = ''
-
-            $.each( window.dataSummary, function( ds_key_child2, ds_value_child2 ) {
-            
-              if (ds_value_child2 != undefined) {
-
-                if (ds_value['id'] == ds_value_child2['parent_id']) {
-
-                  childCount += 1
-
-                }
-
-              }
-
-            })
-
-            $.each( window.dataSummary, function( ds_key_child2, ds_value_child2 ) {
-
-              if (ds_value_child2 != undefined) {
-
-                if (ds_value['id'] == ds_value_child2['parent_id']) {
-
-                    rowCounter += 1
-
-                    if (childCount > 1 && rowCounter < childCount) {
-
-                      childRowClass = 'child-row'
-
-                    } else{
-
-                      childRowClass = 'last-child-row'
-
-                    }
-
-                    html += '<tr id="'+policyId+'-'+ds_value_child2['id']+'" parent-id="'+ds_value_child2['parent_id']+'" class="'+childRowClass+'" res-id="'+ds_value_child2['id']+'">'
-
-                    html += '<td rowspan="2">Sub resource</td>'
-
-                    html += '<td rowspan="2">'+ds_value_child2['nameforshow']+'</td>'
-
-                    html += '<td class="bb0">'
-
-                    let checked = ''
-                    let readonly = ''
-                    if (ds_value_child2['properties']['cap']==-1) {
-                      readonly = 'readonly'
-                      checked = 'checked=""'
-                    }
-
-                    html += '<label for="inputName">Maximum length of stay</label>'+
-                            '<div class="input-group mb-3">'+
-                            '<input name="policy['+policyId+']['+ds_value_child2['id']+'][mlos]" main-id="'+ds_value_child2['id']+'" type="number" min="1" max="1000" step="1" autocomplete="off" class="is-valid form-control policy-input policy-mlos" original-val="'+ds_value_child2['properties']['mlos']+'" value="'+ds_value_child2['properties']['mlos']+'">'+
-                            '<div class="input-group-append">'+
-                            '<span class="input-group-text bg-secondary">unchanged</span>'+
-                            '</div>'+
-                            '</div>';
-
-                    html += '</td>'
-
-                     html +=  '<td class="bb0">'+
-                              '<label for="inputName"><span class="increase-decrease">Increase or decrease</span> the maximum length of stay monthly by</label>'+
-                              '<input name="policy['+policyId+']['+ds_value_child2['id']+'][mlos][mq]" type="number" min="1" max="1000" step="1" autocomplete="off" readonly class="form-control policy-input mlos-mq mlos-input-validation" value="">'+
-                              '<span class="text-danger mq-error hide"></span></td>'
-
-                    html += '</tr>'
-
-                    html += '<tr class="'+childRowClass+' cap-class" res-id="'+ds_value_child2['id']+'" parent-id="'+ds_value_child2['parent_id']+'">'
-
-                    html += '<td class="bt0">'
-                    html += '<label for="inputName">Capacity</label>'+
-                            '<div class="input-group mb-3">'+
-                            '<input '+readonly+' name="policy['+policyId+']['+ds_value_child2['id']+'][cap]" type="number" min="1" max="100000" step="1" autocomplete="off" class="form-control policy-input capacity-input-policy capacity-input-validation is-valid policy-cap" original-val="'+ds_value_child2['properties']['cap']+'" value="'+ds_value_child2['properties']['cap']+'">'+
-                            '<div class="input-group-append">'+
-                            '<span class="input-group-text bg-secondary cap-change-text">unchanged</span>'+
-                            '</div>'+
-                            '</div>';
-                    html += '<label class="checkbox-inline"><input '+checked+' thisid="'+policyId+'-'+ds_value_child2['id']+'" class="capacities-infinite-policy" type="checkbox"> Infinite</label>' 
-                    html += '</td>'
-
-                    html += '<td class="bt0">'+
-                            '<label for="inputName"><span class="increase-decrease">Increase or decrease</span> the capacity monthly by</label>'+
-                            '<input name="policy['+policyId+']['+ds_value_child2['id']+'][cap][mq]" type="number" min="1" max="1000" step="1" autocomplete="off" class="form-control policy-input mq-cap capacity-input-validation" readonly value="">'+
-                            '<span class="text-danger cap-error hide"></span></td>'
-
-                    html += '</tr>'
-
-                }
-
-              }
-
-            });
 
           }
 
@@ -1536,126 +1767,140 @@ $(document).ready(function(){
   })
 
   $('#save-close-policy-modal').on('click', function(e) {
-    
-    let thisID = $(this).attr('this-id')
 
+    let errorCount = $(document).find('#policy-edit-tbody .is-invalid').length
+    if (errorCount>0) {
 
-    //Delete previous data
-    $(document).find('.policy-'+thisID).first().remove()
-    $.each( window.dataSummary, function( ds_key_p, ds_value_p) {
-      if (ds_value_p != undefined) {
-        if (ds_value_p['type']=='policy') {
-          if (ds_value_p['id']==thisID) {
-            ds_value_p['data']={}
+        window.Toast.fire({
+          title: 'Error',
+          text: 'One or more parameters are invalid!',
+          icon: 'warning'
+        })
+
+    } else {
+
+      let thisID = $(this).attr('this-id')
+
+      //Delete previous data
+      $(document).find('.policy-'+thisID).first().remove()
+      $.each( window.dataSummary, function( ds_key_p, ds_value_p) {
+        if (ds_value_p != undefined) {
+          if (ds_value_p['type']=='policy') {
+            if (ds_value_p['id']==thisID) {
+              ds_value_p['data']={}
+            }
           }
         }
-      }
-    })
+      })
 
 
-    let data = { 'policy-id': thisID, 'policy-data': [] }
+      let data = { 'policy-id': thisID, 'policy-data': [] }
 
-    let notset_elem = $(document).find('.tooltip-'+thisID)
+      let notset_elem = $(document).find('.tooltip-'+thisID)
 
-    notset_elem.attr('title','Set').attr('data-original-title','Set')
-    notset_elem.find('i').removeClass('fa-times-circle').removeClass('text-danger').addClass('fa-check-circle').addClass('text-success')
-    notset_elem.removeClass('not-set').addClass('set')
+      notset_elem.attr('title','Set').attr('data-original-title','Set')
+      notset_elem.find('i').removeClass('fa-times-circle').removeClass('text-danger').addClass('fa-check-circle').addClass('text-success')
+      notset_elem.removeClass('not-set').addClass('set')
 
-    let trMainRows = $(this).parents('.modal-content').first().find('.modal-body').first().find('.mainrow')
+      let trMainRows = $(this).parents('.modal-content').first().find('.modal-body').first().find('.mainrow')
 
-    trMainRows.each(function() {
+      trMainRows.each(function() {
 
-      let ID = $(this).attr('id')
+        let ID = $(this).attr('id')
 
-      //not a parent
-      if (!$(this).hasClass('parentrow')) {
+        //not a parent
+        if (!$(this).hasClass('parentrow')) {
 
-        let RowData = {}
+          let RowData = {}
 
-        let nameArr = ID.split('-');
+          let nameArr = ID.split('-');
 
-        let policyID = nameArr[0]
-        let rowID = nameArr[1]
+          let policyID = nameArr[0]
+          let rowID = nameArr[1]
 
-        let childTrElem = $(this).parents('tbody').first().find('.last-child-row[res-id="'+rowID+'"]').first()
+          let childTrElem = $(this).parents('tbody').first().find('.last-child-row[res-id="'+rowID+'"]').first()
+
+          RowData['kind'] = 'main'
+          RowData['policyID'] = policyID
+          RowData['rowID'] = rowID
+          RowData['policy-mlos'] = $(this).find('.policy-mlos').first().val()
+          RowData['policy-cap'] = childTrElem.find('.policy-cap').first().val()
+
+          data['policy-data'].push(RowData)
 
 
-        RowData['kind'] = 'main'
-        RowData['policyID'] = policyID
-        RowData['rowID'] = rowID
-        RowData['policy-mlos'] = $(this).find('.policy-mlos').first().val()
-        RowData['mlos-mq'] = $(this).find('.mlos-mq').first().val()
-        RowData['policy-cap'] = childTrElem.find('.policy-cap').first().val()
-        RowData['mq-cap'] = childTrElem.find('.mq-cap').first().val()
+        } else { // for a resource with sub-resources
 
-        data['policy-data'].push(RowData)
+          let RowData = {}
 
-      } else {
+          let nameArr = ID.split('-');
 
-        let RowData = {}
+          let policyID = nameArr[0]
+          let parentID = nameArr[1]
 
-        let nameArr = ID.split('-');
+          RowData['kind'] = 'parent'
+          RowData['policyID'] = policyID
+          RowData['resourceID'] = parentID//resource ID
+          data['policy-data'].push(RowData)
 
-        let policyID = nameArr[0]
-        let parentID = nameArr[1]
+          let childTrElem = $(this).parents('tbody').first().find('tr[parent-resource-id="'+parentID+'"]')
 
-        RowData['kind'] = 'parent'
-        RowData['policyID'] = policyID
-        RowData['rowID'] = parentID
-        data['policy-data'].push(RowData)
-
-        let childTrElem = $(this).parents('tbody').first().find('tr[parent-id="'+parentID+'"]')
-
-        childTrElem.each(function() {
-
-          if (!$(this).hasClass('cap-class')) {
+          childTrElem.each(function() {
 
             let childRowData = {}
 
-            let rowID = $(this).attr('res-id')
+            let childID = $(this).attr('id')
+            let childArr = childID.split('-');
+
+            let subResourceID = childArr[1]
 
             childRowData['kind'] = 'child'
             childRowData['policyID'] = policyID
-            childRowData['parentID'] = parentID
-            childRowData['rowID'] = rowID
+            childRowData['subResourceID'] = subResourceID
+            childRowData['resourceID'] = parentID
 
-            childRowData['policy-mlos'] = $(this).find('.policy-mlos').first().val()
-            childRowData['mlos-mq'] = $(this).find('.mlos-mq').first().val()
+            if (!$(this).hasClass('cap-class')) {
 
-            let childTrCapElem = $(this).parents('tbody').first().find('.cap-class[parent-id="'+parentID+'"][res-id="'+rowID+'"]')
+              childRowData['policy-mlos'] = $(this).find('.policy-mlos').first().val()
 
-            childRowData['policy-cap'] = childTrCapElem.find('.policy-cap').first().val()
-            childRowData['mq-cap'] = childTrCapElem.find('.mq-cap').first().val()
+              let childTrCapElem = $(this).parents('tbody').first().find('.cap-class[id="'+childID+'"]').first()
 
-            data['policy-data'].push(childRowData)
+              childRowData['policy-cap'] = childTrCapElem.find('.policy-cap').first().val()
 
-          }
+              data['policy-data'].push(childRowData)
 
-        })
+            }
 
-      }
-
-    })
-
-
-    $.each( window.dataSummary, function( ds_key, ds_value) {
-      if (ds_value != undefined) {
-        if (ds_value['type']=='policy') {
-
-          if (ds_value['id'] == thisID) {
-            
-            ds_value['data'] = data
-
-          }
+          })
 
         }
-      }
-    })
 
-    insertPolicyToDOM(thisID)
+      })
 
-    $('#modal-xl-policy').removeClass('show').addClass('hide')
-    $('#policy-edit-twrapper').html('')
+      //store it to the dataSummary array
+      $.each( window.dataSummary, function( ds_key, ds_value) {
+        if (ds_value != undefined) {
+          if (ds_value['type']=='policy') {
+
+            if (ds_value['id'] == thisID) {
+              
+              ds_value['data'] = data
+
+            }
+
+          }
+        }
+      })
+
+      insertPolicyToDOM(thisID)
+
+      $('#modal-xl-policy').removeClass('show').addClass('hide')
+      $('#policy-edit-twrapper').html('')
+
+    }
+
+    ValidatePolicies()
+    UpdateOverviewSectionForPolicies()
 
   })
 
@@ -1678,15 +1923,17 @@ $(document).ready(function(){
     $('tr[id="'+thisID+'"]').first().remove()
 
     let rowCount = $("#policy-tbody .mainrow").length
+
     if (rowCount== 0) {
       
       $('#policy-tbody').append('<tr><td></td><td></td><td></td><td></td></tr>')
 
     }
 
-  })
+    ValidatePolicies()
+    UpdateOverviewSectionForPolicies()
 
-  
+  })
 
   $(document).on("keyup change blur",".capacities-infinite-policy",function(e,data) {
 
@@ -1708,8 +1955,6 @@ $(document).ready(function(){
         changeTextElem.removeClass('bg-secondary bg-orange bg-lime').addClass('bg-secondary').text('unchanged')
       }
 
-      $(this).parents('tr').first().find('.mq-cap').val('').removeClass('is-invalid is-valid').attr('readonly',true)
-
     } else {
 
       if (original_val != -1) {
@@ -1720,7 +1965,6 @@ $(document).ready(function(){
       } else {
 
         cap_input.val('1').removeAttr('readonly');
-        $(this).parents('tr').first().find('.mq-cap').val('').removeClass('is-invalid is-valid').attr('readonly',true)
         changeTextElem.removeClass('bg-secondary bg-orange bg-lime').addClass('bg-secondary').text('changed')
 
       }
@@ -1767,21 +2011,6 @@ $(document).ready(function(){
         }
 
         $(this).parents('div').first().find('.input-group-text').removeClass('bg-secondary bg-orange bg-lime').addClass(textClass).text(prepared_text)
-        
-
-        if (current_val != original_val) {
-
-          $(this).parents('tr').first().find('.increase-decrease').first().text(increaseDecrease)
-
-          $(this).parents('tr').first().find('.mq-cap').first().val('').removeClass('is-valid').addClass('is-invalid').removeAttr('readonly')
-
-        } else {
-
-          $(this).parents('tr').first().find('.increase-decrease').first().text('Increase or decrease')
-
-          $(this).parents('tr').first().find('.mq-cap').first().val('').removeClass('is-invalid is-valid').attr('readonly','true')
-
-        }
 
       }
 
@@ -1836,114 +2065,11 @@ $(document).ready(function(){
 
       $(this).parents('div').first().find('.input-group-text').removeClass('bg-secondary bg-orange bg-lime').addClass(textClass).text(prepared_text)
 
-      if (current_val != original_val) {
-
-        $(this).parents('tr').first().find('.increase-decrease').first().text(increaseDecrease)
-
-        $(this).parents('tr').first().find('.mlos-mq').first().removeAttr('readonly').removeClass('is-valid').addClass('is-invalid').val('')
-
-        $(this).parents('tr').first().find('.mq-error').first().removeClass('show').addClass('hide').text('')
-
-      } else {
-
-        $(this).parents('tr').first().find('.increase-decrease').first().text('Increase or decrease')
-
-        $(this).parents('tr').first().find('.mlos-mq').first().attr('readonly','true').removeClass('is-valid is-invalid').val('')
-
-        $(this).parents('tr').first().find('.mq-error').first().removeClass('show').addClass('hide').text('')
-
-      }
-
     } else {
 
       $(this).removeClass('is-valid').addClass('is-invalid')
 
       $(this).parents('div').first().find('.input-group-text').removeClass('bg-secondary bg-orange bg-lime').addClass('bg-secondary').text('')
-
-      $(this).parents('tr').first().find('.mlos-mq').first().attr('readonly','true').removeClass('is-valid is-invalid').val('')
-
-      $(this).parents('tr').first().find('.increase-decrease').first().text('Increase or decrease')
-
-      $(this).parents('tr').first().find('.mq-error').first().removeClass('show').addClass('hide').text('')
-
-    }
-
-  })
-
-  $(document).on('keyup change blur', '.mlos-mq', function() {
-
-    let original_val = parseInt($(this).parents('tr').first().find('.policy-mlos').first().attr('original-val'))
-    let current_val = parseInt($(this).parents('tr').first().find('.policy-mlos').first().val())
-
-    let mq_val = parseInt($(this).val())
-
-    let flag = false
-    let msg = ''
-
-    let diff = difference(current_val, original_val)
-
-    if (diff<mq_val) {
-
-      msg = 'Monthly quota cannot be bigger than the difference between the original and the new maximum length of stay'
-
-      $(this).removeClass('is-valid').addClass('is-invalid')
-
-      $(this).parents('tr').first().find('.mq-error').first().removeClass('hide').addClass('show').text(msg)
-
-    } else if (mq_val<= 0) {
-
-      msg = 'Monthly quota cannot be zero'
-
-      $(this).removeClass('is-valid').addClass('is-invalid')
-
-      $(this).parents('tr').first().find('.mq-error').first().removeClass('hide').addClass('show').text(msg)
-
-    } else {
-
-      $(this).removeClass('is-invalid').addClass('is-valid')
-
-      $(this).parents('tr').first().find('.mq-error').first().removeClass('show').addClass('hide')
-
-    }
-
-  })
-
-  $(document).on('keyup change blur', '.mq-cap', function() {
-
-    let inputElem =  $(this).parents('tr').first().find('.capacity-input-policy').first()
-    let errorElem = $(this).parents('tr').first().find('.cap-error').first()
-
-    let original_val = inputElem.attr('original-val')
-    let current_val = inputElem.val()
-
-    let cap_val = parseInt($(this).val())
-
-    let flag = false
-    let msg = ''
-
-    let diff = difference(current_val, original_val)
-
-    if (diff<cap_val) {
-
-      msg = 'Monthly quota cannot be bigger than the difference between the original and the new resource capacity'
-
-      $(this).removeClass('is-valid').addClass('is-invalid')
-
-      errorElem.removeClass('hide').addClass('show').text(msg)
-
-    } else if (cap_val<= 0) {
-
-      msg = 'Monthly quota cannot be zero'
-
-      $(this).removeClass('is-valid').addClass('is-invalid')
-
-      errorElem.removeClass('hide').addClass('show').text(msg)
-
-    } else {
-
-      $(this).removeClass('is-invalid').addClass('is-valid')
-
-      errorElem.removeClass('show').addClass('hide')
 
     }
 
@@ -2038,7 +2164,7 @@ function validateAllSteps(){
 
   let output = false
 
-  if (checkStep1() && checkStep2() && checkStep3() && checkStep4() && checkStep6()) {
+  if (checkStep1() && checkStep2() && checkStep3() && checkStep4() && checkStep5() && checkStep6()) {
 
     output = true
 
@@ -2205,6 +2331,18 @@ function step5HandleErrors(){
     $('#next').attr('disabled','true')
   }
   
+}
+
+function ValidatePolicies(){
+  
+  let unsetLength = $(document).find('#policy-tbody').find('i.text-danger').length
+
+  if (unsetLength>0) {
+    $('#next').attr('disabled','true')
+  } else {
+    $('#next').removeAttr('disabled')
+  }
+
 }
 
 function step6HandleErrors(){
@@ -2431,7 +2569,6 @@ function activatePopUpWindows(rowID,type,name){
   let ipopID = 'ipop-'+rowID
   let mpopID = 'mpop-'+rowID
   let cpopID = 'cpop-'+rowID
-  let mqpopID = 'qpop-'+rowID
 
   $(document).find('#'+apopID).popover({html:true,title: "Allowed Population Type <a class='dismisspopover close' data-dismiss='alert'>&times;</a>"}).click(function(e) {
       $('.popover').not(this).hide();
@@ -2470,22 +2607,124 @@ function activatePopUpWindows(rowID,type,name){
     addMpopHTML(mpopID,rowID,_type)
     addCpopHTML(cpopID,rowID,_type)
 
-    if (name == 'Housing First') {
-
-      $(document).find('#'+mqpopID).popover({html:true,title: "Monthly Quota <a class='dismisspopover close' data-dismiss='alert'>&times;</a>"}).click(function(e) {
-          $('.popover').not(this).hide();
-          $(this).data("bs.popover").inState.click = false;
-          $(this).popover('show');
-          e.preventDefault();
-      });
-      addMQpopHTML(mqpopID,rowID,_type)
-
-    }
-
   }
 
   addApopHTML(apopID,rowID,_type)
   addIpopHTML(ipopID,rowID,_type)
+
+}
+
+function activatePopUpWindowsForHosuingFirst(rowID,name,id){
+
+  let hfccID = 'xpop-'+rowID
+  let hfncID = 'ypop-'+rowID
+  let hfmroiID = 'zpop-'+rowID
+
+  let _type = 'resource'
+
+  $(document).find('#'+hfccID).popover({html:true,title: "Current HF Capacity <a class='dismisspopover close' data-dismiss='alert'>&times;</a>"}).click(function(e) {
+      $('.popover').not(this).hide();
+      $(this).data("bs.popover").inState.click = false;
+      $(this).popover('show');
+      e.preventDefault();
+  });
+  $(document).find('#'+hfncID).popover({html:true,title: "New HF Capacity <a class='dismisspopover close' data-dismiss='alert'>&times;</a>"}).click(function(e) {
+      $('.popover').not(this).hide();
+      $(this).data("bs.popover").inState.click = false;
+      $(this).popover('show');
+      e.preventDefault();
+  });
+  $(document).find('#'+hfmroiID).popover({html:true,title: "New rate of increase per month <a class='dismisspopover close' data-dismiss='alert'>&times;</a>"}).click(function(e) {
+      $('.popover').not(this).hide();
+      $(this).data("bs.popover").inState.click = false;
+      $(this).popover('show');
+      e.preventDefault();
+  });
+
+  addHFCCHTML(hfccID,rowID,_type);
+  addHFNCCHTML(hfncID,rowID,_type);
+  addHFMROIHTML(hfmroiID,rowID,_type);
+
+}
+
+function addHFCCHTML(ThisID,rowID,_type){
+
+  let html =  '<div><div class="table-responsive">'+
+          '<table id="'+ThisID+'" class="table table-bordered"><tbody>';
+
+  html += '<tr><td class="pop" style="font-weight: 900">Current HF Capacity</td>'+
+            '<td class="pop"><input kind="hfcc" class="maxlength-input-validation" type="number" min="1" max="1000" step="1" name="housing-first-current-capacity['+_type+']['+rowID+']" value="0" style="width:100px; height:100%;" placeholder="#"></td></tr>';
+
+  html +=   '</tbody></table></div><div style="width:100%"><a rowid="'+rowID+'" id="'+ThisID+'" class="closepop btn btn-xs btn-primary text-white pointer">Save and Close</a></div></div>';
+
+
+  if(typeof window.popovers[ThisID] === 'undefined') {
+    window.popovers[ThisID] = html
+  }
+
+  $(document).find('#'+ThisID).on('shown.bs.popover', function () {
+
+    let popid = $(this).attr('aria-describedby')
+
+    let thisid = $(this).attr('id')
+
+    $(document).find('#'+popid).first().find('.popover-content').first().html(window.popovers[thisid]);
+
+  })
+
+}
+
+function addHFNCCHTML(ThisID,rowID,_type){
+
+  let html =  '<div><div class="table-responsive">'+
+          '<table id="'+ThisID+'" class="table table-bordered"><tbody>';
+
+  html += '<tr><td class="pop" style="font-weight: 900">New HF Capacity</td>'+
+            '<td class="pop"><input kind="hfnc" class="maxlength-input-validation" type="number" min="1" max="1000" step="1" name="new-hf-capacity['+_type+']['+rowID+']" value="0" style="width:100px; height:100%;" placeholder="#"></td></tr>';
+
+  html +=   '</tbody></table></div><div style="width:100%"><a rowid="'+rowID+'" id="'+ThisID+'" class="closepop btn btn-xs btn-primary text-white pointer">Save and Close</a></div></div>';
+
+
+  if(typeof window.popovers[ThisID] === 'undefined') {
+    window.popovers[ThisID] = html
+  }
+
+  $(document).find('#'+ThisID).on('shown.bs.popover', function () {
+
+    let popid = $(this).attr('aria-describedby')
+
+    let thisid = $(this).attr('id')
+
+    $(document).find('#'+popid).first().find('.popover-content').first().html(window.popovers[thisid]);
+
+  })
+
+}
+
+function addHFMROIHTML(ThisID,rowID,_type){
+
+  let html =  '<div><div class="table-responsive">'+
+          '<table id="'+ThisID+'" class="table table-bordered"><tbody>';
+
+  html += '<tr><td class="pop" style="font-weight: 900">New rate of increase per month</td>'+
+            '<td class="pop"><input kind="hfcmroi" class="maxlength-input-validation" type="number" min="1" max="1000" step="1" name="hosuing-first-new-rate-of-increase['+_type+']['+rowID+']" value="0" style="width:100px; height:100%;" placeholder="#"></td></tr>';
+
+  html +=   '</tbody></table></div><div style="width:100%"><a rowid="'+rowID+'" id="'+ThisID+'" class="closepop btn btn-xs btn-primary text-white pointer">Save and Close</a></div></div>';
+
+
+  if(typeof window.popovers[ThisID] === 'undefined') {
+    window.popovers[ThisID] = html
+  }
+
+  $(document).find('#'+ThisID).on('shown.bs.popover', function () {
+
+    let popid = $(this).attr('aria-describedby')
+
+    let thisid = $(this).attr('id')
+
+    $(document).find('#'+popid).first().find('.popover-content').first().html(window.popovers[thisid]);
+
+  })
 
 }
 
@@ -2614,34 +2853,6 @@ function addMpopHTML(ThisID,rowID,_type){
 
 }
 
-function addMQpopHTML(ThisID,rowID,_type){
-
-  let html =  '<div><div class="table-responsive">'+
-          '<table id="'+ThisID+'" class="table table-bordered"><tbody>';
-
-  html += '<tr><td class="pop" style="font-weight: 900">Monthly Quota</td>'+
-            '<td class="pop"><input kind="mqinput" class="mq-input-validation" type="number" min="1" max="10000" step="1" name="monthlyquota['+_type+']['+rowID+']" value="1" style="width:100px; height:100%;" placeholder="#"></td></tr>';
-
-  html +=   '</tbody></table></div><div style="width:100%"><a rowid="'+rowID+'" id="'+ThisID+'" class="closepop btn btn-xs btn-primary text-white pointer">Save and Close</a></div></div>';
-
-
-  if(typeof window.popovers[ThisID] === 'undefined') {
-    window.popovers[ThisID] = html
-  }
-
-  $(document).find('#'+ThisID).on('shown.bs.popover', function () {
-
-    let popid = $(this).attr('aria-describedby')
-
-    let thisid = $(this).attr('id')
-
-    $(document).find('#'+popid).first().find('.popover-content').first().html(window.popovers[thisid]);
-
-  })
-
-}
-
-
 function updateIpopHTML(populationArray,rootID,_type){
 
   let ThisID = 'ipop-'+rootID
@@ -2680,8 +2891,29 @@ function ReturnIpopTR(value,rowID,_type){
   return html;
 }
 
-function makeResourcesPropretiesTD(rowID,tooltipClass,name){
-  let html =  '<ul class="mb0"><li name="apop-'+rowID+'"><a id="apop-'+rowID+'" class="a-tag popover-all" data-placement="bottom" data-toggle="popover">Allowed Population Type</a>'+
+function makeResourcesPropretiesTD(rowID,tooltipClass,name,id){
+
+  let html = ""
+
+  if (id=='HousingFirst') {
+
+    //mroi monthly rate of increase
+    html +=  '<ul class="mb0"><li name="xpop-'+rowID+'"><a id="xpop-'+rowID+'" class="a-tag popover-all" data-placement="bottom" data-toggle="popover">Current HF Capacity</a>'+
+              '&nbsp;<a class="show-info pointer hfcc-info"><i class="text-info fas fa-info-circle"></i></a>&nbsp;<a data-toggle="tooltip" data-placement="top" title="Not set" class="_icon not-set pointer '+tooltipClass+'"><i class="text-danger fas fa-times-circle"></i></a>'+
+              '</li>'+
+
+              '<li name="ypop-'+rowID+'"><a id="ypop-'+rowID+'" class="a-tag popover-all" data-placement="bottom" data-toggle="popover">New HF Capacity</a>'+
+              '&nbsp;<a class="show-info pointer hfnc-info"><span></span><i class="text-info fas fa-info-circle"></i></a>&nbsp;<a data-toggle="tooltip" data-placement="top" title="Not set" class="_icon not-set pointer '+tooltipClass+'"><i class="text-danger fas fa-times-circle"></i></a>'+
+              '</li>'+
+
+              '<li name="zpop-'+rowID+'"><a id="zpop-'+rowID+'" class="a-tag popover-all" data-placement="bottom" data-toggle="popover">New rate of increase per month</a>'+
+              '&nbsp;<a class="show-info pointer hfmroi-info"><span></span><i class="text-info fas fa-info-circle"></i></a>&nbsp;<a data-toggle="tooltip" data-placement="top" title="Not set" class="_icon not-set pointer '+tooltipClass+'"><i class="text-danger fas fa-times-circle"></i></a>'+
+              '</li>';
+
+
+  } else {
+
+    html +=  '<ul class="mb0"><li name="apop-'+rowID+'"><a id="apop-'+rowID+'" class="a-tag popover-all" data-placement="bottom" data-toggle="popover">Allowed Population Type</a>'+
               '&nbsp;<a class="show-info pointer apop-info"><i class="text-info fas fa-info-circle"></i></a>&nbsp;<a data-toggle="tooltip" data-placement="top" title="Not set" class="_icon not-set pointer '+tooltipClass+'"><i class="text-danger fas fa-times-circle"></i></a>'+
               '</li>'+
 
@@ -2697,13 +2929,7 @@ function makeResourcesPropretiesTD(rowID,tooltipClass,name){
               '&nbsp;<a class="show-info pointer cap-info"><span></span><i class="text-info fas fa-info-circle"></i></a>&nbsp;<a data-toggle="tooltip" data-placement="top" title="Not set" class="_icon not-set pointer '+tooltipClass+'"><i class="text-danger fas fa-times-circle"></i></a>'+
               '</li>';
 
-              if (name == 'Housing First') {
-
-                html +='<li name="qpop-'+rowID+'"><a id="qpop-'+rowID+'" class="a-tag popover-all" data-placement="bottom" data-toggle="popover">Monthly Quota</a>'+
-                '&nbsp;<a class="show-info pointer mq-info"><span></span><i class="text-info fas fa-info-circle"></i></a>&nbsp;<a data-toggle="tooltip" data-placement="top" title="Not set" class="_icon not-set pointer '+tooltipClass+'"><i class="text-danger fas fa-times-circle"></i></a>'+
-                '</li>';
-
-              }
+    }
 
   return html
 }
@@ -2797,7 +3023,7 @@ function HandleStepsOnNextBtnClick(){
     break;
 
     //policies
-    case 5000:
+    case 5:
 
       let policyValidate = checkStep5()
 
@@ -2813,9 +3039,10 @@ function HandleStepsOnNextBtnClick(){
 
     break;
 
-    //PRAMETERS
-    case 5:
-      if (checkStep6()) {
+        //PRAMETERS
+    case 6:
+      // if (checkStep6()) {
+      if (true) {
 
         if (validateAllSteps()) {
 
@@ -2852,7 +3079,7 @@ function HandleStepsOnNextBtnClick(){
 
 }
 
-function MakeResourcesRowColumnHTML(rowID,tooltipClass,type,name,nameForShow){
+function MakeResourcesRowColumnHTML(rowID,tooltipClass,type,name,nameForShow,id){
 
   let rowCount = $("#res-tbody tr").length
 
@@ -2863,14 +3090,23 @@ function MakeResourcesRowColumnHTML(rowID,tooltipClass,type,name,nameForShow){
             '<input type="hidden" class="form-control" name="resources['+rowID+'][name]" value="'+name+'" maxlength="40">'+
             '<small class="text-danger hide res-state-name-error">* This name has been entered. Duplicate name is not allowed.</small></td>';
   
-  let td2 = '<td kind="action">'+
-            '<a class="text-link divideRes pointer">Add sub-resource&nbsp;<a class="show-info pointer"><span msg="This feature divides this resource into multiple resources"></span><i class="text-info fas fa-info-circle"></i></a></a>'+
+  let td2 = ''
+  let extraClass = ''
+  if (id=='HousingFirst') {
+    extraClass = 'hf'
+    td2 += '<td kind="action">'+
+            '<p>-</p>'+
             '</td>'
+  } else {
+    td2 += '<td kind="action">'+
+          '<a class="text-link divideRes pointer">Add sub-resource&nbsp;<a class="show-info pointer"><span msg="This feature divides this resource into multiple resources"></span><i class="text-info fas fa-info-circle"></i></a></a>'+
+          '</td>'
+  }
 
-  let td3 = '<td kind="props">'+makeResourcesPropretiesTD(rowID,tooltipClass,name)+'</td>'
+  let td3 = '<td kind="props">'+makeResourcesPropretiesTD(rowID,tooltipClass,name,id)+'</td>'
 
   let td4 = '<td kind="action">'+
-            '<a class="text-danger pointer removeResRow">Delete resource</a>'+
+            '<a class="text-danger pointer removeResRow '+extraClass+'">Delete resource</a>'+
             '</td>'
 
   let row =   tr+
@@ -2893,7 +3129,7 @@ function MakeSUBResourcesRowColumnHTML(rowID,parentID,subRowCount,tooltipClass,p
   let td0 = '<td>Sub '+parentName+'</td>';
   let td1 = '<td><input type="text" class="form-control no-special-chars res-state-name is-invalid" name="subresources['+parentID+']['+rowID+'][name]" placeholder="Enter sub-resource name"><small class="text-danger hide res-state-name-error">* This name has been entered. Duplicate name is not allowed.</small></td>'
   let td2 = '<td></td>'
-  let td3 = '<td>'+makeResourcesPropretiesTD(rowID,tooltipClass,parentName)+'</td>'
+  let td3 = '<td>'+makeResourcesPropretiesTD(rowID,tooltipClass,parentName,null)+'</td>'
   let td4 = '<td><a class="text-danger pointer removeResSubRow">Delete sub-resource&nbsp;</a></td>'
   let row =   tr+
               td0+
@@ -3168,6 +3404,24 @@ function UnsetMLS(rowID){
 
 }
 
+function UnsetHFNC(rowID){
+
+  let thisTooltip = $(document).find('li[name="hfnc-'+rowID+'"').first().find('._icon').first()
+
+  thisTooltip.removeClass('set').addClass('not-set').attr('title','Not set').attr('data-original-title','Not set')
+  thisTooltip.find('i').first().removeClass('fa-check-circle').removeClass('text-success').addClass('fa-times-circle').addClass('text-danger')
+
+}
+
+function UnsetHFMROI(rowID){
+
+  let thisTooltip = $(document).find('li[name="hfmroi-'+rowID+'"').first().find('._icon').first()
+
+  thisTooltip.removeClass('set').addClass('not-set').attr('title','Not set').attr('data-original-title','Not set')
+  thisTooltip.find('i').first().removeClass('fa-check-circle').removeClass('text-success').addClass('fa-times-circle').addClass('text-danger')
+
+}
+
 function UnsetMQ(rowID){
 
   let thisTooltip = $(document).find('li[name="qpop-'+rowID+'"').first().find('._icon').first()
@@ -3228,61 +3482,66 @@ function drawResSummay(){
 
           html += '<li>Name: '+ds_value['nameforshow']+'</li>'
 
-          //----
 
-          ap_string = '<ul class="sum-ul">'
+          if (ds_value['name'] == 'Housing First (HF) program') {
 
-          $.each( ds_value['properties']['ap'], function( ds_keyap, ds_valueap ) {
-
-            ap_string += '<li>'+ds_valueap+'</li>'
-
-          });
-
-          ap_string += '</ul>'
-
-          html += '<li>Allowed Population: '+ap_string+'</li>'
-
-          //----
-
-          let ip_string = '<ul class="sum-ul">'
-
-          $.each( ds_value['properties']['ip'], function( ds_keyip, ds_valueip ) {
-
-            ip_string += '<li>'+ds_valueip['name']+': '+ds_valueip['value']+'</li>'
-
-          });
-
-          ip_string += '</ul>'
-
-          html += '<li>Initial Population: '+ip_string+'</li>'
-
-          //----
-
-          html += '<li>Maximum Length of Stay: '+ds_value['properties']['mlos']+'</li>'
-
-          let cap_html = ''
-
-          if (ds_value['properties']['cap'] == -1) {
-
-            cap_html = 'infinite'
+            html += '<li>Current HF Capacity: '+ds_value['properties']['hfcc']+'</li>'
+            html += '<li>New HF Capacity: '+ds_value['properties']['hfnc']+'</li>'
+            html += '<li>New rate of increase per month: '+ds_value['properties']['hfmroi']+'</li>'
 
           } else {
-
-            cap_html = ds_value['properties']['cap']
-
-          }
-
-          html += '<li>Capacity: '+cap_html+'</li>'
-
-          if (ds_value['name'] == 'Housing First') {
-
-            html += '<li>Monthly Quota: '+ds_value['properties']['mq']+'</li>'
             
-          }          
+            //----
 
-          html += '</ul>'
+            ap_string = '<ul class="sum-ul">'
 
-          html += '</ul>'
+            $.each( ds_value['properties']['ap'], function( ds_keyap, ds_valueap ) {
+
+              ap_string += '<li>'+ds_valueap+'</li>'
+
+            });
+
+            ap_string += '</ul>'
+
+            html += '<li>Allowed Population: '+ap_string+'</li>'
+
+            //----
+
+            let ip_string = '<ul class="sum-ul">'
+
+            $.each( ds_value['properties']['ip'], function( ds_keyip, ds_valueip ) {
+
+              ip_string += '<li>'+ds_valueip['name']+': '+ds_valueip['value']+'</li>'
+
+            });
+
+            ip_string += '</ul>'
+
+            html += '<li>Initial Population: '+ip_string+'</li>'
+
+            //----
+
+            html += '<li>Maximum Length of Stay: '+ds_value['properties']['mlos']+'</li>'
+
+            let cap_html = ''
+
+            if (ds_value['properties']['cap'] == -1) {
+
+              cap_html = 'infinite'
+
+            } else {
+
+              cap_html = ds_value['properties']['cap']
+
+            }
+
+            html += '<li>Capacity: '+cap_html+'</li>'
+
+            html += '</ul>'
+
+            html += '</ul>'
+
+         }
 
         } else if (ds_value['kind'] == 'parent') {
 
@@ -3372,12 +3631,6 @@ function drawResSummay(){
                 }
 
                 html += '<li>Capacity: '+cap_html+'</li>'
-
-                if (ds_value['name'] == 'Housing First') {
-
-                  html += '<li>Monthly Quota: '+ds_value_child2['properties']['mq']+'</li>'
-                  
-                }
 
                 html += '</ul>'
 
@@ -3513,9 +3766,25 @@ function insertPolicyToDOM(policyID){
               if (p_value['kind']=='main') {
 
                 html += '<input type="hidden" name="policies['+policyID+']['+p_value['rowID']+'][policy-mlos]" value="'+p_value['policy-mlos']+'">'
-                html += '<input type="hidden" name="policies['+policyID+']['+p_value['rowID']+'][mlos-mq]" value="'+p_value['mlos-mq']+'">'
                 html += '<input type="hidden" name="policies['+policyID+']['+p_value['rowID']+'][policy-cap]" value="'+p_value['policy-cap']+'">'
-                html += '<input type="hidden" name="policies['+policyID+']['+p_value['rowID']+'][mq-cap]" value="'+p_value['mq-cap']+'">'
+
+              } else if (p_value['kind'] == 'parent') {
+
+                let resourceID = p_value['resourceID']
+
+                //FIND CHILDREN
+                $.each( ds_value['data']['policy-data'], function( p_key2, p_value2 ) {
+
+                  if (p_value2['kind'] == 'child' && p_value2['resourceID'] == resourceID) {
+
+                    let subResourceID = p_value2['subResourceID']
+
+                    html += '<input type="hidden" name="policies['+policyID+']['+resourceID+']['+subResourceID+'][policy-mlos]" value="'+p_value2['policy-mlos']+'">'
+                    html += '<input type="hidden" name="policies['+policyID+']['+resourceID+']['+subResourceID+'][policy-cap]" value="'+p_value2['policy-cap']+'">'
+
+                  }
+
+                })
 
               }
 
@@ -3532,5 +3801,155 @@ function insertPolicyToDOM(policyID){
     })
 
   $('#policieshtmls').append(html)
+
+}
+
+function UpdateOverviewSectionForPolicies(){
+
+  let PolicyCount = $(document).find('.policy-rows').length
+  $('#policies-overview').text(PolicyCount+' policies')
+
+  let counter = 0
+  let html = '<ul>'
+
+  $.each( window.dataSummary, function( ds_key, ds_value ) {
+
+      if (ds_value != undefined) {
+
+        if (ds_value['type'] == 'policy') {
+
+          counter+=1
+
+          html += '<li>'+ds_value['name']+'</li>';
+
+          html += '<ul>';
+
+          $.each( ds_value['data']['policy-data'], function( p_key, p_value ) {
+
+            if (p_value['kind'] == 'parent') {
+
+              let resRowID = p_value['resourceID'];
+
+              let resourceName = ''
+
+              $.each( window.dataSummary, function( ds2_key, ds2_value ) {
+
+                if (ds2_value != undefined) {
+
+                  if (ds2_value['type'] == 'res') {
+
+                    if (ds2_value['id'] == resRowID) {
+
+                      resourceName = ds2_value['nameforshow']
+
+                    }
+
+                  }
+                }
+
+              })
+
+              html += '<li>Resource: '+resourceName+'</li>'
+
+              html += '<ul>';
+
+              //FIND CHILDREN
+              $.each( ds_value['data']['policy-data'], function( child_key, child_value ) {
+
+                if (child_value['kind'] == 'child' && child_value['resourceID'] == resRowID) {
+
+                  let subresID = child_value['subResourceID']
+
+                  $.each( window.dataSummary, function( reschild_key, reschild_value ) {
+
+                    if (reschild_value != undefined) {
+
+                      if (reschild_value['type'] == 'res') {
+
+                        if (reschild_value['id'] == subresID && reschild_value['kind'] == "child") {
+
+                          subResourceName = reschild_value['nameforshow']
+
+                        }
+
+                      }
+                    }
+
+                  })
+
+                  let cap = child_value['policy-cap']==-1?'infinite':child_value['policy-cap'];
+
+                  html += '<li>Sub-Resource: '+subResourceName+'</li>'
+
+                  html += '<ul>';
+
+                  html += '<li>MLOS: '+child_value['policy-mlos']+'</li>'
+                  html += '<li>Capacity: '+cap+'</li>'
+
+                  html += '</ul>';
+
+                }
+
+              })
+
+              html += '</ul>';
+
+            } else if(p_value['kind'] == 'main') { //main, resource without subresources
+
+
+             let resMRowID = p_value['rowID'];
+
+              let mainResourceName = ''
+
+              $.each( window.dataSummary, function( main1_key, main1_value ) {
+
+                if (main1_value != undefined) {
+
+                  if (main1_value['type'] == 'res') {
+
+                    if (main1_value['id'] == resMRowID) {
+
+                      mainResourceName = main1_value['nameforshow']
+
+                    }
+
+                  }
+                }
+
+              })
+
+              html += '<li>Resource: '+mainResourceName+'</li>'
+
+              let cap = p_value['policy-cap']==-1?'infinite':p_value['policy-cap'];
+
+              html += '<ul>';
+
+              html += '<li>MLOS: '+p_value['policy-mlos']+'</li>'
+              html += '<li>Capacity: '+cap+'</li>'
+
+              html += '</ul>';
+
+
+            }
+
+
+          })
+
+          html += '</ul>';
+
+        }
+
+      }
+
+  })
+
+  html += '</ul>';
+
+  if (counter==0) {
+    $('#policy-summary').html('')
+  } else {
+    $('#policy-summary').html(html)
+  }
+  
 
 }

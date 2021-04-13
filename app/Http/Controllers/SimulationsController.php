@@ -464,101 +464,103 @@ class SimulationsController extends Controller
 
     public function postAdd()
     {
+
+        Job::dump(input::all());
         
-        $resources = Input::get('resources');
-        $subresources = Input::get('subresources');
-        $states = Input::get('states');
-        $substates = Input::get('substates');
+        // $resources = Input::get('resources');
+        // $subresources = Input::get('subresources');
+        // $states = Input::get('states');
+        // $substates = Input::get('substates');
 
-        if (isset($resources)) {
+        // if (isset($resources)) {
 
-            foreach ($resources as $rk => $resource) {
+        //     foreach ($resources as $rk => $resource) {
 
-                if ($resource['name']=='Addiction / Rehabilitation Center') {
-                    $resources[$rk]['name'] = 'Rehabilitation';
-                }
+        //         if ($resource['name']=='Addiction / Rehabilitation Center') {
+        //             $resources[$rk]['name'] = 'Rehabilitation';
+        //         }
 
-                $resources[$rk]['subresources'] = [];
+        //         $resources[$rk]['subresources'] = [];
 
-                if (isset($subresources)) {
+        //         if (isset($subresources)) {
 
-                    #Look for the same ID in subreserouces array, if so that means this resrouces has a subresource
-                    if (isset($subresources[$rk])) {
+        //             #Look for the same ID in subreserouces array, if so that means this resrouces has a subresource
+        //             if (isset($subresources[$rk])) {
 
-                        $resources[$rk]['subresources'] = $subresources[$rk];
+        //                 $resources[$rk]['subresources'] = $subresources[$rk];
 
-                    }
+        //             }
 
-                }
+        //         }
 
-            }
-        }
+        //     }
+        // }
 
-        if (isset($states)) {
+        // if (isset($states)) {
 
-            foreach ($states as $sk => $state) {
+        //     foreach ($states as $sk => $state) {
 
-                $states[$sk]['substates'] = [];
+        //         $states[$sk]['substates'] = [];
 
-                if (isset($substates)) {
+        //         if (isset($substates)) {
 
-                    #Look for the same ID in subreserouces array, if so that means this resrouces has a subresource
-                    if (isset($substates[$sk])) {
+        //             #Look for the same ID in subreserouces array, if so that means this resrouces has a subresource
+        //             if (isset($substates[$sk])) {
 
-                        array_push($states[$sk]['substates'], $substates[$sk]);
-                        $states[$sk]['substates'] = $substates[$sk];
+        //                 array_push($states[$sk]['substates'], $substates[$sk]);
+        //                 $states[$sk]['substates'] = $substates[$sk];
 
-                    }
+        //             }
 
-                }
+        //         }
 
-            }
-        }
+        //     }
+        // }
 
-        $allowedPopulation = Input::get('allowedPopulation');
-        $initialPopulation = Input::get('initialPopulation');
-        $maximumlengthofstay = Input::get('maximumlengthofstay');
-        $monthlyquota = Input::get('monthlyquota');
-        $capacity = Input::get('capacity');
+        // $allowedPopulation = Input::get('allowedPopulation');
+        // $initialPopulation = Input::get('initialPopulation');
+        // $maximumlengthofstay = Input::get('maximumlengthofstay');
+        // $monthlyquota = Input::get('monthlyquota');
+        // $capacity = Input::get('capacity');
 
-        $resources = Simulation::mergeResourcesPropreties($resources, $allowedPopulation, 'allowedpopulation');
-        $resources = Simulation::mergeResourcesPropreties($resources, $initialPopulation, 'initialPopulation');
-        $resources = Simulation::mergeResourcesPropreties($resources, $maximumlengthofstay, 'maximumlengthofstay');
-        $resources = Simulation::mergeResourcesPropreties($resources, $monthlyquota, 'monthlyquota');
-        $resources = Simulation::mergeResourcesPropreties($resources, $capacity, 'capacity');
-        $states = Simulation::mergeStatesPropreties($states, $allowedPopulation, 'allowedpopulation');
-        $states = Simulation::mergeStatesPropreties($states, $initialPopulation, 'initialPopulation');
+        // $resources = Simulation::mergeResourcesPropreties($resources, $allowedPopulation, 'allowedpopulation');
+        // $resources = Simulation::mergeResourcesPropreties($resources, $initialPopulation, 'initialPopulation');
+        // $resources = Simulation::mergeResourcesPropreties($resources, $maximumlengthofstay, 'maximumlengthofstay');
+        // $resources = Simulation::mergeResourcesPropreties($resources, $monthlyquota, 'monthlyquota');
+        // $resources = Simulation::mergeResourcesPropreties($resources, $capacity, 'capacity');
+        // $states = Simulation::mergeStatesPropreties($states, $allowedPopulation, 'allowedpopulation');
+        // $states = Simulation::mergeStatesPropreties($states, $initialPopulation, 'initialPopulation');
 
-        $creatorname = 'none';
-        $numberofweeks = Input::get('numberofweeks');
-        $numberofsims = Input::get('numberofsims');
-        $populationType = Input::get('populationType');
-        $simulation_name = Input::get('simulation_name');
-        $simulation_location = Input::get('simulation_location');
+        // $creatorname = 'none';
+        // $numberofweeks = Input::get('numberofweeks');
+        // $numberofsims = Input::get('numberofsims');
+        // $populationType = Input::get('populationType');
+        // $simulation_name = Input::get('simulation_name');
+        // $simulation_location = Input::get('simulation_location');
 
-        $output = array();
+        // $output = array();
 
-        $output['simulation_name'] = $simulation_name;
-        $output['simulation_location'] = $simulation_location;
-        $output['creatorname'] = $creatorname;
-        $output['numberofweeks'] = $numberofweeks;
-        $output['numberofsims'] = $numberofsims;
-        $output['populationType'] = $populationType;
-        $output['resources'] = $resources;
-        $output['states'] = $states;
-        $output['transitionProbability'] = null;
+        // $output['simulation_name'] = $simulation_name;
+        // $output['simulation_location'] = $simulation_location;
+        // $output['creatorname'] = $creatorname;
+        // $output['numberofweeks'] = $numberofweeks;
+        // $output['numberofsims'] = $numberofsims;
+        // $output['populationType'] = $populationType;
+        // $output['resources'] = $resources;
+        // $output['states'] = $states;
+        // $output['transitionProbability'] = null;
 
-        $sim = new Simulation();
-        $sim->user_id = Auth::user()->id;
-        $sim->data = json_encode($output);
-        $sim->population_content = json_encode(Input::get('populationTypeCount'));
-        $sim->stopwatch = Input::get('stopwatch');
+        // $sim = new Simulation();
+        // $sim->user_id = Auth::user()->id;
+        // $sim->data = json_encode($output);
+        // $sim->population_content = json_encode(Input::get('populationTypeCount'));
+        // $sim->stopwatch = Input::get('stopwatch');
 
-        $sim->videosliderwatches = Input::get('videosliderwatches');
+        // $sim->videosliderwatches = Input::get('videosliderwatches');
         
-        $sim->save();
+        // $sim->save();
 
-        return Redirect::route('index');
+        // return Redirect::route('index');
 
     }
 

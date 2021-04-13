@@ -74,6 +74,16 @@
 			<h6>Step 5</h6>
 			
 			<div class="embed-responsive embed-responsive-16by9">
+			  <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/bK1M9xTCQDw" allowfullscreen></iframe>
+			</div>
+
+		</div>
+
+		<div id="step-6-video" class="video-container hide">
+
+			<h6>Step 6</h6>
+			
+			<div class="embed-responsive embed-responsive-16by9">
 			  <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/qOCtxqZ7H7U" allowfullscreen></iframe>
 			</div>
 
@@ -366,8 +376,8 @@
 						                <li><a href="#step-2">Step 2<br /><big>Population Group&nbsp;&nbsp;<i class="fas fa-users"></i></big></a></li>
 						                <li><a href="#step-3">Step 3<br /><big>Resources&nbsp;&nbsp;<i class="fas fa-shapes"></i></big></a></li>
 						                <li><a href="#step-4">Step 4<br /><big>Living Situations&nbsp;&nbsp;<i class="fas fa-id-badge"></i></big></a></li>
-						                <!-- <li><a href="#step-5">Step 5<br /><big>Housing Interventions&nbsp;&nbsp;<i class="fas fa-building"></i></big></a></li> -->
-						                <li><a href="#step-5">Step 5<br /><big>Parameters&nbsp;&nbsp;<i class="fas fa-sliders-h"></i></big></a></li>
+						                <li><a href="#step-5">Step 5<br /><big>Housing Interventions&nbsp;&nbsp;<i class="fas fa-building"></i></big></a></li>
+						                <li><a href="#step-6">Step 6<br /><big>Parameters&nbsp;&nbsp;<i class="fas fa-sliders-h"></i></big></a></li>
 						            </ul>
 
 						            <div style="padding-top: 15px">
@@ -637,12 +647,12 @@
 
 													  	<div class="form-inline">
 														  	<select class="form-control col-md-4" id="resselect">
-														  		<option selected disabled id="title">Select</option>
+														  		<option selected disabled id="title" value="0">Select</option>
 																<option id="Hospital" type="res">Hospital</option>
 																<option id="Shelter" type="res">Shelter</option>
 																<option id="TransitionalHousing" type="res">Transitional Housing</option>
-																<!-- <option id="HousingFirst" type="res">Housing First</option> -->
-																<option id="Rehabilitation" type="res">Addiction / Rehabilitation Center</option>	
+																<option id="Rehabilitation" type="res">Addiction / Rehabilitation Center</option>
+																<option id="HousingFirst" type="res">Housing First (HF) program</option>
 											                </select>
 													    	<button id="resourcebtn" type="button" class="btn btn-primary btn-flat" style="margin-left: 10px">Add</button>
 													    </div>
@@ -744,7 +754,7 @@
 
 						                </div>
 
-						                <div id="step-5xxx" class="">
+						                <div id="step-5" class="">
 
 						                	<div class="row">
 
@@ -752,10 +762,10 @@
 
 													<div class="form-group">
 
-									                	<label for="inputName">Add a housing intervention policy</label>
+									                	<label for="inputName">Add a housing intervention program</label>
 
 														<a class='show-info pointer'>
-														<span msg="to be added"></span>
+														<span msg="The housing intervention policies affect the parameters of resources in your simulation. Using the housing interventions you can add new policies to observe the outcome of resources with different parameters such as the maximum length of stay and capacity."></span>
 														<i class='text-info fas fa-info-circle'></i>
 														</a>
 
@@ -764,10 +774,10 @@
 									                	<br>
 									                	
 													  	<div class="form-inline">
-													  		<input id="policy-name-input" type="text" class="form-control col-md-4 is-invalid no-special-chars" value="" placeholder="Enter policy name and press add">
+													  		<input id="policy-name-input" type="text" class="form-control col-md-4 no-special-chars" value="" placeholder="Enter the program name and press add">
 													    	<button id="policybtn" type="button" class="btn btn-primary btn-flat" style="margin-left: 10px">Add</button>
 													    </div>
-													    <span class="text-danger" id="housingp-error">*required.</span>
+													    <span class="text-danger hide" id="housingp-error">*required.</span>
 
 									              	</div>
 									            </div>
@@ -804,7 +814,7 @@
 						                </div>
 
 
-						                <div id="step-5" class="">
+						                <div id="step-6" class="">
 
 						                	<div class="row" style="margin-left: 0;margin-right: 0;">
 
@@ -818,7 +828,7 @@
 															<i class='text-info fas fa-info-circle'></i>
 														</a>
 
-														<a data-toggle="tooltip" data-placement="top" title="" data-original-title="Tutorial video" class="pointer general-tooltip"><i step='5' class="text-info fas fa-video tutorial-link"></i></a>
+														<a data-toggle="tooltip" data-placement="top" title="" data-original-title="Tutorial video" class="pointer general-tooltip"><i step='6' class="text-info fas fa-video tutorial-link"></i></a>
 
 
 									                	<input type="number" min="1" max="520" step="1" autocomplete="off" name="numberofweeks" id="simweeks" class="form-control is-invalid">
@@ -836,7 +846,7 @@
 									                	<span class="text-danger" id="simnum-error">This input is required. The value must be a numeric value between 1 to 10.</span>
 									              	</div>
 
-<!-- 				              						<div class="form-group">
+				              			<!-- 			<div class="form-group">
 				              		                	<label for="inputName">Housing Intervention&nbsp;
 				              	                			<a class='show-info pointer'>
 				              								<span msg="The total number of housing interventaion per month"></span>
@@ -952,25 +962,26 @@
 								</div>
  								<div class="row summary-data" id="state-summary"></div>
 
-								<!--<hr>
+								<hr>
 
 								<div class="row">
 
 									<table class="overview-title-table">
 									  <tr>
 									    <td>Step 5, Housing Interventions:</td>
-									    <td><span id="policies-overview" class="text-danger">Incomplete</span></td>
+									    <td><span id="policies-overview" class="text-info">0 policies</span></td>
 									  </tr>
 									</table>
 
-								</div> -->
+								</div>
+								<div class="row summary-data" id="policy-summary"></div>
 								<hr>
 
 								<div class="row">
 									
 									<table class="overview-title-table">
 									  <tr>
-									    <td>Step 5, Parameters:</td>
+									    <td>Step 6, Parameters:</td>
 									    <td><span id="parameters-overview"" class="text-danger">Incomplete</span></td>
 									  </tr>
 									</table>
@@ -996,7 +1007,7 @@
         <div class="modal-dialog modal-xl">
           <div class="modal-content">
             <div class="modal-header">
-              <h4 class="modal-title">Edit policy</h4>
+              <h4 class="modal-title">Edit program</h4>
               <button type="button" class="close close-policy-modal" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">×</span>
               </button>
