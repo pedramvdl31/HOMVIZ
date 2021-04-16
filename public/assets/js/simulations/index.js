@@ -653,7 +653,7 @@ $(document).ready(function(){
 
       if (id=='HousingFirst') {
         activatePopUpWindowsForHosuingFirst(rowID,name,id)
-        window.dataSummary.push({ 'name':name, 'nameforshow':'', 'id':rowID, 'type':type, 'kind':'main', 'parent_id':null, properties: {'hfcc':0,'hfnc':0,'hfmroi':0} })
+        window.dataSummary.push({ 'name':name, 'nameforshow':'Housing First Program', 'id':rowID, 'type':type, 'kind':'main', 'parent_id':null, properties: {'hfcc':0,'hfnc':0,'hfmroi':0} })
       } else {
         activatePopUpWindows(rowID,type,name)
         window.dataSummary.push({ 'name':name, 'nameforshow':'', 'id':rowID, 'type':type, 'kind':'main', 'parent_id':null, properties: {'ap':[],'ip':[],'mlos':0,'cap':-1} })
@@ -3086,9 +3086,17 @@ function MakeResourcesRowColumnHTML(rowID,tooltipClass,type,name,nameForShow,id)
   let tr = '<tr id="'+rowID+'" class="mainrow" count="'+rowCount+'" type="'+type+'" name="'+name+'">';
   let td0 = '<td kind="name">'+nameForShow+'</td>';
 
-  let td1 = '<td kind="nameinput"><input type="text" maxlength="40" class="form-control no-special-chars res-state-name is-invalid" name="resources['+rowID+'][name-for-show]" value="" placeholder="Enter resource name">'+
+  let td1 = ''
+
+  if (id=='HousingFirst') {
+    td1 += '<td kind="nameinput"><input type="text" maxlength="40" class="form-control res-state-name is-valid" readonly name="resources['+rowID+'][name-for-show]" value="Housing First Program" placeholder="Enter resource name">'+
             '<input type="hidden" class="form-control" name="resources['+rowID+'][name]" value="'+name+'" maxlength="40">'+
             '<small class="text-danger hide res-state-name-error">* This name has been entered. Duplicate name is not allowed.</small></td>';
+  } else {
+    td1 += '<td kind="nameinput"><input type="text" maxlength="40" class="form-control no-special-chars res-state-name is-invalid" name="resources['+rowID+'][name-for-show]" value="" placeholder="Enter resource name">'+
+            '<input type="hidden" class="form-control" name="resources['+rowID+'][name]" value="'+name+'" maxlength="40">'+
+            '<small class="text-danger hide res-state-name-error">* This name has been entered. Duplicate name is not allowed.</small></td>';
+  }
   
   let td2 = ''
   let extraClass = ''
@@ -3488,6 +3496,8 @@ function drawResSummay(){
             html += '<li>Current HF Capacity: '+ds_value['properties']['hfcc']+'</li>'
             html += '<li>New HF Capacity: '+ds_value['properties']['hfnc']+'</li>'
             html += '<li>New rate of increase per month: '+ds_value['properties']['hfmroi']+'</li>'
+            html += '</ul>'
+            html += '</ul>'
 
           } else {
             
@@ -3807,7 +3817,7 @@ function insertPolicyToDOM(policyID){
 function UpdateOverviewSectionForPolicies(){
 
   let PolicyCount = $(document).find('.policy-rows').length
-  $('#policies-overview').text(PolicyCount+' policies')
+  $('#policies-overview').text(PolicyCount+' programs')
 
   let counter = 0
   let html = '<ul>'

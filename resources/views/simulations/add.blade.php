@@ -765,7 +765,7 @@
 									                	<label for="inputName">Add a housing intervention program</label>
 
 														<a class='show-info pointer'>
-														<span msg="The housing intervention policies affect the parameters of resources in your simulation. Using the housing interventions you can add new policies to observe the outcome of resources with different parameters such as the maximum length of stay and capacity."></span>
+														<span msg="The housing intervention programs affect the parameters of resources in your simulation. Using the housing interventions you can add new programs to observe the outcome of resources with different parameters such as the maximum length of stay and capacity."></span>
 														<i class='text-info fas fa-info-circle'></i>
 														</a>
 
@@ -969,7 +969,7 @@
 									<table class="overview-title-table">
 									  <tr>
 									    <td>Step 5, Housing Interventions:</td>
-									    <td><span id="policies-overview" class="text-info">0 policies</span></td>
+									    <td><span id="policies-overview" class="text-info">0 programs</span></td>
 									  </tr>
 									</table>
 
