@@ -17,6 +17,26 @@ $(document).ready(function(){
 
   });
 
+
+  $(document).on("click",".mytabs",function() {
+
+    $(this).addClass('active')
+
+    let kind = $(this).attr('kind')
+    let fortab = $(this).attr('fortab')
+
+    $('.mytabs[kind="'+kind+'"]').removeClass('active')
+    $('.tab-pane[kind="'+kind+'"]').removeClass('active')
+    $('.tab-pane[id="'+fortab+'"]').addClass('active')
+
+    //workaround to fix the bug I had with the original tabbing system
+    if (fortab!='custom-tabs-bar') {
+      $('.tab-pane[id="custom-tabs-radar"]').addClass('active')
+    }
+
+  });
+
+
   months = [
   'January',
   'February',
@@ -59,7 +79,7 @@ $(document).ready(function(){
   var color = Chart.helpers.color;
 
 
-  for (var i = 0; i < simnumber; i++) {
+  for (var i = 0; i < scenario_ids.length; i++) {
 
     $.each(populationLabel, function( index, popoluation ) {
 
@@ -70,7 +90,7 @@ $(document).ready(function(){
         datasets:[]
       }
 
-      $.each( dataSeriesLabel['simulation_'+i], function( key, value ) {
+      $.each( dataSeriesLabel['simulation_'+scenario_ids[i]], function( key, value ) {
 
         var newlabel = ''
         if (key === 'Rehabilitation') {
@@ -85,7 +105,7 @@ $(document).ready(function(){
                       label               : newlabel,
                       pointRadius          : false,
                       backgroundColor     : 'transparent',
-                      data                : dataSeriesLabel['simulation_'+i][key][popoluation]
+                      data                : dataSeriesLabel['simulation_'+scenario_ids[i] ][key][PopulationNameToIds(popoluation)]
                     }
 
         areaChartData['datasets'].push(line)
@@ -108,7 +128,7 @@ $(document).ready(function(){
         },
         title: {
           display: true,
-          text: popoluation+' Population',
+          text: popoluation+' population',
           fontSize:18
         },
         plugins: {
@@ -119,7 +139,7 @@ $(document).ready(function(){
         }
       }
 
-      var lineChartCanvas = $('#lineChart-'+(i+1)+'-'+index).get(0).getContext('2d')
+      var lineChartCanvas = $('#lineChart-'+scenario_ids[i]+'-'+index).get(0).getContext('2d')
       var lineChartOptions = jQuery.extend(true, {}, areaChartOptions)
       var lineChartData = jQuery.extend(true, {}, areaChartData)
       lineChartData.datasets[0].fill = false;
@@ -136,9 +156,8 @@ $(document).ready(function(){
 
   }
 
-
   //RADAR
-  for (var i2= 0; i2 < simnumber; i2++) {
+  for (var i2= 0; i2 < scenario_ids.length; i2++) {
 
     $.each(populationLabel, function( index2, popoluation2 ) {
 
@@ -184,16 +203,19 @@ $(document).ready(function(){
           }
         };
 
+        
+
         var newLabelArray = []
         
         $.each( resourceLabel, function( key2, value2 ) {
 
+
           if (z==0) {
             config.options.title.text = 'Initial '+popoluation2+' Population'
-            config.data.datasets[0].data.push(dataSeriesLabelPie['simulation_'+i2][value2][popoluation2]['init'])
+            config.data.datasets[0].data.push(dataSeriesLabelPie['simulation_'+scenario_ids[i2] ][value2][PopulationNameToIds(popoluation2)]['init'])
           } else {
             config.options.title.text = 'Final '+popoluation2+' Population'
-            config.data.datasets[0].data.push(dataSeriesLabelPie['simulation_'+i2][value2][popoluation2]['final'])
+            config.data.datasets[0].data.push(dataSeriesLabelPie['simulation_'+scenario_ids[i2] ][value2][PopulationNameToIds(popoluation2)]['final'])
           }
 
           let newVal = ''
@@ -209,7 +231,7 @@ $(document).ready(function(){
 
         config.data.labels = newLabelArray;
 
-        var ctx = document.getElementById('chart-area-'+z+'-'+(i2+1)+'-'+index2);
+        var ctx = document.getElementById('chart-area-'+z+'-'+scenario_ids[i2]+'-'+index2);
         window.myPolarArea = Chart.PolarArea(ctx, config);
 
 
@@ -220,11 +242,10 @@ $(document).ready(function(){
   }
 
 
-
   // BAR
   var cflag = true;
   var carray = {}
-  for (var i2= 0; i2 < simnumber; i2++) {
+  for (var i3= 0; i3 < scenario_ids.length; i3++) {
 
     $.each(populationLabel, function( index2, popoluation2 ) {
 
@@ -245,23 +266,23 @@ $(document).ready(function(){
           }
 
         config.data.datasets.push({data:[ 
-                                            dataSeriesLabelPie['simulation_'+i2][value2][popoluation2]['init'],
-                                            dataSeriesLabelPie['simulation_'+i2][value2][popoluation2]['final'],
+                                            dataSeriesLabelPie['simulation_'+scenario_ids[i3]][value2][PopulationNameToIds(popoluation2)]['init'],
+                                            dataSeriesLabelPie['simulation_'+scenario_ids[i3]][value2][PopulationNameToIds(popoluation2)]['final'],
                                         ],
                                   maxBarThickness:50,
                                   label: [newVal]})
 
       });
 
-      var ctx = document.getElementById('chart-bar-'+(i2+1)+'-'+index2);
-          
+      var ctx = document.getElementById('chart-bar-'+scenario_ids[i3]+'-'+index2);
+      
       var myBarChart = new Chart(ctx, {
           type: 'bar',
           data: config.data,
           options: {
             responsive: true,
+            maintainAspectRatio: false,
             plugins: {
-              responsive: true,
               legend: {
                 position: 'right',
               },
@@ -296,3 +317,60 @@ $(document).ready(function(){
 
 });
 
+
+function PopulationNameToIds(name){
+    switch (name) {
+      case 'under 30, homeless less than 1 year, male':
+        return 'u30hl1m';
+      case 'under 30, homeless less than 1 year, male (Housing First)':
+        return 'u30hl1m_hf';
+      case 'under 30, homeless more than 1 year, male':
+        return 'u30hm1m';
+      case 'under 30, homeless more than 1 year, male (Housing First)':
+        return 'u30hm1m_hf';
+      case 'under 30, homeless less than 1 year, female':
+        return 'u30hl1f';
+      case 'under 30, homeless less than 1 year, female (Housing First)':
+        return 'u30hl1f_hf';
+      case 'under 30, homeless more than 1 year, female':
+        return 'u30hm1f';
+      case 'under 30, homeless more than 1 year, female (Housing First)':
+        return 'u30hm1f_hf';
+      case '30-50 years, homeless less than 1 year, male':
+        return 'b30t50hl1m';
+      case '30-50 years, homeless less than 1 year, male (Housing First)':
+        return 'b30t50hl1m_hf';
+      case '30-50 years, homeless more than 1 year, male':
+        return 'b30t50hm1m';
+      case '30-50 years, homeless more than 1 year, male (Housing First)':
+        return 'b30t50hm1m_hf';
+      case '30-50 years, homeless less than 1 year, female':
+        return 'b30t50hl1f';
+      case '30-50 years, homeless less than 1 year, female (Housing First)':
+        return 'b30t50hl1f_hf';
+      case '30-50 years, homeless more than 1 year, female':
+        return 'b30t50hm1f';
+      case '30-50 years, homeless more than 1 year, female (Housing First)':
+        return 'b30t50hm1f_hf';
+      case 'greater than 50 years, homeless less than 1 year, male':
+        return 'g50hl1m';
+      case 'greater than 50 years, homeless less than 1 year, male (Housing First)':
+        return 'g50hl1m_hf';
+      case 'greater than 50 years, homeless more than 1 year, male':
+        return 'g50hm1m';
+      case 'greater than 50 years, homeless more than 1 year, male (Housing First)':
+        return 'g50hm1m_hf';
+      case 'greater than 50 years, homeless less than 1 year, female':
+        return 'g50hl1f';
+      case 'greater than 50 years, homeless less than 1 year, female (Housing First)':
+        return 'g50hl1f_hf';
+      case 'greater than 50 years, homeless more than 1 year, female':
+        return 'g50hm1f';
+      case 'greater than 50 years, homeless more than 1 year, female (Housing First)':
+        return 'g50hm1f_hf';
+      case 'Combined':
+        return 'Combined';
+      default:
+        return 'error';
+    }
+}

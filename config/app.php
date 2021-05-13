@@ -200,7 +200,7 @@ return [
         'Form'      => Collective\Html\FormFacade::class,
         'Flash'     => 'Laracasts\Flash\Flash',
         'UploadHelper'=> App\Helpers\UploadHelper::class,
-        'PDF' => Barryvdh\DomPDF\Facade::class,
+        'PDF' => Barryvdh\DomPDF\Facade::class
 
 
     ],

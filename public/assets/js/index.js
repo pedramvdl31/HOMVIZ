@@ -8,7 +8,6 @@ $(document).ready(function(){
     animation:true
   });
 
-  
   if ( questionnaireSubmitted == 1) {
     Swal.fire(
       'Questionnaire submitted!',
@@ -16,7 +15,6 @@ $(document).ready(function(){
       'success'
     )
   }
-
 
   $('.delete-simulation').on('click', function(e) {
 
@@ -84,20 +82,24 @@ $(document).ready(function(){
 
   update()
 
-
 })
 
 function update(){
 
     let flag = false
-    var el = $('.jobs').attr('id')
+    var elems = []
+
+    $('.jobs').each(function() {
+      elems.push($(this).attr('id'));
+    });
+
     var token = $('input[name=_token]').attr('value');
 
     $.ajax({
 
         url: "/simulations/progress-update",
         type:"POST",
-        data: { '_token': token,"ids": ['?gkghfk5.423g44ths4.2y3yhey?.']},
+        data: { '_token': token,"ids": elems},
 
         success:function(data){
 
@@ -124,13 +126,12 @@ function update(){
 
               if (progress==100.00) progress = 100
 
-              let _sname = 'Simulation 1'
+              let _sname = ''
               if (typeof data['output'][index]['simulationname'] !== 'undefined' && data['output'][index]['simulationname'] != undefined) {
 
                 _sname = data['output'][index]['simulationname']
 
               }
-              
 
               elem.find('.progress-bar').first().css('width', progress+'%').attr('aria-valuenow',progress).html(_sname+', '+progress+'%')
 
@@ -140,9 +141,9 @@ function update(){
 
           setTimeout(function(){
           
-          if (flag) {
-            update()
-          }
+            if (flag) {
+              update()
+            }
           
           }, 500)
 

@@ -376,7 +376,7 @@
 						                <li><a href="#step-2">Step 2<br /><big>Population Group&nbsp;&nbsp;<i class="fas fa-users"></i></big></a></li>
 						                <li><a href="#step-3">Step 3<br /><big>Resources&nbsp;&nbsp;<i class="fas fa-shapes"></i></big></a></li>
 						                <li><a href="#step-4">Step 4<br /><big>Living Situations&nbsp;&nbsp;<i class="fas fa-id-badge"></i></big></a></li>
-						                <li><a href="#step-5">Step 5<br /><big>Housing Interventions&nbsp;&nbsp;<i class="fas fa-building"></i></big></a></li>
+						                <li><a href="#step-5">Step 5<br /><big>New Scenarios&nbsp;&nbsp;<i class="fas fa-building"></i></big></a></li>
 						                <li><a href="#step-6">Step 6<br /><big>Parameters&nbsp;&nbsp;<i class="fas fa-sliders-h"></i></big></a></li>
 						            </ul>
 
@@ -762,10 +762,10 @@
 
 													<div class="form-group">
 
-									                	<label for="inputName">Add a housing intervention program</label>
+									                	<label for="inputName">Add a new scenario to your simulation</label>
 
 														<a class='show-info pointer'>
-														<span msg="The housing intervention programs affect the parameters of resources in your simulation. Using the housing interventions you can add new programs to observe the outcome of resources with different parameters such as the maximum length of stay and capacity."></span>
+														<span msg="New scenarios affect the parameters of previously added resources in your simulation. Using new scenarios, you can observe the outcome of your simulation if some resources have different parameters, for example, the maximum length of stay and the capacity."></span>
 														<i class='text-info fas fa-info-circle'></i>
 														</a>
 
@@ -835,28 +835,7 @@
 									                	<span class="text-danger" id="weeks-error">This input is required. The value must be a numeric value between 1 to 520.</span>
 									              	</div>
 
-													<div class="form-group">
-									                	<label for="inputName">Number of simulations&nbsp;
-								                			<a class='show-info pointer'>
-															<span msg="The total number of separate simulation runs. In the end, the results of the simulations will be averaged."></span>
-															<i class='text-info fas fa-info-circle'></i>
-															</a>
-									                	&nbsp;</label>
-									                	<input type="number" min="1" max="10" step="1" autocomplete="off" name="numberofsims" type="text" id="simnum" class="form-control is-invalid">
-									                	<span class="text-danger" id="simnum-error">This input is required. The value must be a numeric value between 1 to 10.</span>
-									              	</div>
-
-				              			<!-- 			<div class="form-group">
-				              		                	<label for="inputName">Housing Intervention&nbsp;
-				              	                			<a class='show-info pointer'>
-				              								<span msg="The total number of housing interventaion per month"></span>
-				              								<i class='text-info fas fa-info-circle'></i>
-				              								</a>
-				              		                	&nbsp;</label>
-				              		                	<input type="number" min="0" max="1000" step="1" autocomplete="off" name="housingpdata" type="text" id="housingp" class="form-control is-invalid">
-				              		                	<span class="text-danger" id="housingp-error">This input is required. The value must be a numeric value between 0 to 1000.</span>
-				              		              	</div> -->
-
+				   
 									            </div>
 
 								        	</div>
@@ -864,7 +843,7 @@
 						                </div>
 
 						            </div>
-							            
+
 
 					            </div>
 
@@ -968,8 +947,8 @@
 
 									<table class="overview-title-table">
 									  <tr>
-									    <td>Step 5, Housing Interventions:</td>
-									    <td><span id="policies-overview" class="text-info">0 programs</span></td>
+									    <td>Step 5, New Scenarios:</td>
+									    <td><span id="policies-overview" class="text-info">0 scenario</span></td>
 									  </tr>
 									</table>
 

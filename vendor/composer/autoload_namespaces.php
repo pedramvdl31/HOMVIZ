@@ -11,7 +11,6 @@ return array(
     'Mockery' => array($vendorDir . '/mockery/mockery/library'),
     'Laracasts\\Flash' => array($vendorDir . '/laracasts/flash/src'),
     'JakubOnderka\\PhpConsoleHighlighter' => array($vendorDir . '/jakub-onderka/php-console-highlighter/src'),
-    'Dwolla\\' => array($vendorDir . '/dwolla/dwolla-php/lib'),
     'Dotenv' => array($vendorDir . '/vlucas/phpdotenv/src'),
     'Diff' => array($vendorDir . '/phpspec/php-diff/lib'),
     'Asm89\\Stack' => array($vendorDir . '/asm89/stack-cors/src'),

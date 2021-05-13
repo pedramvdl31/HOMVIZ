@@ -103,20 +103,6 @@ class Job extends Model
 	}
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 	static public function dump($results) {
 		if(isset($results)) {
 			echo '<pre>';
@@ -172,8 +158,6 @@ class Job extends Model
 		return $output;
 	}
 
-
-
 	static public function IdToUsername($id) {
 		$username = '';
 		if(isset($id)) {
@@ -182,12 +166,8 @@ class Job extends Model
 		}
 		return $username;
 	}
-
-
-
-
-
-	static public function OnlyNumberFilter($data) {
+	
+static public function OnlyNumberFilter($data) {
 		if(isset($data)) {
 			$data = str_replace(array(','), '' , $data);
 		}

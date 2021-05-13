@@ -4,33 +4,23 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit6ff8fbba5f58ec266906a0f204970d71
+class ComposerStaticInit6ab5888f2b048fdfb16ab4f841f0f825
 {
     public static $files = array (
-        '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
         '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
-        '1d1b89d124cc9cb8219922c9d5569199' => __DIR__ . '/..' . '/hamcrest/hamcrest-php/hamcrest/Hamcrest.php',
+        '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
         '667aeda72477189d0494fecd327c3641' => __DIR__ . '/..' . '/symfony/var-dumper/Resources/functions/dump.php',
-        'ad155f8f1cf0d418fe49e248db8c661b' => __DIR__ . '/..' . '/react/promise/src/functions_include.php',
+        '1d1b89d124cc9cb8219922c9d5569199' => __DIR__ . '/..' . '/hamcrest/hamcrest-php/hamcrest/Hamcrest.php',
         '2c102faa651ef8ea5874edb585946bce' => __DIR__ . '/..' . '/swiftmailer/swiftmailer/lib/swift_required.php',
-        'bd9634f2d41831496de0d3dfe4c94881' => __DIR__ . '/..' . '/symfony/polyfill-php56/bootstrap.php',
-        '65fec9ebcfbb3cbb4fd0d519687aea01' => __DIR__ . '/..' . '/danielstjules/stringy/src/Create.php',
+        'ad155f8f1cf0d418fe49e248db8c661b' => __DIR__ . '/..' . '/react/promise/src/functions_include.php',
         '5255c38a0faeba867671b61dfda6d864' => __DIR__ . '/..' . '/paragonie/random_compat/lib/random.php',
         'e7223560d890eab89cda23685e711e2c' => __DIR__ . '/..' . '/psy/psysh/src/Psy/functions.php',
-        '763b27438d720a6a43e09188926e7554' => __DIR__ . '/..' . '/dwolla/dwolla-php/lib/client.php',
-        'c92090cc1f3e4c81d9a363462c8c7218' => __DIR__ . '/..' . '/dwolla/dwolla-php/lib/account.php',
-        'ec2fd2ad78d3ea22d5d73faf2c5ab91b' => __DIR__ . '/..' . '/dwolla/dwolla-php/lib/checkouts.php',
-        'd07a09836de472966367774e46b4f00f' => __DIR__ . '/..' . '/dwolla/dwolla-php/lib/contacts.php',
-        'f01304cf60a8377f0f28b3369039084e' => __DIR__ . '/..' . '/dwolla/dwolla-php/lib/fundingSources.php',
-        'fffa0a893674d412abe81ec7638d8eaf' => __DIR__ . '/..' . '/dwolla/dwolla-php/lib/masspay.php',
-        '29e3948359b9f805b7a62732807de76f' => __DIR__ . '/..' . '/dwolla/dwolla-php/lib/oauth.php',
-        '9f5dab8499be4571037a04ff022c2163' => __DIR__ . '/..' . '/dwolla/dwolla-php/lib/requests.php',
-        'a2dfcd966f50b7c713a0ef78ffedf8d1' => __DIR__ . '/..' . '/dwolla/dwolla-php/lib/transactions.php',
+        '65fec9ebcfbb3cbb4fd0d519687aea01' => __DIR__ . '/..' . '/danielstjules/stringy/src/Create.php',
         '752af1c2bdb339e8474c3c31b22b7d54' => __DIR__ . '/..' . '/illuminate/html/helpers.php',
         'e23faeee409e941dc9b4c80386209c39' => __DIR__ . '/..' . '/laracasts/flash/src/Laracasts/Flash/functions.php',
+        'f18cc91337d49233e5754e93f3ed9ec3' => __DIR__ . '/..' . '/laravelcollective/html/src/helpers.php',
         'f0906e6318348a765ffb6eb24e0d0938' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Foundation/helpers.php',
         '58571171fd5812e6e447dce228f52f4d' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Support/helpers.php',
-        'f18cc91337d49233e5754e93f3ed9ec3' => __DIR__ . '/..' . '/laravelcollective/html/src/helpers.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -48,8 +38,6 @@ class ComposerStaticInit6ff8fbba5f58ec266906a0f204970d71
         ),
         'S' => 
         array (
-            'Symfony\\Polyfill\\Util\\' => 22,
-            'Symfony\\Polyfill\\Php56\\' => 23,
             'Symfony\\Polyfill\\Mbstring\\' => 26,
             'Symfony\\Polyfill\\Ctype\\' => 23,
             'Symfony\\Component\\Yaml\\' => 23,
@@ -85,6 +73,7 @@ class ComposerStaticInit6ff8fbba5f58ec266906a0f204970d71
         ),
         'L' => 
         array (
+            'League\\MimeTypeDetection\\' => 25,
             'League\\Flysystem\\' => 17,
             'Laravel\\Homestead\\' => 18,
             'Laracasts\\Generators\\' => 21,
@@ -111,6 +100,7 @@ class ComposerStaticInit6ff8fbba5f58ec266906a0f204970d71
         'D' => 
         array (
             'Doctrine\\Instantiator\\' => 22,
+            'Doctrine\\Inflector\\' => 19,
             'Doctrine\\Common\\Inflector\\' => 26,
         ),
         'C' => 
@@ -134,8 +124,8 @@ class ComposerStaticInit6ff8fbba5f58ec266906a0f204970d71
         'phpDocumentor\\Reflection\\' => 
         array (
             0 => __DIR__ . '/..' . '/phpdocumentor/reflection-common/src',
-            1 => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src',
-            2 => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src',
+            1 => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src',
+            2 => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src',
         ),
         'XdgBaseDir\\' => 
         array (
@@ -144,14 +134,6 @@ class ComposerStaticInit6ff8fbba5f58ec266906a0f204970d71
         'Webmozart\\Assert\\' => 
         array (
             0 => __DIR__ . '/..' . '/webmozart/assert/src',
-        ),
-        'Symfony\\Polyfill\\Util\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/symfony/polyfill-util',
-        ),
-        'Symfony\\Polyfill\\Php56\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/symfony/polyfill-php56',
         ),
         'Symfony\\Polyfill\\Mbstring\\' => 
         array (
@@ -245,6 +227,10 @@ class ComposerStaticInit6ff8fbba5f58ec266906a0f204970d71
         array (
             0 => __DIR__ . '/..' . '/monolog/monolog/src/Monolog',
         ),
+        'League\\MimeTypeDetection\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/league/mime-type-detection/src',
+        ),
         'League\\Flysystem\\' => 
         array (
             0 => __DIR__ . '/..' . '/league/flysystem/src',
@@ -288,6 +274,10 @@ class ComposerStaticInit6ff8fbba5f58ec266906a0f204970d71
         'Doctrine\\Instantiator\\' => 
         array (
             0 => __DIR__ . '/..' . '/doctrine/instantiator/src/Doctrine/Instantiator',
+        ),
+        'Doctrine\\Inflector\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/doctrine/inflector/lib/Doctrine/Inflector',
         ),
         'Doctrine\\Common\\Inflector\\' => 
         array (
@@ -361,10 +351,6 @@ class ComposerStaticInit6ff8fbba5f58ec266906a0f204970d71
         ),
         'D' => 
         array (
-            'Dwolla\\' => 
-            array (
-                0 => __DIR__ . '/..' . '/dwolla/dwolla-php/lib',
-            ),
             'Dotenv' => 
             array (
                 0 => __DIR__ . '/..' . '/vlucas/phpdotenv/src',
@@ -386,7 +372,6 @@ class ComposerStaticInit6ff8fbba5f58ec266906a0f204970d71
     public static $classMap = array (
         'Absolute_Positioner' => __DIR__ . '/..' . '/dompdf/dompdf/include/absolute_positioner.cls.php',
         'Abstract_Renderer' => __DIR__ . '/..' . '/dompdf/dompdf/include/abstract_renderer.cls.php',
-        'AddFieldsToUsersTable' => __DIR__ . '/../..' . '/database/migrations/2021_01_17_222609_add-fields-to-users-table.php',
         'AddPopulationToSimulationTable' => __DIR__ . '/../..' . '/database/migrations/2020_07_07_001020_add_population_to_simulation_table.php',
         'AddStopwatchToSimulationTable' => __DIR__ . '/../..' . '/database/migrations/2020_10_23_104719_add-stopwatch-to-simulation-table.php',
         'Adobe_Font_Metrics' => __DIR__ . '/..' . '/phenx/php-font-lib/classes/Adobe_Font_Metrics.php',
@@ -401,6 +386,7 @@ class ComposerStaticInit6ff8fbba5f58ec266906a0f204970d71
         'Canvas' => __DIR__ . '/..' . '/dompdf/dompdf/include/canvas.cls.php',
         'Canvas_Factory' => __DIR__ . '/..' . '/dompdf/dompdf/include/canvas_factory.cls.php',
         'Cellmap' => __DIR__ . '/..' . '/dompdf/dompdf/include/cellmap.cls.php',
+        'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'CreatePasswordResetsTable' => __DIR__ . '/../..' . '/database/migrations/2014_10_12_100000_create_password_resets_table.php',
         'CreateQuestionnairesTable' => __DIR__ . '/../..' . '/database/migrations/2020_10_21_194338_create_questionnaires_table.php',
         'CreateSimulationsTable' => __DIR__ . '/../..' . '/database/migrations/2019_11_12_210906_create_simulations_table.php',
@@ -1022,11 +1008,11 @@ class ComposerStaticInit6ff8fbba5f58ec266906a0f204970d71
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit6ff8fbba5f58ec266906a0f204970d71::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit6ff8fbba5f58ec266906a0f204970d71::$prefixDirsPsr4;
-            $loader->fallbackDirsPsr4 = ComposerStaticInit6ff8fbba5f58ec266906a0f204970d71::$fallbackDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit6ff8fbba5f58ec266906a0f204970d71::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit6ff8fbba5f58ec266906a0f204970d71::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit6ab5888f2b048fdfb16ab4f841f0f825::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit6ab5888f2b048fdfb16ab4f841f0f825::$prefixDirsPsr4;
+            $loader->fallbackDirsPsr4 = ComposerStaticInit6ab5888f2b048fdfb16ab4f841f0f825::$fallbackDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit6ab5888f2b048fdfb16ab4f841f0f825::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit6ab5888f2b048fdfb16ab4f841f0f825::$classMap;
 
         }, null, ClassLoader::class);
     }

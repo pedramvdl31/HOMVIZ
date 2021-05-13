@@ -9,7 +9,6 @@
 | and give it the controller to call when that URI is requested.
 |
 */
-
 Route::group(['middleware' => 'beforeFilter'], function () {
 
 	Route::get('terms', ['as'=>'terms','uses'=>'HomeController@getTerms']);
@@ -25,22 +24,26 @@ Route::group(['middleware' => 'beforeFilter'], function () {
 
 	Route::group(['middleware' => ['auth']], function(){
 
+		//HOMEPAGE
 		Route::get('/', ['uses'=>'HomeController@getHomepage']);
+
+		//HOMEPAGE AFTER QUESTIONNAIRE SUBMITED
 		Route::get('/home/{q?}', ['as'=>'index','uses'=>'HomeController@getHomepage']);
+		
 		Route::get('/simulations/add',  ['as'=>'simulation_add', 'uses' => 'SimulationsController@getAdd']);
 		Route::post('/simulations/add',  ['uses' => 'SimulationsController@postAdd']);
 		Route::get('/simulations/view/{id}',  ['as'=>'simulation_view', 'uses' => 'SimulationsController@getView']);
+
+		//USING AJAX CALL SHOW THE STATUS OF EACH SIMULATION TO THE USER
 		Route::post('/simulations/progress-update',  ['uses' => 'SimulationsController@postprogressUpdate']);
+
 		Route::post('/simulations/delete',  ['uses' => 'SimulationsController@postDelete']);
 
 		Route::get('/tutorial-video', ['uses'=>'HomeController@getTutorialVideo']);
 		Route::post('/userwatchingvideo',  ['uses' => 'HomeController@postUserWatchingTutorialVideo']);
-
 		Route::get('/questionnaire', ['uses'=>'HomeController@getQuestionnaire']);
 		Route::post('/questionnaire', ['uses'=>'HomeController@postQuestionnaire']);
 
 	});
 
 });
-
-Route::get('/test',  ['uses' => 'SimulationsController@getTest']);

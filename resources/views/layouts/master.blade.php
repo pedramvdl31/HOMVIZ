@@ -21,17 +21,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
   @yield('stylesheets')
 
 
-
-<script type='text/javascript'>
-  window.smartlook||(function(d) {
-    var o=smartlook=function(){ o.api.push(arguments)},h=d.getElementsByTagName('head')[0];
-    var c=d.createElement('script');o.api=new Array();c.async=true;c.type='text/javascript';
-    c.charset='utf-8';c.src='https://rec.smartlook.com/recorder.js';h.appendChild(c);
-    })(document);
-    smartlook('init', 'c119a83f9fa5663d9fcc5c2df84da887ae32519b');
-</script>
-
-
 </head>
 
 <body class="hold-transition sidebar-mini" id="#top">

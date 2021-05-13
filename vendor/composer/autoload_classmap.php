@@ -8,7 +8,6 @@ $baseDir = dirname($vendorDir);
 return array(
     'Absolute_Positioner' => $vendorDir . '/dompdf/dompdf/include/absolute_positioner.cls.php',
     'Abstract_Renderer' => $vendorDir . '/dompdf/dompdf/include/abstract_renderer.cls.php',
-    'AddFieldsToUsersTable' => $baseDir . '/database/migrations/2021_01_17_222609_add-fields-to-users-table.php',
     'AddPopulationToSimulationTable' => $baseDir . '/database/migrations/2020_07_07_001020_add_population_to_simulation_table.php',
     'AddStopwatchToSimulationTable' => $baseDir . '/database/migrations/2020_10_23_104719_add-stopwatch-to-simulation-table.php',
     'Adobe_Font_Metrics' => $vendorDir . '/phenx/php-font-lib/classes/Adobe_Font_Metrics.php',
@@ -23,6 +22,7 @@ return array(
     'Canvas' => $vendorDir . '/dompdf/dompdf/include/canvas.cls.php',
     'Canvas_Factory' => $vendorDir . '/dompdf/dompdf/include/canvas_factory.cls.php',
     'Cellmap' => $vendorDir . '/dompdf/dompdf/include/cellmap.cls.php',
+    'Composer\\InstalledVersions' => $vendorDir . '/composer/InstalledVersions.php',
     'CreatePasswordResetsTable' => $baseDir . '/database/migrations/2014_10_12_100000_create_password_resets_table.php',
     'CreateQuestionnairesTable' => $baseDir . '/database/migrations/2020_10_21_194338_create_questionnaires_table.php',
     'CreateSimulationsTable' => $baseDir . '/database/migrations/2019_11_12_210906_create_simulations_table.php',
