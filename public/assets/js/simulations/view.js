@@ -370,6 +370,8 @@ function PopulationNameToIds(name){
         return 'g50hm1f_hf';
       case 'Combined':
         return 'Combined';
+      case 'Combined Housing First':
+        return 'Combined_hf';
       default:
         return 'error';
     }

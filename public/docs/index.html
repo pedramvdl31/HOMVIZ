@@ -1,0 +1,972 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>API Reference</title>
+
+    <link rel="stylesheet" href="css/style.css" />
+    <script src="js/all.js"></script>
+
+
+          <script>
+        $(function() {
+            setupLanguages(["bash","javascript"]);
+        });
+      </script>
+      </head>
+
+  <body class="">
+    <a href="#" id="nav-button">
+      <span>
+        NAV
+        <img src="images/navbar.png" />
+      </span>
+    </a>
+    <div class="tocify-wrapper">
+        <img src="images/logo.png" />
+                    <div class="lang-selector">
+                                  <a href="#" data-language-name="bash">bash</a>
+                                  <a href="#" data-language-name="javascript">javascript</a>
+                            </div>
+                            <div class="search">
+              <input type="text" class="search" id="input-search" placeholder="Search">
+            </div>
+            <ul class="search-results"></ul>
+              <div id="toc">
+      </div>
+                    <ul class="toc-footer">
+                                  <li><a href='http://github.com/mpociot/documentarian'>Documentation Powered by Documentarian</a></li>
+                            </ul>
+            </div>
+    <div class="page-wrapper">
+      <div class="dark-box"></div>
+      <div class="content">
+          <!-- START_INFO -->
+<h1>Info</h1>
+<p>Welcome to the generated API reference.
+<a href="www.homviz.datalab.science/docs/collection.json">Get Postman Collection</a></p>
+<!-- END_INFO -->
+<h1>Home Controller</h1>
+<p>APIs and web pages for managing various tasks.</p>
+<!-- START_5d6ce2ec72b9360a929e0425b42a2a8a -->
+<h2>Consent form (GET)</h2>
+<p>This is a get route. This function will return the auth.terms.blade.php. This was used for the survey.</p>
+<blockquote>
+<p>Example request:</p>
+</blockquote>
+<pre><code class="language-bash">curl -X GET \
+    -G "www.homviz.datalab.science/terms" \
+    -H "Content-Type: application/json" \
+    -H "Accept: application/json"</code></pre>
+<pre><code class="language-javascript">const url = new URL(
+    "www.homviz.datalab.science/terms"
+);
+
+let headers = {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+fetch(url, {
+    method: "GET",
+    headers: headers,
+})
+    .then(response =&gt; response.json())
+    .then(json =&gt; console.log(json));</code></pre>
+<blockquote>
+<p>Example response (500):</p>
+</blockquote>
+<pre><code class="language-json">{
+    "message": "Server Error"
+}</code></pre>
+<h3>HTTP Request</h3>
+<p><code>GET terms</code></p>
+<!-- END_5d6ce2ec72b9360a929e0425b42a2a8a -->
+<!-- START_5157e220a19e0c98cb03a31effb891c5 -->
+<h2>Consent form (POST)</h2>
+<p>This is a post route. If the user accept the condition they will be redirected here and then to the registration page.</p>
+<blockquote>
+<p>Example request:</p>
+</blockquote>
+<pre><code class="language-bash">curl -X POST \
+    "www.homviz.datalab.science/terms" \
+    -H "Content-Type: application/json" \
+    -H "Accept: application/json" \
+    -d '{"questionnaire":"qui","stopwatch":"cupiditate"}'
+</code></pre>
+<pre><code class="language-javascript">const url = new URL(
+    "www.homviz.datalab.science/terms"
+);
+
+let headers = {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+let body = {
+    "questionnaire": "qui",
+    "stopwatch": "cupiditate"
+}
+
+fetch(url, {
+    method: "POST",
+    headers: headers,
+    body: body
+})
+    .then(response =&gt; response.json())
+    .then(json =&gt; console.log(json));</code></pre>
+<h3>HTTP Request</h3>
+<p><code>POST terms</code></p>
+<h4>Body Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Status</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>questionnaire</code></td>
+<td>json</td>
+<td>optional</td>
+<td>required.</td>
+</tr>
+<tr>
+<td><code>stopwatch</code></td>
+<td>string</td>
+<td>optional</td>
+<td>required.</td>
+</tr>
+</tbody>
+</table>
+<!-- END_5157e220a19e0c98cb03a31effb891c5 -->
+<!-- START_53be1e9e10a08458929a2e0ea70ddb86 -->
+<h2>Homepage (GET)</h2>
+<p>This is a get route. This route will return the homepage. q is set to 1 when the user is redirecting to this page from the questionnaire page.</p>
+<blockquote>
+<p>Example request:</p>
+</blockquote>
+<pre><code class="language-bash">curl -X GET \
+    -G "www.homviz.datalab.science/" \
+    -H "Content-Type: application/json" \
+    -H "Accept: application/json"</code></pre>
+<pre><code class="language-javascript">const url = new URL(
+    "www.homviz.datalab.science/"
+);
+
+let headers = {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+fetch(url, {
+    method: "GET",
+    headers: headers,
+})
+    .then(response =&gt; response.json())
+    .then(json =&gt; console.log(json));</code></pre>
+<blockquote>
+<p>Example response (403):</p>
+</blockquote>
+<pre><code class="language-json">{
+    "message": "Your email address is not verified."
+}</code></pre>
+<h3>HTTP Request</h3>
+<p><code>GET /</code></p>
+<h4>URL Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Status</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>q</code></td>
+<td>optional</td>
+<td>string.</td>
+</tr>
+</tbody>
+</table>
+<!-- END_53be1e9e10a08458929a2e0ea70ddb86 -->
+<!-- START_cb859c8e84c35d7133b6a6c8eac253f8 -->
+<h2>Homepage (GET)</h2>
+<p>This is a get route. This route will return the homepage. q is set to 1 when the user is redirecting to this page from the questionnaire page.</p>
+<blockquote>
+<p>Example request:</p>
+</blockquote>
+<pre><code class="language-bash">curl -X GET \
+    -G "www.homviz.datalab.science/home" \
+    -H "Content-Type: application/json" \
+    -H "Accept: application/json"</code></pre>
+<pre><code class="language-javascript">const url = new URL(
+    "www.homviz.datalab.science/home"
+);
+
+let headers = {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+fetch(url, {
+    method: "GET",
+    headers: headers,
+})
+    .then(response =&gt; response.json())
+    .then(json =&gt; console.log(json));</code></pre>
+<blockquote>
+<p>Example response (403):</p>
+</blockquote>
+<pre><code class="language-json">{
+    "message": "Your email address is not verified."
+}</code></pre>
+<h3>HTTP Request</h3>
+<p><code>GET home</code></p>
+<h4>URL Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Status</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>q</code></td>
+<td>optional</td>
+<td>string.</td>
+</tr>
+</tbody>
+</table>
+<!-- END_cb859c8e84c35d7133b6a6c8eac253f8 -->
+<!-- START_13a79ac24cf9b534dc4fbe1219dba1ef -->
+<h2>Tutorial video (GET)</h2>
+<p>This is a get route. This function will return the tutorialvideo.blade.php. This was used for the survey.</p>
+<blockquote>
+<p>Example request:</p>
+</blockquote>
+<pre><code class="language-bash">curl -X GET \
+    -G "www.homviz.datalab.science/tutorial-video" \
+    -H "Content-Type: application/json" \
+    -H "Accept: application/json"</code></pre>
+<pre><code class="language-javascript">const url = new URL(
+    "www.homviz.datalab.science/tutorial-video"
+);
+
+let headers = {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+fetch(url, {
+    method: "GET",
+    headers: headers,
+})
+    .then(response =&gt; response.json())
+    .then(json =&gt; console.log(json));</code></pre>
+<blockquote>
+<p>Example response (403):</p>
+</blockquote>
+<pre><code class="language-json">{
+    "message": "Your email address is not verified."
+}</code></pre>
+<h3>HTTP Request</h3>
+<p><code>GET tutorial-video</code></p>
+<!-- END_13a79ac24cf9b534dc4fbe1219dba1ef -->
+<!-- START_7458d53d7de1ea8921966bb41bb869f5 -->
+<h2>Tutorial video watch time (POST)</h2>
+<p>This is a post route. This route will store the user play and pause activity while watching the youtube tutorial video. This was used for the survey.</p>
+<blockquote>
+<p>Example request:</p>
+</blockquote>
+<pre><code class="language-bash">curl -X POST \
+    "www.homviz.datalab.science/userwatchingvideo" \
+    -H "Content-Type: application/json" \
+    -H "Accept: application/json" \
+    -d '{"text_data":"cum"}'
+</code></pre>
+<pre><code class="language-javascript">const url = new URL(
+    "www.homviz.datalab.science/userwatchingvideo"
+);
+
+let headers = {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+let body = {
+    "text_data": "cum"
+}
+
+fetch(url, {
+    method: "POST",
+    headers: headers,
+    body: body
+})
+    .then(response =&gt; response.json())
+    .then(json =&gt; console.log(json));</code></pre>
+<blockquote>
+<p>Example response (200):</p>
+</blockquote>
+<pre><code class="language-json">{
+    "status": "200"
+}</code></pre>
+<blockquote>
+<p>Example response (400):</p>
+</blockquote>
+<pre><code class="language-json">{
+    "status": "400"
+}</code></pre>
+<h3>HTTP Request</h3>
+<p><code>POST userwatchingvideo</code></p>
+<h4>Body Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Status</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>text_data</code></td>
+<td>string</td>
+<td>optional</td>
+<td>required.</td>
+</tr>
+</tbody>
+</table>
+<!-- END_7458d53d7de1ea8921966bb41bb869f5 -->
+<!-- START_46a9c79229a9ae5379d6821d56cce784 -->
+<h2>Questionnaire (GET)</h2>
+<p>This is a get route. This function will return the questionnaire.blade.php.</p>
+<blockquote>
+<p>Example request:</p>
+</blockquote>
+<pre><code class="language-bash">curl -X GET \
+    -G "www.homviz.datalab.science/questionnaire" \
+    -H "Content-Type: application/json" \
+    -H "Accept: application/json"</code></pre>
+<pre><code class="language-javascript">const url = new URL(
+    "www.homviz.datalab.science/questionnaire"
+);
+
+let headers = {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+fetch(url, {
+    method: "GET",
+    headers: headers,
+})
+    .then(response =&gt; response.json())
+    .then(json =&gt; console.log(json));</code></pre>
+<blockquote>
+<p>Example response (403):</p>
+</blockquote>
+<pre><code class="language-json">{
+    "message": "Your email address is not verified."
+}</code></pre>
+<h3>HTTP Request</h3>
+<p><code>GET questionnaire</code></p>
+<!-- END_46a9c79229a9ae5379d6821d56cce784 -->
+<!-- START_8bd8af20e0eb966d6943016c635f96e6 -->
+<h2>Questionnaire (POST)</h2>
+<p>This is a post route. This function will store the questionnaire answer to the database and redirect the user to the homepage. Here q is set to 1.</p>
+<blockquote>
+<p>Example request:</p>
+</blockquote>
+<pre><code class="language-bash">curl -X POST \
+    "www.homviz.datalab.science/questionnaire" \
+    -H "Content-Type: application/json" \
+    -H "Accept: application/json" \
+    -d '{"questionnaire":"explicabo","stopwatch":"eos"}'
+</code></pre>
+<pre><code class="language-javascript">const url = new URL(
+    "www.homviz.datalab.science/questionnaire"
+);
+
+let headers = {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+let body = {
+    "questionnaire": "explicabo",
+    "stopwatch": "eos"
+}
+
+fetch(url, {
+    method: "POST",
+    headers: headers,
+    body: body
+})
+    .then(response =&gt; response.json())
+    .then(json =&gt; console.log(json));</code></pre>
+<h3>HTTP Request</h3>
+<p><code>POST questionnaire</code></p>
+<h4>Body Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Status</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>questionnaire</code></td>
+<td>json</td>
+<td>optional</td>
+<td>required.</td>
+</tr>
+<tr>
+<td><code>stopwatch</code></td>
+<td>string</td>
+<td>optional</td>
+<td>required.</td>
+</tr>
+</tbody>
+</table>
+<!-- END_8bd8af20e0eb966d6943016c635f96e6 -->
+<h1>Simulation management</h1>
+<p>APIs and web pages for managing simulations</p>
+<!-- START_27ba5e210f340faf3235f1f83fcc434d -->
+<h2>Simulation (GET)</h2>
+<p>This is a get route. This function will return the simulations.add.blade.php.</p>
+<blockquote>
+<p>Example request:</p>
+</blockquote>
+<pre><code class="language-bash">curl -X GET \
+    -G "www.homviz.datalab.science/simulations/add" \
+    -H "Content-Type: application/json" \
+    -H "Accept: application/json"</code></pre>
+<pre><code class="language-javascript">const url = new URL(
+    "www.homviz.datalab.science/simulations/add"
+);
+
+let headers = {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+fetch(url, {
+    method: "GET",
+    headers: headers,
+})
+    .then(response =&gt; response.json())
+    .then(json =&gt; console.log(json));</code></pre>
+<blockquote>
+<p>Example response (403):</p>
+</blockquote>
+<pre><code class="language-json">{
+    "message": "Your email address is not verified."
+}</code></pre>
+<h3>HTTP Request</h3>
+<p><code>GET simulations/add</code></p>
+<!-- END_27ba5e210f340faf3235f1f83fcc434d -->
+<!-- START_35af6702831776dc6485d3fe64f6c1d5 -->
+<h2>Simulation (POST)</h2>
+<p>This is a post route. If all the parameters are provided, the simulation is stored into the database and the user will be redirected to the simulation index or homepage.</p>
+<blockquote>
+<p>Example request:</p>
+</blockquote>
+<pre><code class="language-bash">curl -X POST \
+    "www.homviz.datalab.science/simulations/add" \
+    -H "Content-Type: application/json" \
+    -H "Accept: application/json" \
+    -d '{"scenarios":"quam","resources":"impedit","subresources":"qui","states":"beatae","allowedPopulation":"adipisci","initialPopulation":"odit","maximumlengthofstay":"tempore","capacity":"excepturi"}'
+</code></pre>
+<pre><code class="language-javascript">const url = new URL(
+    "www.homviz.datalab.science/simulations/add"
+);
+
+let headers = {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+let body = {
+    "scenarios": "quam",
+    "resources": "impedit",
+    "subresources": "qui",
+    "states": "beatae",
+    "allowedPopulation": "adipisci",
+    "initialPopulation": "odit",
+    "maximumlengthofstay": "tempore",
+    "capacity": "excepturi"
+}
+
+fetch(url, {
+    method: "POST",
+    headers: headers,
+    body: body
+})
+    .then(response =&gt; response.json())
+    .then(json =&gt; console.log(json));</code></pre>
+<h3>HTTP Request</h3>
+<p><code>POST simulations/add</code></p>
+<h4>Body Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Status</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>scenarios</code></td>
+<td>string</td>
+<td>optional</td>
+<td>required.</td>
+</tr>
+<tr>
+<td><code>resources</code></td>
+<td>string</td>
+<td>optional</td>
+<td>required.</td>
+</tr>
+<tr>
+<td><code>subresources</code></td>
+<td>string</td>
+<td>optional</td>
+<td>required.</td>
+</tr>
+<tr>
+<td><code>states</code></td>
+<td>string</td>
+<td>optional</td>
+<td>required.</td>
+</tr>
+<tr>
+<td><code>allowedPopulation</code></td>
+<td>string</td>
+<td>optional</td>
+<td>required.</td>
+</tr>
+<tr>
+<td><code>initialPopulation</code></td>
+<td>string</td>
+<td>optional</td>
+<td>required.</td>
+</tr>
+<tr>
+<td><code>maximumlengthofstay</code></td>
+<td>string</td>
+<td>optional</td>
+<td>required.</td>
+</tr>
+<tr>
+<td><code>capacity</code></td>
+<td>string</td>
+<td>optional</td>
+<td>required.</td>
+</tr>
+</tbody>
+</table>
+<!-- END_35af6702831776dc6485d3fe64f6c1d5 -->
+<!-- START_24feb7959f1445a0ae19525a84f57e2e -->
+<h2>Simulation view (GET)</h2>
+<p>This is a post route. Viewing simulation results.</p>
+<blockquote>
+<p>Example request:</p>
+</blockquote>
+<pre><code class="language-bash">curl -X GET \
+    -G "www.homviz.datalab.science/simulations/view/1" \
+    -H "Content-Type: application/json" \
+    -H "Accept: application/json"</code></pre>
+<pre><code class="language-javascript">const url = new URL(
+    "www.homviz.datalab.science/simulations/view/1"
+);
+
+let headers = {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+fetch(url, {
+    method: "GET",
+    headers: headers,
+})
+    .then(response =&gt; response.json())
+    .then(json =&gt; console.log(json));</code></pre>
+<blockquote>
+<p>Example response (403):</p>
+</blockquote>
+<pre><code class="language-json">{
+    "message": "Your email address is not verified."
+}</code></pre>
+<h3>HTTP Request</h3>
+<p><code>GET simulations/view/{id}</code></p>
+<h4>URL Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Status</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sim_id</code></td>
+<td>optional</td>
+<td>string required.</td>
+</tr>
+</tbody>
+</table>
+<!-- END_24feb7959f1445a0ae19525a84f57e2e -->
+<h1>User management</h1>
+<p>APIs and web pages for managing users</p>
+<!-- START_66e08d3cc8222573018fed49e121e96d -->
+<h2>Login (GET)</h2>
+<p>This is a get route. This function will return the login.blade.php.</p>
+<blockquote>
+<p>Example request:</p>
+</blockquote>
+<pre><code class="language-bash">curl -X GET \
+    -G "www.homviz.datalab.science/login" \
+    -H "Content-Type: application/json" \
+    -H "Accept: application/json"</code></pre>
+<pre><code class="language-javascript">const url = new URL(
+    "www.homviz.datalab.science/login"
+);
+
+let headers = {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+fetch(url, {
+    method: "GET",
+    headers: headers,
+})
+    .then(response =&gt; response.json())
+    .then(json =&gt; console.log(json));</code></pre>
+<blockquote>
+<p>Example response (200):</p>
+</blockquote>
+<pre><code class="language-json">null</code></pre>
+<h3>HTTP Request</h3>
+<p><code>GET login</code></p>
+<!-- END_66e08d3cc8222573018fed49e121e96d -->
+<!-- START_ba35aa39474cb98cfb31829e70eb8b74 -->
+<h2>Register (POST)</h2>
+<p>This is a post route. If all the parameters are provided and the username and passowrd are correct the user will be logged in to the system and gets redirected to the Homepage.</p>
+<blockquote>
+<p>Example request:</p>
+</blockquote>
+<pre><code class="language-bash">curl -X POST \
+    "www.homviz.datalab.science/login" \
+    -H "Content-Type: application/json" \
+    -H "Accept: application/json" \
+    -d '{"username":"rerum","password":"et"}'
+</code></pre>
+<pre><code class="language-javascript">const url = new URL(
+    "www.homviz.datalab.science/login"
+);
+
+let headers = {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+let body = {
+    "username": "rerum",
+    "password": "et"
+}
+
+fetch(url, {
+    method: "POST",
+    headers: headers,
+    body: body
+})
+    .then(response =&gt; response.json())
+    .then(json =&gt; console.log(json));</code></pre>
+<h3>HTTP Request</h3>
+<p><code>POST login</code></p>
+<h4>Body Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Status</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>username</code></td>
+<td>string</td>
+<td>optional</td>
+<td>required.</td>
+</tr>
+<tr>
+<td><code>password</code></td>
+<td>string</td>
+<td>optional</td>
+<td>required.</td>
+</tr>
+</tbody>
+</table>
+<!-- END_ba35aa39474cb98cfb31829e70eb8b74 -->
+<!-- START_ff38dfb1bd1bb7e1aa24b4e1792a9768 -->
+<h2>Register (GET)</h2>
+<p>This is a get route. If terms is attached to URL as 1 the function will return the register.blade.php or it will return terms.blade.php. The user must first agree to the terms on the /terms page before registration.</p>
+<blockquote>
+<p>Example request:</p>
+</blockquote>
+<pre><code class="language-bash">curl -X GET \
+    -G "www.homviz.datalab.science/register" \
+    -H "Content-Type: application/json" \
+    -H "Accept: application/json"</code></pre>
+<pre><code class="language-javascript">const url = new URL(
+    "www.homviz.datalab.science/register"
+);
+
+let headers = {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+fetch(url, {
+    method: "GET",
+    headers: headers,
+})
+    .then(response =&gt; response.json())
+    .then(json =&gt; console.log(json));</code></pre>
+<blockquote>
+<p>Example response (500):</p>
+</blockquote>
+<pre><code class="language-json">{
+    "message": "Server Error"
+}</code></pre>
+<h3>HTTP Request</h3>
+<p><code>GET register</code></p>
+<h4>URL Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Status</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>terms</code></td>
+<td>optional</td>
+<td>string required 1 if user agreed to terms.</td>
+</tr>
+</tbody>
+</table>
+<!-- END_ff38dfb1bd1bb7e1aa24b4e1792a9768 -->
+<!-- START_d7aad7b5ac127700500280d511a3db01 -->
+<h2>Register (POST)</h2>
+<p>This is a post route. If all the parameters are provided and the username is unique the user will register in the database, automatically gets loged in to the system and gets redirected to the homepage. Otherwise an error message is shown.</p>
+<blockquote>
+<p>Example request:</p>
+</blockquote>
+<pre><code class="language-bash">curl -X POST \
+    "www.homviz.datalab.science/register" \
+    -H "Content-Type: application/json" \
+    -H "Accept: application/json" \
+    -d '{"username":"esse","email":"aperiam","age":"nam","gender":"rerum","password":"neque"}'
+</code></pre>
+<pre><code class="language-javascript">const url = new URL(
+    "www.homviz.datalab.science/register"
+);
+
+let headers = {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+let body = {
+    "username": "esse",
+    "email": "aperiam",
+    "age": "nam",
+    "gender": "rerum",
+    "password": "neque"
+}
+
+fetch(url, {
+    method: "POST",
+    headers: headers,
+    body: body
+})
+    .then(response =&gt; response.json())
+    .then(json =&gt; console.log(json));</code></pre>
+<h3>HTTP Request</h3>
+<p><code>POST register</code></p>
+<h4>Body Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Status</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>username</code></td>
+<td>string</td>
+<td>optional</td>
+<td>required..</td>
+</tr>
+<tr>
+<td><code>email</code></td>
+<td>string</td>
+<td>optional</td>
+<td>required.</td>
+</tr>
+<tr>
+<td><code>age</code></td>
+<td>string</td>
+<td>optional</td>
+<td>required.</td>
+</tr>
+<tr>
+<td><code>gender</code></td>
+<td>string</td>
+<td>optional</td>
+<td>required.</td>
+</tr>
+<tr>
+<td><code>password</code></td>
+<td>string</td>
+<td>optional</td>
+<td>required.</td>
+</tr>
+</tbody>
+</table>
+<!-- END_d7aad7b5ac127700500280d511a3db01 -->
+<!-- START_3b27c39205826f7b238c439cf66b12aa -->
+<h2>Check Username (POST)</h2>
+<p>This is a post route. Checking if the username exists in the database.</p>
+<blockquote>
+<p>Example request:</p>
+</blockquote>
+<pre><code class="language-bash">curl -X POST \
+    "www.homviz.datalab.science/check-username" \
+    -H "Content-Type: application/json" \
+    -H "Accept: application/json" \
+    -d '{"username":"exercitationem"}'
+</code></pre>
+<pre><code class="language-javascript">const url = new URL(
+    "www.homviz.datalab.science/check-username"
+);
+
+let headers = {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+let body = {
+    "username": "exercitationem"
+}
+
+fetch(url, {
+    method: "POST",
+    headers: headers,
+    body: body
+})
+    .then(response =&gt; response.json())
+    .then(json =&gt; console.log(json));</code></pre>
+<blockquote>
+<p>Example response (200):</p>
+</blockquote>
+<pre><code class="language-json">{
+    "status": "200"
+}</code></pre>
+<blockquote>
+<p>Example response (400):</p>
+</blockquote>
+<pre><code class="language-json">{
+    "status": "400"
+}</code></pre>
+<h3>HTTP Request</h3>
+<p><code>POST check-username</code></p>
+<h4>Body Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Status</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>username</code></td>
+<td>string</td>
+<td>optional</td>
+<td>required.</td>
+</tr>
+</tbody>
+</table>
+<!-- END_3b27c39205826f7b238c439cf66b12aa -->
+<!-- START_568bd749946744d2753eaad6cfad5db6 -->
+<h2>Logout (GET)</h2>
+<p>This is a get route. This function will remove user information from the server session and redirect the user back to the login page.</p>
+<blockquote>
+<p>Example request:</p>
+</blockquote>
+<pre><code class="language-bash">curl -X GET \
+    -G "www.homviz.datalab.science/logout" \
+    -H "Content-Type: application/json" \
+    -H "Accept: application/json"</code></pre>
+<pre><code class="language-javascript">const url = new URL(
+    "www.homviz.datalab.science/logout"
+);
+
+let headers = {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+fetch(url, {
+    method: "GET",
+    headers: headers,
+})
+    .then(response =&gt; response.json())
+    .then(json =&gt; console.log(json));</code></pre>
+<blockquote>
+<p>Example response (403):</p>
+</blockquote>
+<pre><code class="language-json">{
+    "message": "Your email address is not verified."
+}</code></pre>
+<h3>HTTP Request</h3>
+<p><code>GET logout</code></p>
+<!-- END_568bd749946744d2753eaad6cfad5db6 -->
+      </div>
+      <div class="dark-box">
+                        <div class="lang-selector">
+                                    <a href="#" data-language-name="bash">bash</a>
+                                    <a href="#" data-language-name="javascript">javascript</a>
+                              </div>
+                </div>
+    </div>
+  </body>
+</html>

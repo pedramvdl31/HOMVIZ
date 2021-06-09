@@ -7,22 +7,18 @@ $('body').LoadingOverlay("show", {
 window.populationType = []
 window.states = []
 window.resources = []
-
 window.tableFlagstate = 0
 window.currentstep = 0
 window.popovers = {}
 window.totalPopulation = {}
 window.TypePopulation = {}
 window.TotalInitPopulation = {}
-
 window.dataSummary = []
-
-//lication validation
 window.loc = 0
 window.stateset = 0
 window.params = 0
 
-//debug
+//debug, enables and disables moving between steps without validation
 window.debug = true
 
 var timeElapsed = 0;
@@ -62,6 +58,7 @@ $(document).ready(function(){
 
   $("#mcontent").css("display","block")
 
+  //stapper initiation
   $('#smartwizard').smartWizard({
     selected: 0,
     theme: 'arrows',
@@ -140,6 +137,7 @@ $(document).ready(function(){
 
   $('#smartwizard').smartWizard('reset');
 
+  // next of the stepper wizard
   $('#next').on('click', function(e){
 
     HandleStepsOnNextBtnClick()
@@ -152,6 +150,7 @@ $(document).ready(function(){
     
   })
 
+  //Requested by Vijay, scrolling to the top when page is reloaded
   setTimeout(function(){
 
     document.location.href="#top";
@@ -165,7 +164,7 @@ $(document).ready(function(){
 
   }, 3000)
 
-
+  //show tutorial videos
   $('.tutorial-link').on('click', function(e) {
 
     let step = $(this).attr('step')
@@ -195,6 +194,8 @@ $(document).ready(function(){
   });
 
   // STEP 1
+
+  //Input validations
   $('#simulation-name').on('keyup blur', function(e) {
     step1HandleErrors()
   })
@@ -637,8 +638,7 @@ $(document).ready(function(){
     $("#resselect").change();
 
   })
-
-  
+ 
   $(document).on("click",".dismisspopover",function(e,data) {
     $('.popover-all').popover('hide');
 
@@ -995,7 +995,6 @@ $(document).ready(function(){
 
   });
 
-
   $(document).on("change",".capacities-infinite",function(e,data) {
 
     let _this_id = $(this).attr('thisid')
@@ -1321,8 +1320,6 @@ $(document).ready(function(){
     countRemainingPopulation()
 
   })
-
-
 
 
   //*********************************
@@ -2289,44 +2286,6 @@ $(document).ready(function(){
   //*********************************
   //**************************STEP 5 END
 
-
-  $(document).on('keyup', '.transitioninput', function() {
-
-    let val = parseFloat($(this).val())
-
-
-      let allinputs = $(this).parents('tr').first().find('input')
-      let total = 0
-
-      allinputs.each(function() {
-
-        let v = $(this).val()
-
-        if (v == "") {
-          v = 0
-        }
-
-        let num = parseFloat(v)
-
-        total = total + num
-
-      });
-
-      total = total.toFixed(2)
-
-      let totaltext = $(this).parents('tr').first().find('.rowtotal').first()
-
-      totaltext.find('.totalval').text(total)
-
-      if (total != 1){
-        totaltext.find('.msg').first().text('The total summation of the transition probabilities in one row must add up to 1')
-      } else {
-        totaltext.find('.msg').first().text('')
-      }
-
-        
-  });
-
   //LAST STEP
 
   $(document).on('click','.show-info', function(){
@@ -2371,11 +2330,13 @@ function tick(){
   timeElapsed++;
   $('#stopwatch').attr('value',timeElapsed)
 }
+
 function startTimer(){
     //call the first setInterval
     myTimer = setInterval(tick, 1000);
 }
 
+//Befor submission check if there is any error in steps
 function validateAllSteps(){
 
   let output = false
@@ -2447,144 +2408,6 @@ function checkStep1(){
   
 }
 
-function step1HandleErrors(){
-
-  let simname = $('#simulation-name').val();
-
-  let nameValidated = false
-  let cityValidated = false
-
-  if (simname=="" || !NoSpecialCharacter(simname)) {
-    $('#simname-error').css('display','block')
-    $('#simulation-name').removeClass('is-valid').addClass('is-invalid')
-    nameValidated = false
-  } else {
-    $('#simname-error').css('display','none')
-    $('#simulation-name').removeClass('is-invalid').addClass('is-valid')
-    nameValidated = true
-  }
-
-  if (window.loc != 1) {
-    $('#cityname-error').css('display','block')
-    $('.sim-location').removeClass('is-valid').addClass('is-invalid')
-    cityValidated = false
-  } else {
-    $('#cityname-error').css('display','none')
-    $('.sim-location').removeClass('is-invalid').addClass('is-valid')
-    cityValidated = true
-  }
-
-  if (nameValidated && cityValidated) {
-    $('#next').removeAttr('disabled')
-  } else {
-    $('#next').attr('disabled','true')
-  }
-  
-}
-
-
-function step2HandleErrors(){
-
-  let typesInput = false
-
-  if (window.populationType.length >= 1) {
-
-    typesInput = true
-
-  }
-
-  if (typesInput) {
-    $('#next').removeAttr('disabled')
-  } else {
-    $('#next').attr('disabled','true')
-  }
-  
-}
-
-function step3HandleErrors(){
-
-  let resourcesSet = false
-
-  if (window.resources.length >= 1) {
-
-    resourcesSet = true
-
-  }
-
-  if (resourcesSet) {
-    $('#next').removeAttr('disabled')
-  } else {
-    $('#next').attr('disabled','true')
-  }
-  
-}
-
-function step4HandleErrors(){
-
-  let statesSet = false
-
-  if (window.states.length >= 1) {
-
-    statesSet = true
-
-  }
-
-  if (statesSet) {
-    $('#next').removeAttr('disabled')
-  } else {
-    $('#next').attr('disabled','true')
-  }
-  
-}
-
-function step5HandleErrors(){
-
-  let policySet = true
-
-  if (policySet) {
-    $('#next').removeAttr('disabled')
-  } else {
-    $('#next').attr('disabled','true')
-  }
-  
-}
-
-function ValidatePolicies(){
-  
-  let unsetLength = $(document).find('#policy-tbody').find('i.text-danger').length
-
-  if (unsetLength>0) {
-    $('#next').attr('disabled','true')
-  } else {
-    $('#next').removeAttr('disabled')
-  }
-
-}
-
-function step6HandleErrors(){
-
-  let weeksVal = $('#simweeks').val()
-  let weeksInput = false
-
-  if (weeksVal=="" || !NoSpecialCharacter(weeksVal)) {
-    $('#weeks-error').css('display','block')
-    $('#simweeks').removeClass('is-valid').addClass('is-invalid')
-    weeksInput = false
-  } else {
-    $('#weeks-error').css('display','none')
-    $('#simweeks').removeClass('is-invalid').addClass('is-valid')
-    weeksInput = true
-  }
-
-  if (weeksInput) {
-    $('#parameters-overview').text('Complete').addClass('text-success').removeClass('text-danger')
-    $('#next').removeAttr('disabled')
-  } else {
-    $('#parameters-overview').text('Incomplete').addClass('text-danger').removeClass('text-success')
-    $('#next').attr('disabled','true')
-  }
-  
-}
 
 function checkStep2(){
 
@@ -2639,6 +2462,17 @@ function checkStep2(){
       });
 
       infoSectionPopulation += '</ul>'
+
+      let total = 0;
+
+      $.each( window.TypePopulation, function( k2, v ) {
+
+        total = total + parseInt(v['total']);
+
+      });
+
+      infoSectionPopulation += '<div class="row"><div class="col-12 text-right"><span>Total: '+total+'</span></div></div>'
+
 
       $('#population-info').css('display','block');
       $('#population-info').html(infoSectionPopulation);
@@ -2746,13 +2580,150 @@ function checkStep6(){
 
 }
 
-function  removeDuplicate(myarray){
+function step1HandleErrors(){
+
+  let simname = $('#simulation-name').val();
+
+  let nameValidated = false
+  let cityValidated = false
+
+  if (simname=="" || !NoSpecialCharacter(simname)) {
+    $('#simname-error').css('display','block')
+    $('#simulation-name').removeClass('is-valid').addClass('is-invalid')
+    nameValidated = false
+  } else {
+    $('#simname-error').css('display','none')
+    $('#simulation-name').removeClass('is-invalid').addClass('is-valid')
+    nameValidated = true
+  }
+
+  if (window.loc != 1) {
+    $('#cityname-error').css('display','block')
+    $('.sim-location').removeClass('is-valid').addClass('is-invalid')
+    cityValidated = false
+  } else {
+    $('#cityname-error').css('display','none')
+    $('.sim-location').removeClass('is-invalid').addClass('is-valid')
+    cityValidated = true
+  }
+
+  if (nameValidated && cityValidated) {
+    $('#next').removeAttr('disabled')
+  } else {
+    $('#next').attr('disabled','true')
+  }
+  
+}
+
+function step2HandleErrors(){
+
+  let typesInput = false
+
+  if (window.populationType.length >= 1) {
+
+    typesInput = true
+
+  }
+
+  if (typesInput) {
+    $('#next').removeAttr('disabled')
+  } else {
+    $('#next').attr('disabled','true')
+  }
+  
+}
+
+function step3HandleErrors(){
+
+  let resourcesSet = false
+
+  if (window.resources.length >= 1) {
+
+    resourcesSet = true
+
+  }
+
+  if (resourcesSet) {
+    $('#next').removeAttr('disabled')
+  } else {
+    $('#next').attr('disabled','true')
+  }
+  
+}
+
+function step4HandleErrors(){
+
+  let statesSet = false
+
+  if (window.states.length >= 1) {
+
+    statesSet = true
+
+  }
+
+  if (statesSet) {
+    $('#next').removeAttr('disabled')
+  } else {
+    $('#next').attr('disabled','true')
+  }
+  
+}
+
+function step5HandleErrors(){
+
+  let policySet = true
+
+  if (policySet) {
+    $('#next').removeAttr('disabled')
+  } else {
+    $('#next').attr('disabled','true')
+  }
+  
+}
+
+function ValidatePolicies(){
+  
+  let unsetLength = $(document).find('#policy-tbody').find('i.text-danger').length
+
+  if (unsetLength>0) {
+    $('#next').attr('disabled','true')
+  } else {
+    $('#next').removeAttr('disabled')
+  }
+
+}
+
+function step6HandleErrors(){
+
+  let weeksVal = $('#simweeks').val()
+  let weeksInput = false
+
+  if (weeksVal=="" || !NoSpecialCharacter(weeksVal)) {
+    $('#weeks-error').css('display','block')
+    $('#simweeks').removeClass('is-valid').addClass('is-invalid')
+    weeksInput = false
+  } else {
+    $('#weeks-error').css('display','none')
+    $('#simweeks').removeClass('is-invalid').addClass('is-valid')
+    weeksInput = true
+  }
+
+  if (weeksInput) {
+    $('#parameters-overview').text('Complete').addClass('text-success').removeClass('text-danger')
+    $('#next').removeAttr('disabled')
+  } else {
+    $('#parameters-overview').text('Incomplete').addClass('text-danger').removeClass('text-success')
+    $('#next').attr('disabled','true')
+  }
+  
+}
+
+function removeDuplicate(myarray){
   let uniqueNames = []
   $.each(myarray, function(i, el){
       if($.inArray(el, uniqueNames) === -1) uniqueNames.push(el);
   });
   return uniqueNames
-
 }
 
 function makeid(length) {
@@ -2766,6 +2737,7 @@ function makeid(length) {
 
 }
 
+//Activated the popoups where we enter allowed population types and the rest
 function activatePopUpWindows(rowID,type,name){
 
   let apopID = 'apop-'+rowID
@@ -2817,6 +2789,7 @@ function activatePopUpWindows(rowID,type,name){
 
 }
 
+// Activate popups for hosuing first
 function activatePopUpWindowsForHosuingFirst(rowID,name,id){
 
   let hfncID = 'ypop-'+rowID
@@ -2842,7 +2815,7 @@ function activatePopUpWindowsForHosuingFirst(rowID,name,id){
 
 }
 
-
+//The html for the capacity of hosuing first popup
 function addHFNCCHTML(ThisID,rowID,_type){
 
   let html =  '<div><div class="table-responsive">'+
@@ -2869,6 +2842,8 @@ function addHFNCCHTML(ThisID,rowID,_type){
   })
 
 }
+
+//The html for the rate of intake of hosuing first popup
 function addHFMIHTML(ThisID,rowID,_type){
 
   let html =  '<div><div class="table-responsive">'+
@@ -2894,6 +2869,8 @@ function addHFMIHTML(ThisID,rowID,_type){
   })
 
 }
+
+//For popup htmls. Apop:allowed pop, Ipop: Initial population, Cpop: capacity, Mpop: maximum length of stay
 
 function addApopHTML(ThisID,rowID,_type){
 
@@ -2995,7 +2972,6 @@ function addCpopHTML(ThisID,rowID,_type){
 
 }
 
-
 function addMpopHTML(ThisID,rowID,_type){
 
   let html =  '<div><div class="table-responsive">'+
@@ -3023,6 +2999,7 @@ function addMpopHTML(ThisID,rowID,_type){
 
 }
 
+//The Ipop is changing if the allowed pop is changed
 function updateIpopHTML(populationArray,rootID,_type){
 
   let ThisID = 'ipop-'+rootID
@@ -3067,6 +3044,7 @@ function ReturnIpopTR(value,rowID,_type){
   return html;
 }
 
+//A row in a table when a resource is added
 function makeResourcesPropretiesTD(rowID,tooltipClass,name,id){
 
   let html = ""
@@ -3114,6 +3092,7 @@ function makeStatesPropretiesTD(rowID,tooltipClass){
   return html
 }
 
+//When next is clicked handles errors and show user
 function HandleStepsOnNextBtnClick(){
 
   let step = window.currentstep
@@ -3337,75 +3316,7 @@ function MakeStatesRowColumnHTML(rowID,tooltipClass,type,name){
   return row;
 }
 
-
-function MakeTransitionalPropTable(){
-
-  let arr = []
-
-  Object.keys(window.resources).forEach(function(key) {
-
-    Object.keys(window.resources[key]).forEach(function(key2) {
-
-      arr.push(window.resources[key][key2])
-
-    });
-
-  });
-
-  Object.keys(window.states).forEach(function(key) {
-
-    Object.keys(window.states[key]).forEach(function(key2) {
-
-      arr.push(window.states[key][key2])
-
-    });
-
-  });
-
-
-  arr = removeDuplicate(arr)
-
-  html = '<div class="table-responsive">'+
-  '<table id="transprop" class="table table-bordered">'+
-  '<thead>'+
-  '<tr><th></th>';
-
-
-  $.each( arr, function( k1, value ) {
-
-    html += '<th>'+value+'</th>';
-
-  });
-
-  html += '<th>Total</th>';
-
-  html += '</tr>'+
-  '</thead>'+
-  '<tbody>';
-
-  $.each( arr, function( k1, v1 ) {
-
-    html += '<tr><td class="titles">'+v1+'</td>';
-
-    $.each( arr, function( k1, v2 ) {
-
-      html += '<td><input name="TransitionProbability['+v1+']['+v2+']" id="'+v1+'-'+v2+'" type="text" class="form-control transitioninput no-special-chars" placeholder="0 to 1"></td>';
-
-    });
-
-    html += '<td class="rowtotal"><p class="totalval">0</p><p><small class="msg" style="color:red"></small></p></td>';
-
-    html += '</tr>';
-
-  });
-
-
-  html += '</tbody></table></div>';
-
-  $('#transitiontable').html(html)
-
-}
-
+//Before submission add the pop element to the dom as a form so we can recieve them on the server side
 function InsertArrayElementToDOM(array,elem,inputName){
 
   $(document).find('.'+inputName+'-input').remove()
@@ -3418,6 +3329,7 @@ function InsertArrayElementToDOM(array,elem,inputName){
 
 }
 
+//reset
 function removeAllPopoverOfID(rowID){
   let apopID = 'apop-'+rowID
   let ipopID = 'ipop-'+rowID
@@ -3539,7 +3451,10 @@ function removeTotalInitKey(rowID){
   delete window.TotalInitPopulation[rowID]
 
 }
-    
+
+//When user change some properties of a resource unset some other dependants properties. For example, when allowed population is changed
+//then we unsed the initial population counts
+
 function UnsetCapacity(rowID){
 
   let thisTooltip = $(document).find('li[name="cpop-'+rowID+'"').first().find('._icon').first()
@@ -3565,7 +3480,6 @@ function UnsetInitialPopulation(rowID){
   thisTooltip.find('i').first().removeClass('fa-check-circle').removeClass('text-success').addClass('fa-times-circle').addClass('text-danger')
 
 }
-
 
 function UnsetAllowedPopulation(rowID){
 
@@ -3612,6 +3526,8 @@ function UnsetMQ(rowID){
 
 }
 
+//When moving to next step after setting population types we lock them becuase
+//changing the requires changing everyother thing
 function UnlockPopulationTypes(elem){
 
   $('.pop-total-nums').removeAttr('readonly')
@@ -3630,15 +3546,12 @@ function LockPopulationTypes(elem){
 
 }
 
-function ResourcesToOverview(){
-
-}
-
 function sanitizeString(str){
     str = str.replace(/[^a-z0-9áéíóúñü \.,_-]/gim,"");
     return str.trim();
 }
 
+//For the summary window on the right
 function drawResSummay(){
 
   let flag = false
@@ -3929,6 +3842,7 @@ function difference(a, b) {
   return Math.abs(a - b); 
 }
 
+//Inserting policies as html form element for the server side
 function insertPolicyToDOM(policyID){
 
   let html = ''
@@ -3999,6 +3913,7 @@ function insertPolicyToDOM(policyID){
 
 }
 
+//show on the overview page
 function UpdateOverviewSectionForPolicies(){
 
   let PolicyCount = $(document).find('.policy-rows').length
@@ -4119,7 +4034,7 @@ function UpdateOverviewSectionForPolicies(){
 
               html += '<ul>';
 
-              html += '<li>MLOS: '+p_value['policy-mlos']+'</li>'
+              html += '<li>Maximum length of stay: '+p_value['policy-mlos']+'</li>'
               html += '<li>Capacity: '+cap+'</li>'
 
               html += '</ul>';

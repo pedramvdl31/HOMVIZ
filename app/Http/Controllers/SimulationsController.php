@@ -298,6 +298,8 @@ class SimulationsController extends Controller
             $phpdate = strtotime( $sim->created_at );
             $sim_info['creatorname'] = date( 'Y-m-d H:i:s', $phpdate );
 
+
+
             $data = json_decode($sim->result, true);
 
             $numberofweeks = 0;
@@ -342,12 +344,27 @@ class SimulationsController extends Controller
                         array_push($resourceLabel, $wk);
 
                         $total = 0;
+                        $total_hf = 0;
 
                         foreach ($wv as $pk => $pv) {
-                            $total = $total + $pv;
+
+                            $last_three = substr($pk, -3);
+
+                            if ($last_three=='_hf') {
+
+                                $total_hf = $total_hf + $pv;
+
+                            } else {
+
+                                $total = $total + $pv;
+
+                            }
                         }
 
                         $data[$key][$w1key][$wk]['Combined'] = $total;
+
+                        $data[$key][$w1key][$wk]['Combined_hf'] = $total_hf;
+
                         $weektotal = $weektotal + $total;
                     }
 
@@ -358,6 +375,7 @@ class SimulationsController extends Controller
             $resourceLabel = array_unique($resourceLabel);
 
             $mycounter = 0;
+
             //Generate data for charts
             foreach ($data as $key0 => $sim) {
 
@@ -439,8 +457,6 @@ class SimulationsController extends Controller
                     $populationLabel[$pkey] = Simulation::populationIDtoName($pvalue);
                 }
             }
-
-            
 
             return view('simulations.view')
             ->with('dataSeriesLabel',json_encode($dataSeriesLabel))

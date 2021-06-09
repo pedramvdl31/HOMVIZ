@@ -1,0 +1,505 @@
+{
+    "variables": [],
+    "info": {
+        "name": "Lakehead-Ingenuity-CRM API",
+        "_postman_id": "fb26a54b-10bb-4786-bd9a-ccb8e8764e24",
+        "description": "",
+        "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.0.0\/collection.json"
+    },
+    "item": [
+        {
+            "name": "Home Controller",
+            "description": "\nAPIs and web pages for managing various tasks.",
+            "item": [
+                {
+                    "name": "Consent form (GET)\nThis is a get route. This function will return the auth.terms.blade.php. This was used for the survey.",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "www.homviz.datalab.science",
+                            "path": "terms",
+                            "query": []
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "[]"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                },
+                {
+                    "name": "Consent form (POST)\nThis is a post route. If the user accept the condition they will be redirected here and then to the registration page.",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "www.homviz.datalab.science",
+                            "path": "terms",
+                            "query": []
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"questionnaire\": \"qui\",\n    \"stopwatch\": \"cupiditate\"\n}"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                },
+                {
+                    "name": "Homepage (GET)\nThis is a get route. This route will return the homepage. q is set to 1 when the user is redirecting to this page from the questionnaire page.",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "www.homviz.datalab.science",
+                            "path": "\/",
+                            "query": []
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "[]"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                },
+                {
+                    "name": "Homepage (GET)\nThis is a get route. This route will return the homepage. q is set to 1 when the user is redirecting to this page from the questionnaire page.",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "www.homviz.datalab.science",
+                            "path": "home",
+                            "query": []
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "[]"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                },
+                {
+                    "name": "Tutorial video (GET)\nThis is a get route. This function will return the tutorialvideo.blade.php. This was used for the survey.",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "www.homviz.datalab.science",
+                            "path": "tutorial-video",
+                            "query": []
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "[]"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                },
+                {
+                    "name": "Tutorial video watch time (POST)\nThis is a post route. This route will store the user play and pause activity while watching the youtube tutorial video. This was used for the survey.",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "www.homviz.datalab.science",
+                            "path": "userwatchingvideo",
+                            "query": []
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"text_data\": \"cum\"\n}"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                },
+                {
+                    "name": "Questionnaire (GET)\nThis is a get route. This function will return the questionnaire.blade.php.",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "www.homviz.datalab.science",
+                            "path": "questionnaire",
+                            "query": []
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "[]"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                },
+                {
+                    "name": "Questionnaire (POST)\nThis is a post route. This function will store the questionnaire answer to the database and redirect the user to the homepage. Here q is set to 1.",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "www.homviz.datalab.science",
+                            "path": "questionnaire",
+                            "query": []
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"questionnaire\": \"explicabo\",\n    \"stopwatch\": \"eos\"\n}"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Simulation management",
+            "description": "\nAPIs and web pages for managing simulations",
+            "item": [
+                {
+                    "name": "Simulation (GET)\nThis is a get route. This function will return the simulations.add.blade.php.",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "www.homviz.datalab.science",
+                            "path": "simulations\/add",
+                            "query": []
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "[]"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                },
+                {
+                    "name": "Simulation (POST)\nThis is a post route. If all the parameters are provided, the simulation is stored into the database and the user will be redirected to the simulation index or homepage.",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "www.homviz.datalab.science",
+                            "path": "simulations\/add",
+                            "query": []
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"scenarios\": \"quam\",\n    \"resources\": \"impedit\",\n    \"subresources\": \"qui\",\n    \"states\": \"beatae\",\n    \"allowedPopulation\": \"adipisci\",\n    \"initialPopulation\": \"odit\",\n    \"maximumlengthofstay\": \"tempore\",\n    \"capacity\": \"excepturi\"\n}"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                },
+                {
+                    "name": "Simulation view (GET)\nThis is a post route. Viewing simulation results.",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "www.homviz.datalab.science",
+                            "path": "simulations\/view\/:id",
+                            "query": []
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "[]"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                }
+            ]
+        },
+        {
+            "name": "User management",
+            "description": "\nAPIs and web pages for managing users",
+            "item": [
+                {
+                    "name": "Login (GET)\nThis is a get route. This function will return the login.blade.php.",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "www.homviz.datalab.science",
+                            "path": "login",
+                            "query": []
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "[]"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                },
+                {
+                    "name": "Register (POST)\nThis is a post route. If all the parameters are provided and the username and passowrd are correct the user will be logged in to the system and gets redirected to the Homepage.",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "www.homviz.datalab.science",
+                            "path": "login",
+                            "query": []
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"username\": \"rerum\",\n    \"password\": \"et\"\n}"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                },
+                {
+                    "name": "Register (GET)\nThis is a get route. If terms is attached to URL as 1 the function will return the register.blade.php or it will return terms.blade.php. The user must first agree to the terms on the \/terms page before registration.",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "www.homviz.datalab.science",
+                            "path": "register",
+                            "query": []
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "[]"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                },
+                {
+                    "name": "Register (POST)\nThis is a post route. If all the parameters are provided and the username is unique the user will register in the database, automatically gets loged in to the system and gets redirected to the homepage. Otherwise an error message is shown.",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "www.homviz.datalab.science",
+                            "path": "register",
+                            "query": []
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"username\": \"esse\",\n    \"email\": \"aperiam\",\n    \"age\": \"nam\",\n    \"gender\": \"rerum\",\n    \"password\": \"neque\"\n}"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                },
+                {
+                    "name": "Check Username (POST)\nThis is a post route. Checking if the username exists in the database.",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "www.homviz.datalab.science",
+                            "path": "check-username",
+                            "query": []
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"username\": \"exercitationem\"\n}"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                },
+                {
+                    "name": "Logout (GET)\nThis is a get route. This function will remove user information from the server session and redirect the user back to the login page.",
+                    "request": {
+                        "url": {
+                            "protocol": "http",
+                            "host": "www.homviz.datalab.science",
+                            "path": "logout",
+                            "query": []
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "[]"
+                        },
+                        "description": "",
+                        "response": []
+                    }
+                }
+            ]
+        }
+    ]
+}

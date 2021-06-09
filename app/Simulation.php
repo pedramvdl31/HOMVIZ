@@ -428,6 +428,11 @@ class Simulation extends Model
       case 'g50hm1f_hf':
         return 'greater than 50 years, homeless more than 1 year, female (Housing First)';
 
+
+      case 'Combined_hf':
+        return 'Combined Housing First';
+
+
    	}
 
    	return false;
@@ -496,6 +501,9 @@ class Simulation extends Model
    			return 'g50hm1f';
       case 'greater than 50 years, homeless more than 1 year, female (Housing First)':
         return 'g50hm1f_hf';
+
+      case 'Combined Housing First':
+        return 'Combined_hf';
 
    		default:
    			return 'error';
