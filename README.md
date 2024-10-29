@@ -3,7 +3,7 @@
 This project is programmed using Laravel 5.1. The best way of recreating the server and running the application is to follow Laravel documentation, [LARAVEL 5.1](https://laravel.com/docs/5.1). However, I will provide the following instructions for additional support.
 
 ## Operating System
-Ubuntu Server 20.04 LTS (HVM), SSD Volume Type
+Any version of Ubuntu Server (e.g., Ubuntu Server 20.04 LTS, HVM, SSD Volume Type)
 
 ## Server Setup
 
@@ -191,4 +191,3 @@ Ubuntu Server 20.04 LTS (HVM), SSD Volume Type
    ```
 
 This guide should now help you set up and run the project.
-
