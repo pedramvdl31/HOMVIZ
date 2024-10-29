@@ -1,6 +1,6 @@
 # Installation Guide
 
-This project is programmed using Laravel 5.1. The best way of recreating the server and running the application is to follow Laravel documentation. However, I will provide the following instructions for additional support.
+This project is programmed using Laravel 5.1. The best way of recreating the server and running the application is to follow Laravel documentation, [LARAVEL 5.1](https://laravel.com/docs/5.1). However, I will provide the following instructions for additional support.
 
 ## Operating System
 Ubuntu Server 20.04 LTS (HVM), SSD Volume Type
